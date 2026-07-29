@@ -21,6 +21,12 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "hasPromptedAccessibility") }
     }
 
+    static var selectedSettingsTab: String {
+        get { defaults.string(forKey: selectedSettingsTabKey) ?? SettingsTab.general.rawValue }
+        set { defaults.set(newValue, forKey: selectedSettingsTabKey) }
+    }
+    static let selectedSettingsTabKey = "selectedSettingsTab"
+
     // Read via @AppStorage in the views so the menu bar updates live.
     static let menuBarIconKey = "menuBarIcon"
     static let defaultMenuBarIcon = "doc.on.clipboard"

@@ -15,6 +15,7 @@ final class AppState {
     let panelViewModel: PanelViewModel
     private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
+    private var pinShortcutManager: PinShortcutManager?
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
 
     // The unit-test bundle runs hosted inside this app, so `init` executes during
@@ -87,11 +88,23 @@ final class AppState {
             KeyboardShortcuts.onKeyDown(for: .togglePanel) { [weak self] in
                 self?.panelController?.toggle()
             }
+
+            let manager = PinShortcutManager(
+                pinnedItems: { [weak self] in self?.historyStore.pinnedItems() ?? [] },
+                paste: { [weak self] item in self?.paste(item) }
+            )
+            pinShortcutManager = manager
+            historyStore.pinsChanged = { [weak self] in self?.pinShortcutManager?.sync() }
+            manager.sync()
         }
     }
 
     private func commit(_ item: ClipboardItem) {
         panelController?.hide()
+        paste(item)
+    }
+
+    private func paste(_ item: ClipboardItem) {
         guard pasteService.write(item) else { return }
 
         if pasteService.isAccessibilityTrusted {
