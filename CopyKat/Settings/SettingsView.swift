@@ -9,11 +9,19 @@ struct SettingsView: View {
     @State private var excludedBundleIDs = AppSettings.excludedBundleIDs
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var selectedExclusion: String?
+    @AppStorage(AppSettings.menuBarIconKey) private var menuBarIcon = AppSettings.defaultMenuBarIcon
 
     var body: some View {
         Form {
             Section("General") {
                 KeyboardShortcuts.Recorder("Open panel", name: .togglePanel)
+
+                Picker("Menu bar icon", selection: $menuBarIcon) {
+                    ForEach(AppSettings.menuBarIconOptions, id: \.self) { name in
+                        Image(systemName: name).tag(name)
+                    }
+                }
+                .pickerStyle(.segmented)
 
                 Stepper(value: $maxItems, in: 10...1000, step: 10) {
                     Text("Keep \(maxItems) items")

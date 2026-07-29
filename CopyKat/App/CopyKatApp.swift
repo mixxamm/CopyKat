@@ -3,9 +3,10 @@ import SwiftUI
 @main
 struct CopyKatApp: App {
     @State private var appState = AppState()
+    @AppStorage(AppSettings.menuBarIconKey) private var menuBarIcon = AppSettings.defaultMenuBarIcon
 
     var body: some Scene {
-        MenuBarExtra("CopyKat", systemImage: "doc.on.clipboard") {
+        MenuBarExtra("CopyKat", systemImage: menuBarIcon) {
             MenuContent(appState: appState)
         }
 

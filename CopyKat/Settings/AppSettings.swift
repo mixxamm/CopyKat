@@ -20,4 +20,11 @@ enum AppSettings {
         get { defaults.bool(forKey: "hasPromptedAccessibility") }
         set { defaults.set(newValue, forKey: "hasPromptedAccessibility") }
     }
+
+    // Read via @AppStorage in the views so the menu bar updates live.
+    static let menuBarIconKey = "menuBarIcon"
+    static let defaultMenuBarIcon = "doc.on.clipboard"
+    static let menuBarIconOptions = [
+        "doc.on.clipboard", "clipboard", "list.clipboard", "cat.fill", "paperclip",
+    ]
 }
