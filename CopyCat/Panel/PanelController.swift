@@ -45,7 +45,10 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     private func centerOnActiveScreen() {
-        guard let screen = NSScreen.main else { return }
+        let screenUnderMouse = NSScreen.screens.first {
+            NSMouseInRect(NSEvent.mouseLocation, $0.frame, false)
+        }
+        guard let screen = screenUnderMouse ?? NSScreen.main else { return }
         let frame = screen.visibleFrame
         let origin = NSPoint(
             x: frame.midX - panel.frame.width / 2,

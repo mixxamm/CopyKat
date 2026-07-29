@@ -59,6 +59,7 @@ struct SettingsView: View {
                     Button("Remove") {
                         excludedBundleIDs.removeAll { $0 == selectedExclusion }
                         AppSettings.excludedBundleIDs = excludedBundleIDs
+                        selectedExclusion = nil
                     }
                     .disabled(selectedExclusion == nil)
                 }
