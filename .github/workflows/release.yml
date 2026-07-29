@@ -17,11 +17,44 @@ jobs:
       - name: Generate project
         run: xcodegen generate
       - name: Build
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
           xcodebuild -scheme CopyKat -configuration Release \
-            -derivedDataPath build build
-      - name: Package
-        run: ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
+            -derivedDataPath build \
+            MARKETING_VERSION="${TAG#v}" build
+      - name: Import signing certificate
+        env:
+          CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/release.keychain-db"
+          KEYCHAIN_PASSWORD=$(uuidgen)
+          echo "$CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 900 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          rm "$RUNNER_TEMP/cert.p12"
+      - name: Sign
+        run: |
+          IDENTITY=$(security find-identity -v -p codesigning | grep "Developer ID Application" | head -1 | awk '{print $2}')
+          codesign --force --deep --timestamp --options runtime \
+            --sign "$IDENTITY" build/Build/Products/Release/CopyKat.app
+          codesign --verify --strict build/Build/Products/Release/CopyKat.app
+      - name: Notarize and staple
+        env:
+          APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
+          xcrun notarytool submit CopyKat.zip --wait \
+            --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$TEAM_ID"
+          xcrun stapler staple build/Build/Products/Release/CopyKat.app
+          ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:

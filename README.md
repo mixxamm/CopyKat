@@ -31,9 +31,7 @@ Requires macOS 14 or later.
 
 Grab the latest `CopyKat.zip` from the
 [releases page](https://github.com/mixxamm/CopyKat/releases), unzip it, and
-drag CopyKat to your Applications folder. The app isn't notarized by Apple
-yet, so the first time you open it you'll need to right-click it and choose
-Open.
+drag CopyKat to your Applications folder.
 
 Or build it from source:
 
