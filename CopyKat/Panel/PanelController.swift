@@ -53,7 +53,10 @@ final class PanelController: NSObject, NSWindowDelegate {
             show(fastSession: true)
         } else if viewModel.isFastSession {
             switch tapTracker.register() {
-            case .enterSearch:
+            case .enterSearch(let undoAdvance):
+                if undoAdvance {
+                    viewModel.moveSelection(-1)
+                }
                 viewModel.isFastSession = false
             case .open, .advance:
                 viewModel.moveSelection(1)

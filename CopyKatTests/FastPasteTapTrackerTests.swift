@@ -9,10 +9,10 @@ final class FastPasteTapTrackerTests: XCTestCase {
         XCTAssertEqual(tracker.register(at: t0), .open)
     }
 
-    func testQuickSecondPressEntersSearch() {
+    func testQuickSecondPressEntersSearchWithoutUndo() {
         var tracker = FastPasteTapTracker()
         _ = tracker.register(at: t0)
-        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.2)), .enterSearch)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.2)), .enterSearch(undoAdvance: false))
     }
 
     func testSlowSecondPressAdvances() {
@@ -21,12 +21,20 @@ final class FastPasteTapTrackerTests: XCTestCase {
         XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.6)), .advance)
     }
 
-    func testRapidCyclingAfterNavigationNeverEntersSearch() {
+    func testDoubleTapDuringCyclingEntersSearchAndUndoesTheStrayAdvance() {
         var tracker = FastPasteTapTracker()
         _ = tracker.register(at: t0)
-        _ = tracker.register(at: t0.addingTimeInterval(0.6))
-        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.7)), .advance)
-        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.75)), .advance)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.6)), .advance)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(1.2)), .advance)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(1.35)), .enterSearch(undoAdvance: true))
+    }
+
+    func testDeliberateCyclingKeepsAdvancingWhenSpacedOut() {
+        var tracker = FastPasteTapTracker()
+        _ = tracker.register(at: t0)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(0.5)), .advance)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(1.0)), .advance)
+        XCTAssertEqual(tracker.register(at: t0.addingTimeInterval(1.5)), .advance)
     }
 
     func testResetStartsANewSession() {
