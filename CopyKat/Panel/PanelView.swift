@@ -45,6 +45,14 @@ struct PanelView: View {
             model.deleteSelected()
             return .handled
         }
+        .onKeyPress(phases: .down) { press in
+            guard press.modifiers.contains(.command),
+                  let digit = press.characters.first?.wholeNumberValue,
+                  let item = model.quickPasteItem(at: digit)
+            else { return .ignored }
+            onCommit(item)
+            return .handled
+        }
     }
 
     private var searchBar: some View {
@@ -72,21 +80,34 @@ struct PanelView: View {
                             let index = section.firstIndex + offset
                             ItemRow(
                                 item: item,
-                                isSelected: index == model.selectedIndex,
+                                isSelected: item.persistentModelID == model.selectedID,
                                 imageStore: imageStore,
-                                showsSourceApp: !section.isGrouped
+                                showsSourceApp: !section.isGrouped,
+                                quickPasteBadge: index < 9 ? index + 1 : nil
                             )
                             .padding(.leading, section.isGrouped ? 18 : 0)
                             .id(item.persistentModelID)
                             .onTapGesture { onCommit(item) }
+                            .contextMenu {
+                                Button(item.isPinned ? "Unpin" : "Pin") { model.togglePin(item) }
+                                if item.isPinned {
+                                    Button("Record Shortcut…") {
+                                        AppSettings.selectedSettingsTab = SettingsTab.pins.rawValue
+                                        SettingsOpener.open()
+                                    }
+                                }
+                                Divider()
+                                Button("Delete", role: .destructive) { model.delete(item) }
+                            }
                         }
                     }
                 }
                 .padding(6)
             }
-            .onChange(of: model.selectedIndex) { _, index in
-                guard model.items.indices.contains(index) else { return }
-                proxy.scrollTo(model.items[index].persistentModelID)
+            .onChange(of: model.selectedID) { _, id in
+                if let id {
+                    proxy.scrollTo(id)
+                }
             }
         }
     }

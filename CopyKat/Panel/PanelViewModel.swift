@@ -22,15 +22,23 @@ final class PanelViewModel {
     var query = "" {
         didSet {
             guard query != oldValue else { return }
-            selectedIndex = 0
             refresh()
+            selectedID = items.first?.persistentModelID
         }
     }
     private(set) var items: [ClipboardItem] = []
-    var selectedIndex = 0
+
+    // Selection follows the item, not its position. Index-based selection can
+    // highlight the wrong row (or two rows) when a live refresh shifts the list
+    // between renders; identities cannot collide.
+    private(set) var selectedID: PersistentIdentifier?
 
     var selectedItem: ClipboardItem? {
-        items.indices.contains(selectedIndex) ? items[selectedIndex] : nil
+        items.first { $0.persistentModelID == selectedID }
+    }
+
+    var selectedIndex: Int? {
+        items.firstIndex { $0.persistentModelID == selectedID }
     }
 
     var sections: [PanelSection] {
@@ -69,33 +77,54 @@ final class PanelViewModel {
 
     func reset() {
         query = ""
-        selectedIndex = 0
         refresh()
+        selectedID = items.first?.persistentModelID
     }
 
     func refresh() {
         items = store.items(matching: query)
-        clampSelection()
+        if selectedItem == nil {
+            selectedID = items.first?.persistentModelID
+        }
     }
 
     func moveSelection(_ delta: Int) {
-        selectedIndex += delta
-        clampSelection()
+        guard !items.isEmpty else { return }
+        let current = selectedIndex ?? 0
+        let target = min(max(current + delta, 0), items.count - 1)
+        selectedID = items[target].persistentModelID
     }
 
     func deleteSelected() {
         guard let item = selectedItem else { return }
-        store.delete(item)
-        refresh()
+        delete(item)
     }
 
     func togglePinSelected() {
         guard let item = selectedItem else { return }
+        togglePin(item)
+    }
+
+    func delete(_ item: ClipboardItem) {
+        let previousIndex = selectedIndex
+        let deletingSelected = item.persistentModelID == selectedID
+        store.delete(item)
+        items = store.items(matching: query)
+        if deletingSelected, let previousIndex, !items.isEmpty {
+            selectedID = items[min(previousIndex, items.count - 1)].persistentModelID
+        } else if selectedItem == nil {
+            selectedID = items.first?.persistentModelID
+        }
+    }
+
+    func togglePin(_ item: ClipboardItem) {
         store.togglePin(item)
         refresh()
     }
 
-    private func clampSelection() {
-        selectedIndex = items.isEmpty ? 0 : min(max(selectedIndex, 0), items.count - 1)
+    // Position is 1-based to match the ⌘1…⌘9 keys.
+    func quickPasteItem(at position: Int) -> ClipboardItem? {
+        guard (1...9).contains(position), items.indices.contains(position - 1) else { return nil }
+        return items[position - 1]
     }
 }

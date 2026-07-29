@@ -66,6 +66,30 @@ final class PanelViewModelTests: XCTestCase {
         XCTAssertTrue(model.sections.allSatisfy { !$0.isGrouped })
     }
 
+    func testQuickPasteItemUsesOneBasedPositions() throws {
+        try seed(["a", "b", "c"])
+        XCTAssertEqual(model.quickPasteItem(at: 1)?.text, "c")
+        XCTAssertEqual(model.quickPasteItem(at: 3)?.text, "a")
+        XCTAssertNil(model.quickPasteItem(at: 0))
+        XCTAssertNil(model.quickPasteItem(at: 4))
+        XCTAssertNil(model.quickPasteItem(at: 10))
+    }
+
+    func testQuickPasteFollowsFilteredList() throws {
+        try seed(["apple", "banana", "avocado"])
+        model.query = "a"
+        XCTAssertEqual(model.quickPasteItem(at: 1)?.text, model.items.first?.text)
+    }
+
+    func testTogglePinAndDeleteSpecificItem() throws {
+        try seed(["a", "b", "c"])
+        let middle = try XCTUnwrap(model.items.first { $0.text == "b" })
+        model.togglePin(middle)
+        XCTAssertEqual(model.items.first?.text, "b")
+        model.delete(middle)
+        XCTAssertEqual(model.items.map(\.text), ["c", "a"])
+    }
+
     func testResetShowsAllItemsWithFirstSelected() throws {
         try seed(["a", "b", "c"])
         XCTAssertEqual(model.items.count, 3)
