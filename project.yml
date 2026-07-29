@@ -24,13 +24,18 @@ targets:
       properties:
         LSUIElement: true
         CFBundleDisplayName: CopyKat
-        CFBundleShortVersionString: "0.1.0"
+        # Resolved from build settings so the release workflow can set the
+        # version from the git tag.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         SUFeedURL: https://github.com/mixxamm/CopyKat/releases/latest/download/appcast.xml
         SUEnableAutomaticChecks: true
         SUPublicEDKey: "78x0TuiNj31++gwt6eWVa0YvcXMo7iKPLGY910CHnvk="
     settings:
       base:
         SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "0.2.0"
+        CURRENT_PROJECT_VERSION: "0.2.0"
         CODE_SIGN_STYLE: Automatic
         # A stable signing identity keeps the Accessibility permission valid
         # across rebuilds; ad-hoc signing invalidated it on every build.
