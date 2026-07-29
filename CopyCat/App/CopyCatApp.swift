@@ -6,18 +6,31 @@ struct CopyCatApp: App {
 
     var body: some Scene {
         MenuBarExtra("CopyCat", systemImage: "doc.on.clipboard") {
-            Button("Open CopyCat") { appState.panelController?.toggle() }
-            SettingsLink {
-                Text("Settings…")
-            }
-            .keyboardShortcut(",")
-            Divider()
-            Button("Quit CopyCat") { NSApp.terminate(nil) }
-                .keyboardShortcut("q")
+            MenuContent(appState: appState)
         }
 
         Settings {
             SettingsView(appState: appState)
         }
+    }
+}
+
+// Without a Dock presence (LSUIElement) the app is not active when a menu item
+// is clicked, so SettingsLink would create the settings window behind other
+// apps. Activating first makes openSettings() bring it to the front.
+private struct MenuContent: View {
+    let appState: AppState
+    @Environment(\.openSettings) private var openSettings
+
+    var body: some View {
+        Button("Open CopyCat") { appState.panelController?.toggle() }
+        Button("Settings…") {
+            NSApp.activate(ignoringOtherApps: true)
+            openSettings()
+        }
+        .keyboardShortcut(",")
+        Divider()
+        Button("Quit CopyCat") { NSApp.terminate(nil) }
+            .keyboardShortcut("q")
     }
 }
