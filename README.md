@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="CopyKat/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="128" alt="CopyKat icon">
+</p>
+
 # CopyKat
 
 A fast, native clipboard manager for macOS. Press a hotkey, see everything you
