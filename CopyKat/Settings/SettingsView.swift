@@ -112,9 +112,6 @@ private struct GeneralSettingsView: View {
             }
 
             Section {
-                Button("Show Welcome Guide") {
-                    appState.onboardingController.show(appState: appState)
-                }
                 Button("Clear History…", role: .destructive) {
                     confirmClearHistory()
                 }
