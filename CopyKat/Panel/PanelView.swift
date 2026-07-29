@@ -86,9 +86,13 @@ struct PanelView: View {
     }
 
     private var itemList: some View {
+        GeometryReader { geometry in
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 2) {
+                    // Runway above and below the rows, so even the first and
+                    // last item can sit at the centered highlight position.
+                    Color.clear.frame(height: edgeRunway(in: geometry))
                     ForEach(model.sections, id: \.id) { section in
                         if section.isGrouped {
                             sectionHeader(for: section)
@@ -120,6 +124,7 @@ struct PanelView: View {
                             }
                         }
                     }
+                    Color.clear.frame(height: edgeRunway(in: geometry))
                 }
                 .padding(6)
             }
@@ -141,6 +146,13 @@ struct PanelView: View {
                 }
             }
         }
+        }
+    }
+
+    // Half the list height minus half a row: enough for any row to reach the
+    // vertical center of the visible list.
+    private func edgeRunway(in geometry: GeometryProxy) -> CGFloat {
+        max(0, geometry.size.height / 2 - 34)
     }
 
     private func sectionHeader(for section: PanelSection) -> some View {
