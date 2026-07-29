@@ -16,11 +16,6 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "excludedBundleIDs") }
     }
 
-    static var hasPromptedAccessibility: Bool {
-        get { defaults.bool(forKey: "hasPromptedAccessibility") }
-        set { defaults.set(newValue, forKey: "hasPromptedAccessibility") }
-    }
-
     static var selectedSettingsTab: String {
         get { defaults.string(forKey: selectedSettingsTabKey) ?? SettingsTab.general.rawValue }
         set { defaults.set(newValue, forKey: selectedSettingsTabKey) }

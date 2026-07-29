@@ -32,7 +32,9 @@ targets:
       base:
         SWIFT_VERSION: "5.9"
         CODE_SIGN_STYLE: Automatic
-        CODE_SIGN_IDENTITY: "-"
+        # A stable signing identity keeps the Accessibility permission valid
+        # across rebuilds; ad-hoc signing invalidated it on every build.
+        DEVELOPMENT_TEAM: 826KF5XR57
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   CopyKatTests:
     type: bundle.unit-test
