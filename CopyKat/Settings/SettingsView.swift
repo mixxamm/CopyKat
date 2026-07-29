@@ -54,6 +54,11 @@ private struct GeneralSettingsView: View {
                     appState.historyStore.maxItems = value
                 }
 
+                Toggle("Automatically check for updates", isOn: Binding(
+                    get: { appState.updaterController.updater.automaticallyChecksForUpdates },
+                    set: { appState.updaterController.updater.automaticallyChecksForUpdates = $0 }
+                ))
+
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, enabled in
                         do {
@@ -120,10 +125,10 @@ private struct GeneralSettingsView: View {
 
     private func confirmClearHistory() {
         let alert = NSAlert()
-        alert.messageText = "Clear clipboard history?"
-        alert.informativeText = "All items except pinned ones are removed. This cannot be undone."
-        alert.addButton(withTitle: "Clear History")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = String(localized: "Clear clipboard history?")
+        alert.informativeText = String(localized: "All items except pinned ones are removed. This cannot be undone.")
+        alert.addButton(withTitle: String(localized: "Clear History"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
         alert.buttons.first?.hasDestructiveAction = true
         if alert.runModal() == .alertFirstButtonReturn {
             appState.historyStore.deleteAll()

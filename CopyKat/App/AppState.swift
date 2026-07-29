@@ -1,5 +1,6 @@
 import AppKit
 import KeyboardShortcuts
+import Sparkle
 import SwiftData
 import os
 
@@ -16,6 +17,7 @@ final class AppState {
     private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
     private var pinShortcutManager: PinShortcutManager?
+    let updaterController: SPUStandardUpdaterController
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
 
     // The unit-test bundle runs hosted inside this app, so `init` executes during
@@ -26,6 +28,12 @@ final class AppState {
     }
 
     init() {
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: !Self.isRunningTests,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
+
         let appSupport: URL
         if Self.isRunningTests {
             appSupport = FileManager.default.temporaryDirectory
@@ -121,14 +129,14 @@ final class AppState {
 
     private func explainAccessibility() {
         let alert = NSAlert()
-        alert.messageText = "Paste directly into other apps?"
-        alert.informativeText = """
+        alert.messageText = String(localized: "Paste directly into other apps?")
+        alert.informativeText = String(localized: """
         CopyKat can press ⌘V for you so a selected item is pasted immediately. \
         macOS requires the Accessibility permission for this. Without it, items are \
         only copied to the clipboard and you paste them yourself.
-        """
-        alert.addButton(withTitle: "Enable in System Settings")
-        alert.addButton(withTitle: "Just Copy")
+        """)
+        alert.addButton(withTitle: String(localized: "Enable in System Settings"))
+        alert.addButton(withTitle: String(localized: "Just Copy"))
         if alert.runModal() == .alertFirstButtonReturn {
             pasteService.promptForAccessibility()
         }

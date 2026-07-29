@@ -8,6 +8,9 @@ packages:
   KeyboardShortcuts:
     url: https://github.com/sindresorhus/KeyboardShortcuts
     from: 2.0.0
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.6.0
 targets:
   CopyKat:
     type: application
@@ -15,12 +18,17 @@ targets:
     sources: [CopyKat]
     dependencies:
       - package: KeyboardShortcuts
+      - package: Sparkle
     info:
       path: CopyKat/Info.plist
       properties:
         LSUIElement: true
         CFBundleDisplayName: CopyKat
         CFBundleShortVersionString: "0.1.0"
+        SUFeedURL: https://github.com/mixxamm/CopyKat/releases/latest/download/appcast.xml
+        SUEnableAutomaticChecks: true
+        # Fill in after running Sparkle's generate_keys; see docs/RELEASING.md.
+        SUPublicEDKey: ""
     settings:
       base:
         SWIFT_VERSION: "5.9"

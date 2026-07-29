@@ -21,6 +21,31 @@ If you don't have the certificate yet: Xcode > Settings > Accounts > Manage
 Certificates > + > Developer ID Application, then find it in Keychain Access
 and export it (right-click > Export, choose .p12).
 
+## Sparkle auto-updates (one-time setup)
+
+The app checks the latest release's `appcast.xml` for updates. Generating that
+appcast requires an EdDSA key pair:
+
+```bash
+curl -L -o /tmp/sparkle.tar.xz https://github.com/sparkle-project/Sparkle/releases/download/2.6.4/Sparkle-2.6.4.tar.xz
+mkdir -p /tmp/sparkle && tar -xf /tmp/sparkle.tar.xz -C /tmp/sparkle
+/tmp/sparkle/bin/generate_keys
+```
+
+`generate_keys` stores the private key in your keychain and prints the public
+key. Put the public key in `project.yml` as `SUPublicEDKey` (it is not a
+secret). Then export the private key for CI and add it as the
+`SPARKLE_ED_PRIVATE_KEY` repository secret:
+
+```bash
+/tmp/sparkle/bin/generate_keys -x /tmp/sparkle_private_key
+```
+
+Copy the file's contents into the secret, then delete it
+(`rm /tmp/sparkle_private_key`). Without this secret the release workflow
+still works; it just skips the appcast, and installed apps won't see the
+update.
+
 ## Cutting a release
 
 ```bash

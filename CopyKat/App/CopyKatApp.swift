@@ -30,6 +30,7 @@ private struct MenuContent: View {
             openSettings()
         }
         .keyboardShortcut(",")
+        Button("Check for Updates…") { appState.updaterController.checkForUpdates(nil) }
         Divider()
         Button("Quit CopyKat") { NSApp.terminate(nil) }
             .keyboardShortcut("q")

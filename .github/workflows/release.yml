@@ -22,7 +22,8 @@ jobs:
         run: |
           xcodebuild -scheme CopyKat -configuration Release \
             -derivedDataPath build \
-            MARKETING_VERSION="${TAG#v}" build
+            MARKETING_VERSION="${TAG#v}" \
+            CURRENT_PROJECT_VERSION="${TAG#v}" build
       - name: Import signing certificate
         env:
           CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
@@ -55,8 +56,28 @@ jobs:
             --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$TEAM_ID"
           xcrun stapler staple build/Build/Products/Release/CopyKat.app
           ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
+      - name: Generate Sparkle appcast
+        env:
+          SPARKLE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ -z "$SPARKLE_KEY" ]; then
+            echo "SPARKLE_ED_PRIVATE_KEY not set; skipping appcast generation"
+            exit 0
+          fi
+          curl -L -o sparkle.tar.xz \
+            https://github.com/sparkle-project/Sparkle/releases/download/2.6.4/Sparkle-2.6.4.tar.xz
+          mkdir sparkle-tools && tar -xf sparkle.tar.xz -C sparkle-tools
+          mkdir updates && cp CopyKat.zip updates/
+          printf '%s' "$SPARKLE_KEY" > ed_key
+          ./sparkle-tools/bin/generate_appcast --ed-key-file ed_key \
+            --download-url-prefix "https://github.com/mixxamm/CopyKat/releases/download/$TAG/" \
+            -o appcast.xml updates
+          rm ed_key
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          files: CopyKat.zip
+          files: |
+            CopyKat.zip
+            appcast.xml
           generate_release_notes: true

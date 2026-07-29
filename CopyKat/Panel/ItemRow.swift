@@ -21,7 +21,7 @@ struct ItemRow: View {
                     .foregroundStyle(.orange)
             }
             if let badge = quickPasteBadge {
-                Text("⌘\(badge)")
+                Text(verbatim: "⌘\(badge)")
                     .font(.caption2.monospaced())
                     .foregroundStyle(.tertiary)
             }
@@ -77,7 +77,7 @@ struct ItemRow: View {
     private var subtitle: some View {
         HStack(spacing: 4) {
             if item.kind == .image, let width = item.imageWidth, let height = item.imageHeight {
-                Text("\(width) × \(height)")
+                Text(verbatim: "\(width) × \(height)")
             }
             if item.isRemote {
                 Text("Other device")
