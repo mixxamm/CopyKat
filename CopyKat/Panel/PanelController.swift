@@ -5,6 +5,9 @@ import SwiftUI
 final class PanelController: NSObject, NSWindowDelegate {
     private let panel: FloatingPanel
     private let viewModel: PanelViewModel
+    private let onCommit: (ClipboardItem) -> Void
+    private var tapTracker = FastPasteTapTracker()
+    private var flagsMonitor: Any?
 
     init(
         viewModel: PanelViewModel,
@@ -12,6 +15,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         onCommit: @escaping (ClipboardItem) -> Void
     ) {
         self.viewModel = viewModel
+        self.onCommit = onCommit
         panel = FloatingPanel(contentRect: NSRect(x: 0, y: 0, width: 720, height: 440))
         super.init()
 
@@ -23,6 +27,16 @@ final class PanelController: NSObject, NSWindowDelegate {
         )
         panel.contentView = NSHostingView(rootView: view)
         panel.delegate = self
+
+        // Fast paste: releasing every modifier commits the selection. The
+        // panel is key while visible, so a local monitor sees the release.
+        flagsMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            if let self, self.viewModel.isFastSession,
+               event.modifierFlags.intersection([.command, .shift, .control, .option]).isEmpty {
+                self.commitFastSelection()
+            }
+            return event
+        }
     }
 
     var isPanelVisible: Bool { panel.isVisible }
@@ -31,15 +45,56 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.isVisible ? hide() : show()
     }
 
-    func show() {
+    // Hotkey presses while fast paste is enabled: open, then a quick second
+    // press switches to search, later presses walk the selection.
+    func handleFastKeyDown() {
+        if !panel.isVisible {
+            _ = tapTracker.register()
+            show(fastSession: true)
+        } else if viewModel.isFastSession {
+            switch tapTracker.register() {
+            case .enterSearch:
+                viewModel.isFastSession = false
+            case .open, .advance:
+                viewModel.moveSelection(1)
+            }
+        } else {
+            hide()
+        }
+    }
+
+    func show(fastSession: Bool = false) {
         viewModel.reset()
+        viewModel.isFastSession = fastSession
         centerOnActiveScreen()
         panel.orderFrontRegardless()
         panel.makeKey()
+
+        if fastSession {
+            // A very quick tap can release the modifiers before the panel is
+            // key; in that case no flagsChanged will arrive, so check now.
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.viewModel.isFastSession else { return }
+                let held = NSEvent.modifierFlags.intersection([.command, .shift, .control, .option])
+                if held.isEmpty {
+                    self.commitFastSelection()
+                }
+            }
+        }
     }
 
     func hide() {
+        tapTracker.reset()
+        viewModel.isFastSession = false
         panel.orderOut(nil)
+    }
+
+    private func commitFastSelection() {
+        guard let item = viewModel.selectedItem else {
+            hide()
+            return
+        }
+        onCommit(item)
     }
 
     func windowDidResignKey(_ notification: Notification) {

@@ -17,6 +17,7 @@ final class AppState {
     private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
     private var pinShortcutManager: PinShortcutManager?
+    let onboardingController = OnboardingController()
     let updaterController: SPUStandardUpdaterController
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
 
@@ -95,7 +96,12 @@ final class AppState {
         panelController = controller
         if !Self.isRunningTests {
             KeyboardShortcuts.onKeyDown(for: .togglePanel) { [weak self] in
-                self?.panelController?.toggle()
+                guard let self else { return }
+                if AppSettings.fastPasteEnabled {
+                    self.panelController?.handleFastKeyDown()
+                } else {
+                    self.panelController?.toggle()
+                }
             }
 
             let manager = PinShortcutManager(
@@ -105,6 +111,10 @@ final class AppState {
             pinShortcutManager = manager
             historyStore.pinsChanged = { [weak self] in self?.pinShortcutManager?.sync() }
             manager.sync()
+
+            if !AppSettings.hasCompletedOnboarding {
+                onboardingController.show(appState: self)
+            }
         }
     }
 

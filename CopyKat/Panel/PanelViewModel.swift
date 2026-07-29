@@ -28,6 +28,11 @@ final class PanelViewModel {
     }
     private(set) var items: [ClipboardItem] = []
 
+    // True while a fast-paste session is running: releasing the hotkey's
+    // modifiers pastes the selection, and the search field hints at the
+    // double-tap escape.
+    var isFastSession = false
+
     // Selection follows the item, not its position. Index-based selection can
     // highlight the wrong row (or two rows) when a live refresh shifts the list
     // between renders; identities cannot collide.
