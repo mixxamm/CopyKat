@@ -86,6 +86,33 @@ final class HistoryStore {
         }
     }
 
+    // Early builds stored the raw text in contentHash instead of a digest. Rows
+    // with the old format never dedupe against new copies, so every paste of such
+    // a row would create a duplicate. Rewrite them once at launch and collapse
+    // any duplicates that already slipped in.
+    func migrateLegacyContentHashes() {
+        for item in allItemsNewestFirst() {
+            let expected: String?
+            switch item.kind {
+            case .text:
+                expected = item.text.map { "text:\(Self.sha256Hex($0))" }
+            case .fileURL:
+                expected = item.text.map { "file:\(Self.sha256Hex($0))" }
+            case .image:
+                expected = nil
+            }
+            guard let expected, item.contentHash != expected else { continue }
+            if let existing = try? existingItem(withHash: expected) {
+                existing.createdAt = max(existing.createdAt, item.createdAt)
+                existing.isPinned = existing.isPinned || item.isPinned
+                context.delete(item)
+            } else {
+                item.contentHash = expected
+            }
+        }
+        try? context.save()
+    }
+
     func pruneOrphans() {
         var referenced = Set<String>()
         for item in allItemsNewestFirst() where item.kind == .image {

@@ -109,6 +109,33 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertTrue(items[0].isPinned)
     }
 
+    func testMigrationRewritesLegacyTextHashesSoDedupeWorksAgain() throws {
+        let item = try store.add(textCandidate("hello"))
+        item.contentHash = "text:hello"
+
+        store.migrateLegacyContentHashes()
+
+        let migrated = try XCTUnwrap(store.items(matching: "").first)
+        XCTAssertTrue(migrated.contentHash.hasPrefix("text:"))
+        XCTAssertEqual(migrated.contentHash.count, "text:".count + 64)
+        try store.add(textCandidate("hello"))
+        XCTAssertEqual(store.items(matching: "").count, 1)
+    }
+
+    func testMigrationCollapsesLegacyDuplicates() throws {
+        let legacy = try store.add(textCandidate("dup"))
+        legacy.contentHash = "text:dup"
+        legacy.isPinned = true
+        try store.add(textCandidate("dup"))
+        XCTAssertEqual(store.items(matching: "").count, 2)
+
+        store.migrateLegacyContentHashes()
+
+        let items = store.items(matching: "")
+        XCTAssertEqual(items.count, 1)
+        XCTAssertTrue(items[0].isPinned)
+    }
+
     func testPruneOrphansDropsItemsWithMissingFilesAndStrayFiles() throws {
         try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))
         let item = try XCTUnwrap(store.items(matching: "").first)
