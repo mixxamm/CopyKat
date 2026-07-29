@@ -66,6 +66,29 @@ final class PanelViewModelTests: XCTestCase {
         XCTAssertTrue(model.sections.allSatisfy { !$0.isGrouped })
     }
 
+    func testSelectionFollowsItemWhenListRefreshesInBackground() throws {
+        try seed(["a", "b", "c"])
+        model.moveSelection(1)
+        let selectedText = try XCTUnwrap(model.selectedItem?.text)
+
+        try store.add(ClipboardCandidate(content: .text("new arrival"), sourceAppBundleID: nil, sourceAppName: nil))
+        model.refresh()
+
+        XCTAssertEqual(model.selectedItem?.text, selectedText)
+        XCTAssertEqual(model.items.count, 4)
+    }
+
+    func testBackfillGivesLegacyPinsAShortcutID() throws {
+        try seed(["legacy"])
+        let item = try XCTUnwrap(model.items.first)
+        store.togglePin(item)
+        item.pinShortcutID = nil
+
+        store.backfillPinShortcutIDs()
+
+        XCTAssertNotNil(item.pinShortcutID)
+    }
+
     func testQuickPasteItemUsesOneBasedPositions() throws {
         try seed(["a", "b", "c"])
         XCTAssertEqual(model.quickPasteItem(at: 1)?.text, "c")

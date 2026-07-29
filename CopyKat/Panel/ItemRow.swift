@@ -78,9 +78,10 @@ struct ItemRow: View {
         HStack(spacing: 4) {
             if item.kind == .image, let width = item.imageWidth, let height = item.imageHeight {
                 Text("\(width) × \(height)")
-            } else if item.isRemote {
+            }
+            if item.isRemote {
                 Text("Other device")
-            } else if showsSourceApp, let appName = item.sourceAppName {
+            } else if showsSourceApp, item.kind != .image, let appName = item.sourceAppName {
                 Text(appName)
             }
             Text(item.createdAt, format: .relative(presentation: .named))

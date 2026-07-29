@@ -28,8 +28,11 @@ final class PinShortcutManager {
         let changes = Self.diff(registered: registered, currentIDs: currentIDs)
 
         for id in changes.remove {
-            // Also forgets the recorded key combination, so a later pin starts clean.
-            KeyboardShortcuts.reset(Self.shortcutName(for: id))
+            let name = Self.shortcutName(for: id)
+            // reset() only clears the recorded key combination; the handler has
+            // to be removed separately or it accumulates for the process lifetime.
+            KeyboardShortcuts.reset(name)
+            KeyboardShortcuts.removeHandler(for: name)
             registered.remove(id)
         }
         for id in changes.add {

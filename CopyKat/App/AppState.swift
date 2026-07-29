@@ -56,6 +56,7 @@ final class AppState {
 
         historyStore.maxItems = AppSettings.maxItems
         historyStore.migrateLegacyContentHashes()
+        historyStore.backfillPinShortcutIDs()
         historyStore.pruneOrphans()
 
         // Assigned before any closure captures `self` (even weakly), since Swift

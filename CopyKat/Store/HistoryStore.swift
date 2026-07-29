@@ -92,6 +92,15 @@ final class HistoryStore {
         allItemsNewestFirst().filter(\.isPinned)
     }
 
+    // Items pinned before pin shortcuts existed have no shortcut ID; without
+    // one the Pins settings tab cannot show a recorder for them.
+    func backfillPinShortcutIDs() {
+        for item in pinnedItems() where item.pinShortcutID == nil {
+            item.pinShortcutID = UUID().uuidString
+        }
+        try? context.save()
+    }
+
     func deleteAll() {
         for item in allItemsNewestFirst() where !item.isPinned {
             delete(item)
