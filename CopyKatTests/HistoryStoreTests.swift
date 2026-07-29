@@ -78,6 +78,22 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertEqual(items.count, 3)
     }
 
+    func testFuzzySearchToleratesTypos() throws {
+        try store.add(textCandidate("CopyKat repository link"))
+        try store.add(textCandidate("banana bread recipe"))
+
+        let hits = store.items(matching: "copkat")
+        XCTAssertEqual(hits.first?.text, "CopyKat repository link")
+        XCTAssertFalse(hits.contains { $0.text == "banana bread recipe" })
+    }
+
+    func testFuzzySearchRanksCloserMatchFirst() throws {
+        try store.add(textCandidate("banana"))
+        try store.add(textCandidate("bandana"))
+
+        XCTAssertEqual(store.items(matching: "banana").first?.text, "banana")
+    }
+
     func testSearchMatchesTextAndSourceApp() throws {
         try store.add(textCandidate("invoice draft"))
         try store.add(textCandidate("hello", app: "Safari"))
