@@ -11,6 +11,7 @@ extension KeyboardShortcuts.Name {
 final class AppState {
     let historyStore: HistoryStore
     let imageStore: ImageStore
+    let pasteService: PasteService
     let panelViewModel: PanelViewModel
     private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
@@ -22,6 +23,7 @@ final class AppState {
         do {
             try FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
             imageStore = try ImageStore(directory: appSupport.appendingPathComponent("Images"))
+            pasteService = PasteService(imageStore: imageStore)
             let config = ModelConfiguration(url: appSupport.appendingPathComponent("History.store"))
             let container = try ModelContainer(for: ClipboardItem.self, configurations: config)
             historyStore = HistoryStore(container: container, imageStore: imageStore)
@@ -60,5 +62,31 @@ final class AppState {
 
     private func commit(_ item: ClipboardItem) {
         panelController?.hide()
+        pasteService.write(item)
+
+        if pasteService.isAccessibilityTrusted {
+            // Give the key window a beat to restore focus before the keystroke arrives.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.pasteService.sendPasteKeystroke()
+            }
+        } else if !AppSettings.hasPromptedAccessibility {
+            AppSettings.hasPromptedAccessibility = true
+            explainAccessibility()
+        }
+    }
+
+    private func explainAccessibility() {
+        let alert = NSAlert()
+        alert.messageText = "Paste directly into other apps?"
+        alert.informativeText = """
+        CopyCat can press ⌘V for you so a selected item is pasted immediately. \
+        macOS requires the Accessibility permission for this. Without it, items are \
+        only copied to the clipboard and you paste them yourself.
+        """
+        alert.addButton(withTitle: "Enable in System Settings")
+        alert.addButton(withTitle: "Just Copy")
+        if alert.runModal() == .alertFirstButtonReturn {
+            pasteService.promptForAccessibility()
+        }
     }
 }
