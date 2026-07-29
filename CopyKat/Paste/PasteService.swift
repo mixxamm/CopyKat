@@ -53,6 +53,18 @@ final class PasteService {
     // keystroke lands in the app the user was working in.
     func sendPasteKeystroke() {
         guard let source = CGEventSource(stateID: .combinedSessionState) else { return }
+        // The user often still holds the hotkey's modifiers while this fires.
+        // Suppress local keyboard events during the injection so the physical
+        // ⇧⌘ can't merge into the synthetic ⌘V and leave apps with a stuck
+        // modifier state (reported as "can't type until lock/unlock").
+        source.setLocalEventsFilterDuringSuppressionState(
+            [.permitLocalMouseEvents, .permitSystemDefinedEvents],
+            state: .eventSuppressionStateSuppressionInterval
+        )
+        source.setLocalEventsFilterDuringSuppressionState(
+            [.permitLocalMouseEvents, .permitSystemDefinedEvents],
+            state: .eventSuppressionStateRemoteMouseDrag
+        )
         let vKey = CGKeyCode(9)
         let down = CGEvent(keyboardEventSource: source, virtualKey: vKey, keyDown: true)
         let up = CGEvent(keyboardEventSource: source, virtualKey: vKey, keyDown: false)
