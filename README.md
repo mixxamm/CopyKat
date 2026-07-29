@@ -8,7 +8,7 @@ A fast, native clipboard manager for macOS. Press a hotkey, see everything you
 copied (text **and images**), and paste it straight into the app you're
 working in.
 
-Built as a modern alternative to Flycut: same muscle memory, plus image
+Built as a modern alternative to Flycut: same shortcuts, plus image
 support and a Spotlight-style interface.
 
 ## Features
