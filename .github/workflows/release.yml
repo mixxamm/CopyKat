@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build
+        run: |
+          xcodebuild -scheme CopyKat -configuration Release \
+            -derivedDataPath build build
+      - name: Package
+        run: ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: CopyKat.zip
+          generate_release_notes: true

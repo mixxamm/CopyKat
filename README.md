@@ -1,7 +1,7 @@
 # CopyKat
 
 A fast, native clipboard manager for macOS. Press a hotkey, see everything you
-copied — text **and images** — and paste it straight into the app you're
+copied (text **and images**), and paste it straight into the app you're
 working in.
 
 Built as a modern alternative to Flycut: same muscle memory, plus image
@@ -9,22 +9,29 @@ support and a Spotlight-style interface.
 
 ## Features
 
-- **Text, images, and files** — everything you copy is captured, including
+- **Text, images, and files.** Everything you copy is captured, including
   screenshots and copied images.
-- **Spotlight-style panel** — press ⇧⌘V (configurable), search, hit Enter.
+- **Spotlight-style panel.** Press ⇧⌘V (configurable), search, hit Enter.
   The panel never steals focus from the app you're in.
-- **Direct paste** — selecting an item pastes it immediately into the active
-  app (with your permission; falls back to copy-only).
-- **Pins** — pin items to keep them at the top forever.
-- **Privacy-aware** — entries from password managers are ignored
+- **Direct paste.** Selecting an item pastes it immediately into the active
+  app. This needs your permission once, and falls back to plain copying if
+  you'd rather not grant it.
+- **Pins.** Pin items to keep them at the top forever.
+- **Privacy-aware.** Entries from password managers are ignored
   automatically, and you can exclude any app yourself.
-- **Persistent** — history survives restarts. You decide how much to keep.
+- **Persistent.** History survives restarts, and you decide how much to keep.
 
 ## Install
 
 Requires macOS 14 or later.
 
-Build from source (no binaries yet):
+Grab the latest `CopyKat.zip` from the
+[releases page](https://github.com/mixxamm/CopyKat/releases), unzip it, and
+drag CopyKat to your Applications folder. The app isn't notarized by Apple
+yet, so the first time you open it you'll need to right-click it and choose
+Open.
+
+Or build it from source:
 
 ```bash
 brew install xcodegen
@@ -34,8 +41,8 @@ xcodegen generate
 xcodebuild -scheme CopyKat -destination 'platform=macOS' build
 ```
 
-The app lands in Xcode's DerivedData; open the project in Xcode and ⌘R for
-day-to-day use.
+The app lands in Xcode's DerivedData. For day-to-day development, open the
+project in Xcode and hit ⌘R.
 
 ## How it works
 
