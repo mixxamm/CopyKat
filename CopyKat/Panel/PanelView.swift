@@ -29,6 +29,18 @@ struct PanelView: View {
         .onAppear { searchFocused = true }
         .onKeyPress(.downArrow) { model.moveSelection(1); return .handled }
         .onKeyPress(.upArrow) { model.moveSelection(-1); return .handled }
+        // With a query, ←/→ belong to the text caret; on an empty field they
+        // walk the list, Spotlight-style.
+        .onKeyPress(.rightArrow) {
+            guard model.query.isEmpty else { return .ignored }
+            model.moveSelection(1)
+            return .handled
+        }
+        .onKeyPress(.leftArrow) {
+            guard model.query.isEmpty else { return .ignored }
+            model.moveSelection(-1)
+            return .handled
+        }
         .onKeyPress(.return) {
             guard let item = model.selectedItem else { return .ignored }
             onCommit(item)
@@ -59,7 +71,12 @@ struct PanelView: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
-            TextField("Search clipboard history", text: $model.query)
+            TextField(
+                model.isFastSession
+                    ? LocalizedStringKey("Double-tap V to search")
+                    : LocalizedStringKey("Search clipboard history"),
+                text: $model.query
+            )
                 .textFieldStyle(.plain)
                 .font(.title3)
                 .focused($searchFocused)
