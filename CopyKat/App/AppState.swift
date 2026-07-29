@@ -113,8 +113,6 @@ final class AppState {
         paste(item)
     }
 
-    private var hasExplainedAccessibilityThisSession = false
-
     private func paste(_ item: ClipboardItem) {
         guard pasteService.write(item) else { return }
 
@@ -123,10 +121,10 @@ final class AppState {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.pasteService.sendPasteKeystroke()
             }
-        } else if !hasExplainedAccessibilityThisSession {
-            // Once per session, not once ever: the permission can lapse (updates,
-            // resets), and a silent copy-only fallback looks like a paste bug.
-            hasExplainedAccessibilityThisSession = true
+        } else if !AppSettings.accessibilityDeclined {
+            // Keep explaining on every paste attempt until the permission is
+            // granted; a silent copy-only fallback looks like a paste bug. Only
+            // an explicit "Just Copy" silences it.
             explainAccessibility()
         }
     }
@@ -143,6 +141,9 @@ final class AppState {
         alert.addButton(withTitle: String(localized: "Just Copy"))
         if alert.runModal() == .alertFirstButtonReturn {
             pasteService.promptForAccessibility()
+            pasteService.openAccessibilitySettings()
+        } else {
+            AppSettings.accessibilityDeclined = true
         }
     }
 }

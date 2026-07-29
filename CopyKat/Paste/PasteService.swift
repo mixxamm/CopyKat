@@ -42,6 +42,13 @@ final class PasteService {
         AXIsProcessTrustedWithOptions(options)
     }
 
+    // Deep link straight to the Accessibility pane; unlike the AX prompt this
+    // also navigates a System Settings window that is already open elsewhere.
+    func openAccessibilitySettings() {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") else { return }
+        NSWorkspace.shared.open(url)
+    }
+
     // Paste by simulating ⌘V. The panel never activated our app, so the
     // keystroke lands in the app the user was working in.
     func sendPasteKeystroke() {

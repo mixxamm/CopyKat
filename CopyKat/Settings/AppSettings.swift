@@ -16,6 +16,13 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "excludedBundleIDs") }
     }
 
+    // Set when the user explicitly chose copy-only over granting Accessibility;
+    // it silences the permission dialog for good.
+    static var accessibilityDeclined: Bool {
+        get { defaults.bool(forKey: "accessibilityDeclined") }
+        set { defaults.set(newValue, forKey: "accessibilityDeclined") }
+    }
+
     static var selectedSettingsTab: String {
         get { defaults.string(forKey: selectedSettingsTabKey) ?? SettingsTab.general.rawValue }
         set { defaults.set(newValue, forKey: selectedSettingsTabKey) }
