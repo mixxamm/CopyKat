@@ -2241,118 +2241,6 @@
         }
       }
     },
-    "Clipboard changes from these apps are never recorded. Password managers that mark entries as concealed are ignored automatically.": {
-      "localizations": {
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klembordwijzigingen van deze apps worden nooit vastgelegd. Wachtwoordbeheerders die items als verborgen markeren, worden automatisch genegeerd."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Änderungen der Zwischenablage dieser Apps werden nie aufgezeichnet. Passwort-Manager, die Einträge als verborgen markieren, werden automatisch ignoriert."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les modifications du presse-papiers provenant de ces applications ne sont jamais enregistrées. Les gestionnaires de mots de passe qui marquent les entrées comme masquées sont ignorés automatiquement."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Los cambios del portapapeles de estas apps nunca se registran. Los gestores de contraseñas que marcan las entradas como ocultas se ignoran automáticamente."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le modifiche degli appunti provenienti da queste app non vengono mai registrate. I gestori di password che contrassegnano le voci come nascoste vengono ignorati automaticamente."
-          }
-        },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "As alterações da área de transferência destas apps nunca são registadas. Os gestores de palavras-passe que marcam entradas como ocultas são ignorados automaticamente."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zmiany schowka z tych aplikacji nigdy nie są rejestrowane. Menedżery haseł, które oznaczają wpisy jako ukryte, są ignorowane automatycznie."
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Зміни буфера обміну від цих застосунків ніколи не записуються. Менеджери паролів, які позначають записи як приховані, ігноруються автоматично."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modificările clipboard-ului din aceste aplicații nu sunt niciodată înregistrate. Managerii de parole care marchează intrările ca ascunse sunt ignorați automat."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Urklippsändringar från dessa appar registreras aldrig. Lösenordshanterare som markerar poster som dolda ignoreras automatiskt."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Изменения буфера обмена из этих приложений никогда не записываются. Менеджеры паролей, помечающие записи как скрытые, игнорируются автоматически."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "系统不会记录这些 App 的剪贴板更改。将条目标记为隐藏的密码管理器会被自动忽略。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "系統絕不會記錄這些 App 的剪貼簿變更。將項目標示為隱藏的密碼管理器會自動被忽略。"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "これらのAppからのクリップボードの変更は記録されません。項目を非表示としてマークするパスワード管理アプリは自動的に無視されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이 App의 클립보드 변경 사항은 기록되지 않습니다. 항목을 숨김으로 표시하는 암호 관리 프로그램은 자동으로 무시됩니다."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu uygulamalardan gelen pano değişiklikleri asla kaydedilmez. Girişleri gizli olarak işaretleyen parola yöneticileri otomatik olarak yok sayılır."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لا يتم تسجيل تغييرات الحافظة من هذه التطبيقات أبدًا. يتم تجاهل مديري كلمات المرور الذين يضعون علامة على الإدخالات كمخفية تلقائيًا."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "इन ऐप्स से क्लिपबोर्ड में होने वाले बदलाव कभी रिकॉर्ड नहीं किए जाते। एंट्री को छुपे हुए के रूप में चिह्नित करने वाले पासवर्ड मैनेजर अपने आप अनदेखे कर दिए जाते हैं।"
-          }
-        }
-      }
-    },
     "Add App…": {
       "localizations": {
         "nl": {
@@ -3917,6 +3805,1798 @@
           "stringUnit": {
             "state": "translated",
             "value": "सिर्फ कॉपी करें"
+          }
+        }
+      }
+    },
+    "Double-tap V to search": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dubbeltik op V om te zoeken"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V zweimal drücken, um zu suchen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez deux fois sur V pour rechercher"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulsa V dos veces para buscar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premi due volte V per cercare"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prima V duas vezes para pesquisar"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naciśnij V dwukrotnie, aby wyszukać"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Двічі натисніть V, щоб виконати пошук"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apasă de două ori pe V pentru a căuta"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tryck två gånger på V för att söka"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дважды нажмите V для поиска"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连按两下 V 进行搜索"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連按兩下 V 進行搜尋"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vキーを2回押して検索"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V 키를 두 번 눌러 검색"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aramak için V tuşuna iki kez basın"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انقر مرتين على V للبحث"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खोजने के लिए V को दो बार दबाएं"
+          }
+        }
+      }
+    },
+    "Fast paste": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snel plakken"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schnelles Einfügen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collage rapide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pegado rápido"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla rapido"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colagem rápida"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szybkie wklejanie"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Швидке вставлення"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lipire rapidă"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snabb inklistring"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Быстрая вставка"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速粘贴"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速貼上"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高速ペースト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빠른 붙여넣기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hızlı yapıştırma"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللصق السريع"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तेज़ पेस्ट"
+          }
+        }
+      }
+    },
+    "Hold the shortcut and let go to paste the highlighted item right away. Double-tap V to search instead.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd de sneltoets ingedrukt en laat los om het gemarkeerde item meteen te plakken. Dubbeltik op V om in plaats daarvan te zoeken."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halten Sie die Tastenkombination gedrückt und lassen Sie los, um das markierte Objekt sofort einzufügen. Drücken Sie V zweimal, um stattdessen zu suchen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenez le raccourci enfoncé et relâchez pour coller immédiatement l'élément en surbrillance. Appuyez deux fois sur V pour rechercher à la place."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado el atajo y suéltalo para pegar de inmediato el elemento resaltado. Pulsa V dos veces para buscar en su lugar."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuta la scorciatoia e rilasciala per incollare subito l'elemento evidenziato. Premi due volte V per cercare invece."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantenha o atalho premido e solte para colar de imediato o item realçado. Prima V duas vezes para pesquisar em alternativa."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przytrzymaj skrót i puść, aby od razu wkleić wyróżniony element. Naciśnij V dwukrotnie, aby zamiast tego wyszukać."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утримуйте комбінацію клавіш і відпустіть, щоб одразу вставити виділений елемент. Двічі натисніть V, щоб натомість здійснити пошук."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ține apăsată comanda rapidă și eliberează pentru a lipi imediat elementul evidențiat. Apasă de două ori pe V pentru a căuta în schimb."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Håll ned kortkommandot och släpp för att klistra in det markerade objektet direkt. Tryck två gånger på V för att söka istället."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удерживайте сочетание клавиш и отпустите, чтобы сразу вставить выделенный элемент. Дважды нажмите V, чтобы вместо этого выполнить поиск."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按住快捷键然后松开，即可立即粘贴高亮显示的项目。连按两下 V 可改为搜索。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按住快速鍵再放開，即可立即貼上醒目顯示的項目。連按兩下 V 可改為搜尋。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショートカットを押したままにし、離すとハイライトされた項目をすぐにペーストします。代わりに検索するには、Vキーを2回押してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단축키를 누르고 있다가 놓으면 강조 표시된 항목이 바로 붙여넣기됩니다. 대신 검색하려면 V 키를 두 번 누르세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolu basılı tutup bıraktığınızda vurgulanan öğe hemen yapıştırılır. Bunun yerine aramak için V tuşuna iki kez basın."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط مع الاستمرار على الاختصار ثم أفلته للصق العنصر المُميَّز فورًا. انقر مرتين على V للبحث بدلاً من ذلك."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शॉर्टकट को दबाए रखें और छोड़ने पर हाइलाइट किया गया आइटम तुरंत पेस्ट हो जाएगा। इसके बजाय खोजने के लिए V को दो बार दबाएं।"
+          }
+        }
+      }
+    },
+    "Clipboard changes from these apps are never recorded. Common password managers, including Apple Passwords, are already excluded by default.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klembordwijzigingen van deze apps worden nooit vastgelegd. Veelgebruikte wachtwoordbeheerders, waaronder Apple Wachtwoorden, worden al standaard uitgesloten."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen der Zwischenablage dieser Apps werden nie aufgezeichnet. Gängige Passwort-Manager, einschließlich Apple Passwörter, werden standardmäßig bereits ausgeschlossen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les modifications du presse-papiers provenant de ces applications ne sont jamais enregistrées. Les gestionnaires de mots de passe courants, y compris Mots de passe Apple, sont déjà exclus par défaut."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los cambios del portapapeles de estas apps nunca se registran. Los gestores de contraseñas habituales, incluido Contraseñas de Apple, ya están excluidos de forma predeterminada."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le modifiche degli appunti provenienti da queste app non vengono mai registrate. I gestori di password più comuni, tra cui Password di Apple, sono già esclusi per impostazione predefinita."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As alterações da área de transferência destas apps nunca são registadas. Os gestores de palavras-passe mais comuns, incluindo o Palavras-passe da Apple, já são excluídos por predefinição."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmiany schowka z tych aplikacji nigdy nie są rejestrowane. Popularne menedżery haseł, w tym Hasła firmy Apple, są już domyślnie wykluczone."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зміни буфера обміну від цих застосунків ніколи не записуються. Поширені менеджери паролів, зокрема Паролі від Apple, уже виключені за замовчуванням."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modificările clipboard-ului din aceste aplicații nu sunt niciodată înregistrate. Managerii de parole comuni, inclusiv Parole de la Apple, sunt deja excluși în mod implicit."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Urklippsändringar från dessa appar registreras aldrig. Vanliga lösenordshanterare, inklusive Apples Lösenord, är redan undantagna som standard."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменения буфера обмена из этих приложений никогда не записываются. Популярные менеджеры паролей, включая «Пароли» от Apple, уже исключены по умолчанию."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系统不会记录这些 App 的剪贴板更改。常见的密码管理器（包括 Apple 的“密码”）默认已被排除在外。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系統絕不會記錄這些 App 的剪貼簿變更。常見的密碼管理 App（包括 Apple 的「密碼」）預設已被排除在外。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これらのAppからのクリップボードの変更は記録されません。Appleの「パスワード」を含む一般的なパスワード管理Appは、デフォルトですでに除外されています。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 App의 클립보드 변경 사항은 기록되지 않습니다. Apple 암호 앱을 비롯한 일반적인 암호 관리 프로그램은 기본적으로 이미 제외되어 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu uygulamalardan gelen pano değişiklikleri asla kaydedilmez. Apple Parolalar dahil olmak üzere yaygın parola yöneticileri varsayılan olarak zaten hariç tutulur."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يتم تسجيل تغييرات الحافظة من هذه التطبيقات أبدًا. مديرو كلمات المرور الشائعون، بما في ذلك كلمات سر Apple، مستبعدون بالفعل تلقائيًا."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इन ऐप्स से क्लिपबोर्ड में होने वाले बदलाव कभी रिकॉर्ड नहीं किए जाते। Apple पासवर्ड सहित आम पासवर्ड मैनेजर पहले से ही डिफ़ॉल्ट रूप से बाहर रखे गए हैं।"
+          }
+        }
+      }
+    },
+    "Show Welcome Guide": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welkomstgids tonen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommensleitfaden anzeigen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher le guide de bienvenue"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar guía de bienvenida"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra guida di benvenuto"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar guia de boas-vindas"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokaż przewodnik powitalny"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показати вітальний посібник"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afișează ghidul de bun venit"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visa välkomstguide"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать приветственное руководство"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示欢迎指南"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示歡迎指南"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ようこそガイドを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "환영 가이드 보기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karşılama Kılavuzunu Göster"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إظهار دليل الترحيب"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वागत मार्गदर्शिका दिखाएं"
+          }
+        }
+      }
+    },
+    "Welcome to CopyKat": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welkom bij CopyKat"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen bei CopyKat"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenue dans CopyKat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido a CopyKat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto in CopyKat"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bem-vindo ao CopyKat"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Witaj w CopyKat"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ласкаво просимо до CopyKat"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bine ai venit în CopyKat"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Välkommen till CopyKat"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добро пожаловать в CopyKat"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎使用 CopyKat"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "歡迎使用 CopyKat"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKatへようこそ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat에 오신 것을 환영합니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat'e Hoş Geldiniz"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحبًا بك في CopyKat"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat में आपका स्वागत है"
+          }
+        }
+      }
+    },
+    "Everything you copy is saved: text, images and files. Press ⇧⌘V any time to search your clipboard history.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles wat je kopieert wordt bewaard: tekst, afbeeldingen en bestanden. Druk op elk moment op ⇧⌘V om je klembordgeschiedenis te doorzoeken."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles, was Sie kopieren, wird gespeichert: Text, Bilder und Dateien. Drücken Sie jederzeit ⇧⌘V, um Ihren Zwischenablageverlauf zu durchsuchen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout ce que vous copiez est enregistré : texte, images et fichiers. Appuyez à tout moment sur ⇧⌘V pour rechercher dans l'historique de votre presse-papiers."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo lo que copias se guarda: texto, imágenes y archivos. Pulsa ⇧⌘V en cualquier momento para buscar en el historial de tu portapapeles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto ciò che copi viene salvato: testo, immagini e file. Premi ⇧⌘V in qualsiasi momento per cercare nella cronologia degli appunti."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo o que copia é guardado: texto, imagens e ficheiros. Prima ⇧⌘V a qualquer momento para pesquisar no histórico da área de transferência."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wszystko, co skopiujesz, jest zapisywane: tekst, obrazy i pliki. Naciśnij ⇧⌘V w dowolnej chwili, aby przeszukać historię schowka."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Усе, що ви копіюєте, зберігається: текст, зображення й файли. Натисніть ⇧⌘V у будь-який момент, щоб виконати пошук в історії буфера обміну."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tot ce copiezi este salvat: text, imagini și fișiere. Apasă ⇧⌘V oricând pentru a căuta în istoricul clipboardului."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allt du kopierar sparas: text, bilder och filer. Tryck på ⇧⌘V när som helst för att söka i din urklippshistorik."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всё, что вы копируете, сохраняется: текст, изображения и файлы. Нажмите ⇧⌘V в любой момент, чтобы выполнить поиск по истории буфера обмена."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你复制的所有内容都会被保存：文本、图像和文件。随时按下 ⇧⌘V 即可搜索剪贴板历史记录。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你拷貝的所有內容都會被儲存：文字、影像和檔案。隨時按下 ⇧⌘V 即可搜尋剪貼簿記錄。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コピーしたものはすべて保存されます。テキスト、画像、ファイルなど。いつでも⇧⌘Vを押してクリップボード履歴を検索できます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "복사하는 모든 항목이 저장됩니다. 텍스트, 이미지, 파일 등입니다. 언제든지 ⇧⌘V를 눌러 클립보드 기록을 검색하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopyaladığınız her şey kaydedilir: metin, görsel ve dosyalar. Pano geçmişinizde arama yapmak için istediğiniz zaman ⇧⌘V tuşlarına basın."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتم حفظ كل ما تنسخه: النصوص والصور والملفات. اضغط على ⇧⌘V في أي وقت للبحث في سجل الحافظة الخاص بك."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आप जो कुछ भी कॉपी करते हैं वह सेव हो जाता है: टेक्स्ट, इमेज और फ़ाइलें। अपना क्लिपबोर्ड इतिहास खोजने के लिए कभी भी ⇧⌘V दबाएं।"
+          }
+        }
+      }
+    },
+    "Paste directly into any app": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plak direct in elke app"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direkt in jede App einfügen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collez directement dans n'importe quelle app"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pega directamente en cualquier app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla direttamente in qualsiasi app"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cole diretamente em qualquer app"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wklejaj bezpośrednio do dowolnej aplikacji"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вставляйте напряму в будь-який застосунок"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lipește direct în orice aplicație"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klistra in direkt i vilken app som helst"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вставляйте напрямую в любое приложение"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接粘贴到任意 App"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接貼到任何 App"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どのAppにも直接ペースト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 App에 바로 붙여넣기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herhangi bir uygulamaya doğrudan yapıştırın"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الصق مباشرة في أي تطبيق"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "किसी भी ऐप में सीधे पेस्ट करें"
+          }
+        }
+      }
+    },
+    "With the Accessibility permission, choosing an item pastes it straight into the app you're working in. Without it, items are only copied.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Met de toegankelijkheidsmachtiging plak je een gekozen item meteen in de app waarin je werkt. Zonder deze machtiging worden items alleen gekopieerd."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit der Bedienungshilfen-Berechtigung wird ein ausgewähltes Objekt direkt in die App eingefügt, in der Sie gerade arbeiten. Ohne diese werden Objekte nur kopiert."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec l'autorisation d'accessibilité, le fait de choisir un élément le colle directement dans l'application dans laquelle vous travaillez. Sans elle, les éléments sont seulement copiés."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con el permiso de Accesibilidad, elegir un elemento lo pega directamente en la app en la que estás trabajando. Sin él, los elementos solo se copian."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con l'autorizzazione per l'Accessibilità, scegliendo un elemento lo incolli direttamente nell'app in cui stai lavorando. Senza di essa, gli elementi vengono solo copiati."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com a permissão de Acessibilidade, escolher um item cola-o diretamente na app em que está a trabalhar. Sem ela, os itens são apenas copiados."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dzięki uprawnieniu dostępności wybranie elementu wkleja go od razu w aplikacji, w której pracujesz. Bez niego elementy są tylko kopiowane."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "З дозволом на доступність вибір елемента вставляє його одразу в застосунок, у якому ви працюєте. Без нього елементи лише копіюються."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cu permisiunea de accesibilitate, alegerea unui element îl lipește direct în aplicația în care lucrezi. Fără ea, elementele sunt doar copiate."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Med behörigheten Hjälpmedel klistras ett valt objekt in direkt i appen du arbetar i. Utan den kopieras objekt bara."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С разрешением «Универсальный доступ» выбор элемента вставляет его прямо в приложение, в котором вы работаете. Без него элементы только копируются."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获得辅助功能权限后，选择项目会将其直接粘贴到你正在使用的 App 中。如果没有该权限，项目只会被复制。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取得輔助使用權限後，選擇項目會將其直接貼到你正在使用的 App 中。如果沒有此權限，項目只會被拷貝。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクセシビリティ権限があれば、項目を選択すると作業中のAppに直接ペーストされます。権限がない場合、項目はコピーされるだけです。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손쉬운 사용 권한이 있으면 항목을 선택할 때 현재 작업 중인 App에 바로 붙여넣어집니다. 권한이 없으면 항목이 복사되기만 합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erişilebilirlik izniyle bir öğe seçmek, onu üzerinde çalıştığınız uygulamaya doğrudan yapıştırır. Bu izin olmadan öğeler yalnızca kopyalanır."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بفضل إذن إمكانية الوصول، يؤدي اختيار عنصر إلى لصقه مباشرة في التطبيق الذي تعمل فيه. وبدونه، يتم نسخ العناصر فقط."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक्सेसिबिलिटी अनुमति के साथ, किसी आइटम को चुनने पर वह सीधे उस ऐप में पेस्ट हो जाता है जिस पर आप काम कर रहे हैं। इसके बिना, आइटम केवल कॉपी होते हैं।"
+          }
+        }
+      }
+    },
+    "Direct paste is enabled": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct plakken is ingeschakeld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direktes Einfügen ist aktiviert"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le collage direct est activé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pegado directo está activado"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla diretto attivato"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A colagem direta está ativada"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezpośrednie wklejanie jest włączone"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пряме вставлення увімкнено"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lipirea directă este activată"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direkt inklistring är aktiverat"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прямая вставка включена"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接粘贴已启用"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接貼上已啟用"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接ペーストが有効です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "직접 붙여넣기가 활성화됨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doğrudan yapıştırma etkin"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللصق المباشر مفعّل"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "डायरेक्ट पेस्ट सक्षम है"
+          }
+        }
+      }
+    },
+    "Hold the shortcut, tap V to walk through recent items, and let go to paste. Double-tap V when you want to search instead.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd de sneltoets ingedrukt, tik op V om door recente items te bladeren en laat los om te plakken. Dubbeltik op V wanneer je in plaats daarvan wilt zoeken."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halten Sie die Tastenkombination gedrückt, tippen Sie auf V, um durch die letzten Objekte zu blättern, und lassen Sie los, um einzufügen. Drücken Sie V zweimal, wenn Sie stattdessen suchen möchten."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenez le raccourci enfoncé, appuyez sur V pour parcourir les éléments récents, puis relâchez pour coller. Appuyez deux fois sur V lorsque vous souhaitez plutôt rechercher."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado el atajo, pulsa V para recorrer los elementos recientes y suelta para pegar. Pulsa V dos veces cuando quieras buscar en su lugar."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuta la scorciatoia, premi V per scorrere gli elementi recenti e rilascia per incollare. Premi due volte V quando vuoi cercare invece."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantenha o atalho premido, prima V para percorrer os itens recentes e solte para colar. Prima V duas vezes quando quiser pesquisar em alternativa."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przytrzymaj skrót, naciskaj V, aby przeglądać ostatnie elementy, i puść, aby wkleić. Naciśnij V dwukrotnie, gdy zamiast tego chcesz wyszukać."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утримуйте комбінацію клавіш, натискайте V, щоб переглядати останні елементи, і відпустіть, щоб вставити. Двічі натисніть V, якщо натомість хочете виконати пошук."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ține apăsată comanda rapidă, apasă pe V pentru a parcurge elementele recente și eliberează pentru a lipi. Apasă de două ori pe V atunci când vrei să cauți în schimb."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Håll ned kortkommandot, tryck på V för att bläddra bland de senaste objekten och släpp för att klistra in. Tryck två gånger på V när du vill söka istället."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удерживайте сочетание клавиш, нажимайте V, чтобы просматривать последние элементы, и отпустите, чтобы вставить. Дважды нажмите V, если хотите вместо этого выполнить поиск."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按住快捷键，按 V 可在最近的项目间切换，松开即可粘贴。想改为搜索时，请连按两下 V。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按住快速鍵，按 V 可在最近的項目間切換，放開即可貼上。想改為搜尋時，請連按兩下 V。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショートカットを押したままにしてVを押すと最近の項目を切り替えられ、離すとペーストされます。代わりに検索したいときは、Vキーを2回押してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단축키를 누른 상태로 V를 눌러 최근 항목을 살펴보고, 놓으면 붙여넣기됩니다. 대신 검색하려면 V 키를 두 번 누르세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısayolu basılı tutun, son öğeler arasında gezinmek için V'ye basın ve yapıştırmak için bırakın. Bunun yerine aramak istediğinizde V tuşuna iki kez basın."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط مع الاستمرار على الاختصار، واضغط على V للتنقل بين العناصر الأخيرة، ثم أفلته للصق. انقر مرتين على V عندما تريد البحث بدلاً من ذلك."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शॉर्टकट को दबाए रखें, हाल के आइटम में जाने के लिए V दबाएं, और पेस्ट करने के लिए छोड़ दें। इसके बजाय खोजना चाहें तो V को दो बार दबाएं।"
+          }
+        }
+      }
+    },
+    "Enable fast paste": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snel plakken inschakelen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schnelles Einfügen aktivieren"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer le collage rapide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar el pegado rápido"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attiva l'incolla rapido"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ativar a colagem rápida"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Włącz szybkie wklejanie"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Увімкнути швидке вставлення"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activează lipirea rapidă"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivera snabb inklistring"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включить быструю вставку"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用快速粘贴"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用快速貼上"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高速ペーストを有効にする"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빠른 붙여넣기 활성화"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hızlı yapıştırmayı etkinleştir"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تفعيل اللصق السريع"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "तेज़ पेस्ट सक्षम करें"
+          }
+        }
+      }
+    },
+    "You're all set": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je bent helemaal klaar"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind startklar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes prêt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya está todo listo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto pronto"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Está tudo pronto"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wszystko gotowe"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Усе готово"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ești gata"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allt är klart"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всё готово"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一切就绪"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一切就緒"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備完了です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 준비가 완료되었습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her şey hazır"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كل شيء جاهز"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अब सब कुछ तैयार है"
+          }
+        }
+      }
+    },
+    "CopyKat lives in your menu bar. Pin items with ⌘P, paste the top ones with ⌘1 to ⌘9, and tweak everything in Settings.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat bevindt zich in je menubalk. Zet items vast met ⌘P, plak de bovenste met ⌘1 tot ⌘9 en pas alles aan in Instellingen."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat befindet sich in Ihrer Menüleiste. Heften Sie Objekte mit ⌘P an, fügen Sie die obersten mit ⌘1 bis ⌘9 ein, und passen Sie alles in den Einstellungen an."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat réside dans votre barre des menus. Épinglez des éléments avec ⌘P, collez les premiers avec ⌘1 à ⌘9, et personnalisez tout dans Réglages."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat vive en tu barra de menús. Fija elementos con ⌘P, pega los primeros con ⌘1 a ⌘9 y ajusta todo en Ajustes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat si trova nella barra dei menu. Blocca gli elementi con ⌘P, incolla i primi con ⌘1 fino a ⌘9 e personalizza tutto in Impostazioni."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O CopyKat reside na barra de menus. Fixe itens com ⌘P, cole os primeiros com ⌘1 a ⌘9 e ajuste tudo em Definições."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat mieszka na pasku menu. Przypinaj elementy za pomocą ⌘P, wklejaj te najważniejsze za pomocą ⌘1 do ⌘9 i dostosuj wszystko w Ustawieniach."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat живе у вашому рядку меню. Закріплюйте елементи за допомогою ⌘P, вставляйте перші з них за допомогою ⌘1–⌘9 і налаштовуйте все в Налаштуваннях."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat locuiește în bara de meniu. Fixează elemente cu ⌘P, lipește primele cu ⌘1 până la ⌘9 și ajustează totul în Setări."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat finns i din menyrad. Fäst objekt med ⌘P, klistra in de översta med ⌘1 till ⌘9 och justera allt i Inställningar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat живёт в строке меню. Закрепляйте элементы с помощью ⌘P, вставляйте верхние с помощью ⌘1–⌘9 и настраивайте всё в Настройках."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat 常驻在你的菜单栏中。使用 ⌘P 置顶项目，使用 ⌘1 至 ⌘9 粘贴排在前面的项目，并在“设置”中调整所有内容。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat 常駐在你的選單列中。使用 ⌘P 將項目置頂，使用 ⌘1 到 ⌘9 貼上排在前面的項目，並在「設定」中調整所有項目。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKatはメニューバーに常駐します。⌘Pで項目をピン留めし、⌘1から⌘9で上位の項目をペーストし、設定ですべてを調整できます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat은 메뉴 막대에 상주합니다. ⌘P로 항목을 고정하고, ⌘1부터 ⌘9까지로 상위 항목을 붙여넣고, 설정에서 모든 것을 조정하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat, menü çubuğunuzda yaşar. ⌘P ile öğeleri sabitleyin, ⌘1'den ⌘9'a kadar olan kısayollarla en üstteki öğeleri yapıştırın ve Ayarlar'da her şeyi özelleştirin."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعيش CopyKat في شريط القوائم لديك. ثبّت العناصر باستخدام ⌘P، والصق العناصر العلوية باستخدام ⌘1 إلى ⌘9، واضبط كل شيء في الإعدادات."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CopyKat आपके मेनू बार में रहता है। ⌘P से आइटम पिन करें, ⌘1 से ⌘9 से सबसे ऊपर वाले आइटम पेस्ट करें, और सेटिंग्स में सब कुछ अपने अनुसार बदलें।"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doorgaan"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontynuuj"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продовжити"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuă"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fortsätt"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "繼續"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "続ける"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계속"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devam Et"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متابعة"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जारी रखें"
+          }
+        }
+      }
+    },
+    "Get Started": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aan de slag"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los geht's"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commencer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Começar"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozpocznij"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Розпочати"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kom igång"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начать"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始使用"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始使用"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "はじめる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작하기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlayın"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "البدء"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शुरू करें"
           }
         }
       }
