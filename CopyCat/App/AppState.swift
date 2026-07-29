@@ -21,7 +21,7 @@ final class AppState {
     // `xcodebuild test` too. Hosted tests must never touch the real user's clipboard
     // history, so under test we use a throwaway store and skip monitoring/hotkeys.
     private static var isRunningTests: Bool {
-        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        NSClassFromString("XCTestCase") != nil
     }
 
     init() {
