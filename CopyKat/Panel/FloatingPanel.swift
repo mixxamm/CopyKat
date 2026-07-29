@@ -1,7 +1,7 @@
 import AppKit
 
 // Non-activating: the panel takes key status for typing in the search field,
-// but never activates KopyKat, so the previous app keeps focus and ⌘V lands there.
+// but never activates CopyKat, so the previous app keeps focus and ⌘V lands there.
 final class FloatingPanel: NSPanel {
     init(contentRect: NSRect) {
         super.init(

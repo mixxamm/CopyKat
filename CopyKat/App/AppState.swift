@@ -15,7 +15,7 @@ final class AppState {
     let panelViewModel: PanelViewModel
     private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
-    private let logger = Logger(subsystem: "dev.mixxamm.KopyKat", category: "AppState")
+    private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
 
     // The unit-test bundle runs hosted inside this app, so `init` executes during
     // `xcodebuild test` too. Hosted tests must never touch the real user's clipboard
@@ -28,15 +28,18 @@ final class AppState {
         let appSupport: URL
         if Self.isRunningTests {
             appSupport = FileManager.default.temporaryDirectory
-                .appendingPathComponent("KopyKatTests-\(UUID().uuidString)")
+                .appendingPathComponent("CopyKatTests-\(UUID().uuidString)")
         } else {
             let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            appSupport = root.appendingPathComponent("KopyKat")
-            // The app used to be called CopyCat; adopt that history on first launch.
-            let legacy = root.appendingPathComponent("CopyCat")
-            if !FileManager.default.fileExists(atPath: appSupport.path),
-               FileManager.default.fileExists(atPath: legacy.path) {
-                try? FileManager.default.moveItem(at: legacy, to: appSupport)
+            appSupport = root.appendingPathComponent("CopyKat")
+            // The app was briefly called CopyCat and then KopyKat; adopt that
+            // history on first launch.
+            for legacyName in ["KopyKat", "CopyCat"] {
+                let legacy = root.appendingPathComponent(legacyName)
+                if !FileManager.default.fileExists(atPath: appSupport.path),
+                   FileManager.default.fileExists(atPath: legacy.path) {
+                    try? FileManager.default.moveItem(at: legacy, to: appSupport)
+                }
             }
         }
         do {
@@ -47,7 +50,7 @@ final class AppState {
             let container = try ModelContainer(for: ClipboardItem.self, configurations: config)
             historyStore = HistoryStore(container: container, imageStore: imageStore)
         } catch {
-            fatalError("KopyKat cannot open its storage: \(error)")
+            fatalError("CopyKat cannot open its storage: \(error)")
         }
 
         historyStore.maxItems = AppSettings.maxItems
@@ -106,7 +109,7 @@ final class AppState {
         let alert = NSAlert()
         alert.messageText = "Paste directly into other apps?"
         alert.informativeText = """
-        KopyKat can press ⌘V for you so a selected item is pasted immediately. \
+        CopyKat can press ⌘V for you so a selected item is pasted immediately. \
         macOS requires the Accessibility permission for this. Without it, items are \
         only copied to the clipboard and you paste them yourself.
         """

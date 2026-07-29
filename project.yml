@@ -1,4 +1,4 @@
-name: KopyKat
+name: CopyKat
 options:
   bundleIdPrefix: dev.mixxamm
   deploymentTarget:
@@ -9,17 +9,17 @@ packages:
     url: https://github.com/sindresorhus/KeyboardShortcuts
     from: 2.0.0
 targets:
-  KopyKat:
+  CopyKat:
     type: application
     platform: macOS
-    sources: [KopyKat]
+    sources: [CopyKat]
     dependencies:
       - package: KeyboardShortcuts
     info:
-      path: KopyKat/Info.plist
+      path: CopyKat/Info.plist
       properties:
         LSUIElement: true
-        CFBundleDisplayName: KopyKat
+        CFBundleDisplayName: CopyKat
         CFBundleShortVersionString: "0.1.0"
     settings:
       base:
@@ -27,16 +27,16 @@ targets:
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: "-"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-  KopyKatTests:
+  CopyKatTests:
     type: bundle.unit-test
     platform: macOS
-    sources: [KopyKatTests]
+    sources: [CopyKatTests]
     dependencies:
-      - target: KopyKat
+      - target: CopyKat
 schemes:
-  KopyKat:
+  CopyKat:
     build:
       targets:
-        KopyKat: all
+        CopyKat: all
     test:
-      targets: [KopyKatTests]
+      targets: [CopyKatTests]

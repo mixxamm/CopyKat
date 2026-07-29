@@ -1,4 +1,4 @@
-# KopyKat
+# CopyKat
 
 A fast, native clipboard manager for macOS. Press a hotkey, see everything you
 copied — text **and images** — and paste it straight into the app you're
@@ -28,10 +28,10 @@ Build from source (no binaries yet):
 
 ```bash
 brew install xcodegen
-git clone https://github.com/mixxamm/KopyKat.git
-cd KopyKat
+git clone https://github.com/mixxamm/CopyKat.git
+cd CopyKat
 xcodegen generate
-xcodebuild -scheme KopyKat -destination 'platform=macOS' build
+xcodebuild -scheme CopyKat -destination 'platform=macOS' build
 ```
 
 The app lands in Xcode's DerivedData; open the project in Xcode and ⌘R for
@@ -39,7 +39,7 @@ day-to-day use.
 
 ## How it works
 
-KopyKat is a menubar app with a deliberately small core:
+CopyKat is a menubar app with a deliberately small core:
 
 | Component | Role |
 |---|---|

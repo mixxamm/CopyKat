@@ -7,7 +7,7 @@ import os
 final class HistoryStore {
     private let context: ModelContext
     private let imageStore: ImageStore
-    private let logger = Logger(subsystem: "dev.mixxamm.KopyKat", category: "HistoryStore")
+    private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "HistoryStore")
 
     var maxItems = 200
 
@@ -36,7 +36,7 @@ final class HistoryStore {
         }
 
         if let existing = try existingItem(withHash: item.contentHash) {
-            // KopyKat's own paste is re-captured by the monitor and collapses into this
+            // CopyKat's own paste is re-captured by the monitor and collapses into this
             // existing row via dedupe. We deliberately keep the row's original
             // source-app attribution here rather than overwriting it with whatever
             // app was pasted into, otherwise every paste would re-attribute the item.

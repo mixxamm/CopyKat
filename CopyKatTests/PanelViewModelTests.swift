@@ -1,6 +1,6 @@
 import XCTest
 import SwiftData
-@testable import KopyKat
+@testable import CopyKat
 
 @MainActor
 final class PanelViewModelTests: XCTestCase {

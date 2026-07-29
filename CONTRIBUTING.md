@@ -1,4 +1,4 @@
-# Contributing to KopyKat
+# Contributing to CopyKat
 
 ## Building
 
@@ -7,7 +7,7 @@ The Xcode project is generated — it is not checked in.
 ```bash
 brew install xcodegen
 xcodegen generate
-open KopyKat.xcodeproj
+open CopyKat.xcodeproj
 ```
 
 Re-run `xcodegen generate` whenever you add, move, or delete files, or edit
@@ -16,7 +16,7 @@ Re-run `xcodegen generate` whenever you add, move, or delete files, or edit
 ## Testing
 
 ```bash
-xcodebuild -scheme KopyKat -destination 'platform=macOS' test
+xcodebuild -scheme CopyKat -destination 'platform=macOS' test
 ```
 
 Core logic (classifier, stores, panel view model) is unit-tested; keep it
