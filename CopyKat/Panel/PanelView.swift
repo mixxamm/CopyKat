@@ -89,7 +89,9 @@ struct PanelView: View {
                             .id(item.persistentModelID)
                             .onTapGesture { onCommit(item) }
                             .contextMenu {
-                                Button(item.isPinned ? "Unpin" : "Pin") { model.togglePin(item) }
+                                Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {
+                                    model.togglePin(item)
+                                }
                                 if item.isPinned {
                                     Button("Record Shortcut…") {
                                         AppSettings.selectedSettingsTab = SettingsTab.pins.rawValue

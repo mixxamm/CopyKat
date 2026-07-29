@@ -192,9 +192,9 @@ private struct PinsSettingsView: View {
             return (item.text as NSString?)?.lastPathComponent ?? ""
         case .image:
             if let width = item.imageWidth, let height = item.imageHeight {
-                return "Image (\(width) × \(height))"
+                return String(localized: "Image (\(width) × \(height))")
             }
-            return "Image"
+            return String(localized: "Image")
         }
     }
 }
