@@ -1,0 +1,43 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0" stop-color="#FFB04A"/>
+      <stop offset="1" stop-color="#E85421"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#bg)"/>
+  <g fill="#FFFFFF">
+    <!-- tail: thick curl up from the rear -->
+    <path d="M370 560 C 320 540, 300 470, 315 400 C 328 340, 380 310, 430 330"
+          fill="none" stroke="#FFFFFF" stroke-width="52" stroke-linecap="round"/>
+    <!-- body -->
+    <path d="M340 640
+             C 335 560, 380 500, 470 490
+             L 620 480
+             C 690 478, 720 520, 718 575
+             L 715 640
+             C 714 668, 690 680, 672 680
+             L 388 680
+             C 358 680, 341 665, 340 640 Z"/>
+    <!-- legs -->
+    <rect x="360" y="600" width="52" height="130" rx="26"/>
+    <rect x="450" y="610" width="52" height="120" rx="26"/>
+    <rect x="560" y="610" width="52" height="120" rx="26"/>
+    <rect x="648" y="600" width="52" height="130" rx="26"/>
+    <!-- head with ears -->
+    <path d="M600 470
+             C 598 400, 620 355, 640 340
+             L 645 275
+             C 646 262, 660 258, 668 268
+             L 700 305
+             L 752 305
+             L 784 268
+             C 792 258, 806 262, 807 275
+             L 812 340
+             C 832 358, 852 400, 850 470
+             C 848 520, 790 545, 726 545
+             C 662 545, 602 520, 600 470 Z"/>
+  </g>
+  <!-- eye -->
+  <circle cx="762" cy="408" r="17" fill="#F06A28"/>
+</svg>

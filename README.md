@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="CopyKat/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="128" alt="CopyKat icon">
+  <img src="docs/images/logo.svg" width="128" alt="CopyKat logo">
 </p>
 
 # CopyKat
