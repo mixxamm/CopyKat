@@ -20,10 +20,12 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
+          # Build unsigned; the Sign step applies the Developer ID signature.
           xcodebuild -scheme CopyKat -configuration Release \
             -derivedDataPath build \
             MARKETING_VERSION="${TAG#v}" \
-            CURRENT_PROJECT_VERSION="${TAG#v}" build
+            CURRENT_PROJECT_VERSION="${TAG#v}" \
+            CODE_SIGNING_ALLOWED=NO build
       - name: Import signing certificate
         env:
           CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
