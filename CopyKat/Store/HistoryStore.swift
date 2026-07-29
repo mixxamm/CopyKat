@@ -10,6 +10,7 @@ final class HistoryStore {
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "HistoryStore")
 
     var maxItems = 200
+    var pinsChanged: (() -> Void)?
 
     init(container: ModelContainer, imageStore: ImageStore) {
         self.context = ModelContext(container)
@@ -47,6 +48,7 @@ final class HistoryStore {
 
         item.sourceAppBundleID = candidate.sourceAppBundleID
         item.sourceAppName = candidate.sourceAppName
+        item.isRemote = candidate.isRemote
         context.insert(item)
         trim()
         try context.save()
@@ -69,15 +71,25 @@ final class HistoryStore {
 
     func togglePin(_ item: ClipboardItem) {
         item.isPinned.toggle()
+        item.pinShortcutID = item.isPinned ? UUID().uuidString : nil
         try? context.save()
+        pinsChanged?()
     }
 
     func delete(_ item: ClipboardItem) {
+        let wasPinned = item.isPinned
         if let filename = item.imageFilename {
             imageStore.delete(named: filename)
         }
         context.delete(item)
         try? context.save()
+        if wasPinned {
+            pinsChanged?()
+        }
+    }
+
+    func pinnedItems() -> [ClipboardItem] {
+        allItemsNewestFirst().filter(\.isPinned)
     }
 
     func deleteAll() {

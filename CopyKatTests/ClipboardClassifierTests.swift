@@ -62,6 +62,24 @@ final class ClipboardClassifierTests: XCTestCase {
         XCTAssertEqual(result?.content, .image(png))
     }
 
+    func testMarksUniversalClipboardContentAsRemoteWithoutSourceApp() {
+        let remote = snapshot(
+            types: [.string, NSPasteboard.PasteboardType("com.apple.is-remote-clipboard")],
+            string: "from my iPhone"
+        )
+        let source = RunningAppInfo(bundleID: "com.apple.finder", name: "Finder")
+        let result = ClipboardClassifier.classify(remote, source: source, excludedBundleIDs: [])
+        XCTAssertEqual(result?.content, .text("from my iPhone"))
+        XCTAssertEqual(result?.isRemote, true)
+        XCTAssertNil(result?.sourceAppBundleID)
+        XCTAssertNil(result?.sourceAppName)
+    }
+
+    func testLocalContentIsNotRemote() {
+        let result = ClipboardClassifier.classify(snapshot(string: "local"), source: nil, excludedBundleIDs: [])
+        XCTAssertEqual(result?.isRemote, false)
+    }
+
     func testCarriesSourceApp() {
         let source = RunningAppInfo(bundleID: "com.apple.Safari", name: "Safari")
         let result = ClipboardClassifier.classify(snapshot(string: "x"), source: source, excludedBundleIDs: [])

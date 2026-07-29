@@ -5,6 +5,7 @@ struct ItemRow: View {
     let isSelected: Bool
     let imageStore: ImageStore
     var showsSourceApp = true
+    var quickPasteBadge: Int?
 
     var body: some View {
         HStack(spacing: 10) {
@@ -18,6 +19,11 @@ struct ItemRow: View {
                 Image(systemName: "pin.fill")
                     .font(.caption2)
                     .foregroundStyle(.orange)
+            }
+            if let badge = quickPasteBadge {
+                Text("⌘\(badge)")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.tertiary)
             }
         }
         .padding(.horizontal, 10)
@@ -38,6 +44,10 @@ struct ItemRow: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 36, height: 36)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
+        } else if item.isRemote {
+            Image(systemName: "iphone")
+                .frame(width: 24, height: 24)
+                .foregroundStyle(.secondary)
         } else if showsSourceApp, let icon = AppIconProvider.icon(forBundleID: item.sourceAppBundleID) {
             Image(nsImage: icon)
                 .resizable()
@@ -68,6 +78,8 @@ struct ItemRow: View {
         HStack(spacing: 4) {
             if item.kind == .image, let width = item.imageWidth, let height = item.imageHeight {
                 Text("\(width) × \(height)")
+            } else if item.isRemote {
+                Text("Other device")
             } else if showsSourceApp, let appName = item.sourceAppName {
                 Text(appName)
             }

@@ -109,6 +109,43 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertTrue(items[0].isPinned)
     }
 
+    func testAddPersistsRemoteFlag() throws {
+        try store.add(ClipboardCandidate(
+            content: .text("from iPhone"), sourceAppBundleID: nil, sourceAppName: nil, isRemote: true
+        ))
+        let item = try XCTUnwrap(store.items(matching: "").first)
+        XCTAssertTrue(item.isRemote)
+    }
+
+    func testPinningAssignsShortcutIDAndUnpinningClearsIt() throws {
+        try store.add(textCandidate("snippet"))
+        let item = try XCTUnwrap(store.items(matching: "").first)
+        XCTAssertNil(item.pinShortcutID)
+
+        store.togglePin(item)
+        let assigned = try XCTUnwrap(item.pinShortcutID)
+        XCTAssertFalse(assigned.isEmpty)
+
+        store.togglePin(item)
+        XCTAssertNil(item.pinShortcutID)
+    }
+
+    func testPinsChangedFiresOnPinTogglesAndPinnedDeletes() throws {
+        var fired = 0
+        store.pinsChanged = { fired += 1 }
+        try store.add(textCandidate("a"))
+        try store.add(textCandidate("b"))
+        let a = try XCTUnwrap(store.items(matching: "").first { $0.text == "a" })
+        let b = try XCTUnwrap(store.items(matching: "").first { $0.text == "b" })
+
+        store.togglePin(a)
+        XCTAssertEqual(fired, 1)
+        store.delete(b)
+        XCTAssertEqual(fired, 1)
+        store.delete(a)
+        XCTAssertEqual(fired, 2)
+    }
+
     func testMigrationRewritesLegacyTextHashesSoDedupeWorksAgain() throws {
         let item = try store.add(textCandidate("hello"))
         item.contentHash = "text:hello"

@@ -15,4 +15,5 @@ struct ClipboardCandidate: Equatable {
     let content: Content
     let sourceAppBundleID: String?
     let sourceAppName: String?
+    var isRemote = false
 }

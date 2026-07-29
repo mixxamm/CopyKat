@@ -14,6 +14,9 @@ enum ClipboardClassifier {
         NSPasteboard.PasteboardType("org.nspasteboard.TransientType"),
     ]
 
+    // Set by macOS on Universal Clipboard content copied on another device.
+    private static let remoteType = NSPasteboard.PasteboardType("com.apple.is-remote-clipboard")
+
     static func classify(
         _ snapshot: ClipboardSnapshot,
         source: RunningAppInfo?,
@@ -34,10 +37,14 @@ enum ClipboardClassifier {
             return nil
         }
 
+        // The frontmost Mac app has nothing to do with content copied on
+        // another device, so remote items carry no source attribution.
+        let isRemote = snapshot.types.contains(Self.remoteType)
         return ClipboardCandidate(
             content: content,
-            sourceAppBundleID: source?.bundleID,
-            sourceAppName: source?.name
+            sourceAppBundleID: isRemote ? nil : source?.bundleID,
+            sourceAppName: isRemote ? nil : source?.name,
+            isRemote: isRemote
         )
     }
 }

@@ -19,6 +19,8 @@ final class ClipboardItem {
     var sourceAppName: String?
     var createdAt: Date
     var isPinned: Bool
+    var pinShortcutID: String?
+    var isRemote: Bool = false
 
     init(
         kind: ClipboardItemKind,
