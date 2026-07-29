@@ -17,9 +17,22 @@ final class AppState {
     private var monitor: ClipboardMonitor?
     private let logger = Logger(subsystem: "dev.mixxamm.CopyCat", category: "AppState")
 
+    // The unit-test bundle runs hosted inside this app, so `init` executes during
+    // `xcodebuild test` too. Hosted tests must never touch the real user's clipboard
+    // history, so under test we use a throwaway store and skip monitoring/hotkeys.
+    private static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
     init() {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("CopyCat")
+        let appSupport: URL
+        if Self.isRunningTests {
+            appSupport = FileManager.default.temporaryDirectory
+                .appendingPathComponent("CopyCatTests-\(UUID().uuidString)")
+        } else {
+            appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent("CopyCat")
+        }
         do {
             try FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
             imageStore = try ImageStore(directory: appSupport.appendingPathComponent("Images"))
@@ -46,7 +59,9 @@ final class AppState {
                 self.logger.error("Failed to store clipboard item: \(error)")
             }
         }
-        monitor.start()
+        if !Self.isRunningTests {
+            monitor.start()
+        }
         self.monitor = monitor
 
         let controller = PanelController(
@@ -55,14 +70,16 @@ final class AppState {
             onCommit: { [weak self] item in self?.commit(item) }
         )
         panelController = controller
-        KeyboardShortcuts.onKeyDown(for: .togglePanel) { [weak self] in
-            self?.panelController?.toggle()
+        if !Self.isRunningTests {
+            KeyboardShortcuts.onKeyDown(for: .togglePanel) { [weak self] in
+                self?.panelController?.toggle()
+            }
         }
     }
 
     private func commit(_ item: ClipboardItem) {
         panelController?.hide()
-        pasteService.write(item)
+        guard pasteService.write(item) else { return }
 
         if pasteService.isAccessibilityTrusted {
             // Give the key window a beat to restore focus before the keystroke arrives.

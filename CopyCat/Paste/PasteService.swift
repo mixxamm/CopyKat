@@ -8,20 +8,28 @@ final class PasteService {
         self.imageStore = imageStore
     }
 
-    func write(_ item: ClipboardItem, to pasteboard: NSPasteboard = .general) {
-        pasteboard.clearContents()
+    // Resolves the payload before touching the pasteboard, so a missing image
+    // file or nil text never leaves the user's existing clipboard wiped and empty.
+    @discardableResult
+    func write(_ item: ClipboardItem, to pasteboard: NSPasteboard = .general) -> Bool {
         switch item.kind {
         case .text:
-            pasteboard.setString(item.text ?? "", forType: .string)
+            guard let text = item.text else { return false }
+            pasteboard.clearContents()
+            pasteboard.setString(text, forType: .string)
+            return true
         case .fileURL:
-            if let path = item.text {
-                pasteboard.writeObjects([NSURL.fileURL(withPath: path) as NSURL])
-            }
+            guard let path = item.text else { return false }
+            pasteboard.clearContents()
+            pasteboard.writeObjects([NSURL.fileURL(withPath: path) as NSURL])
+            return true
         case .image:
-            if let filename = item.imageFilename,
-               let data = try? Data(contentsOf: imageStore.imageURL(for: filename)) {
-                pasteboard.setData(data, forType: .png)
-            }
+            guard let filename = item.imageFilename,
+                  let data = try? Data(contentsOf: imageStore.imageURL(for: filename))
+            else { return false }
+            pasteboard.clearContents()
+            pasteboard.setData(data, forType: .png)
+            return true
         }
     }
 
