@@ -1,11 +1,18 @@
 import AppKit
+import KeyboardShortcuts
 import SwiftData
 import os
+
+extension KeyboardShortcuts.Name {
+    static let togglePanel = Self("togglePanel", default: .init(.v, modifiers: [.command, .shift]))
+}
 
 @MainActor
 final class AppState {
     let historyStore: HistoryStore
     let imageStore: ImageStore
+    let panelViewModel: PanelViewModel
+    private(set) var panelController: PanelController?
     private var monitor: ClipboardMonitor?
     private let logger = Logger(subsystem: "dev.mixxamm.CopyCat", category: "AppState")
 
@@ -25,6 +32,10 @@ final class AppState {
         historyStore.maxItems = AppSettings.maxItems
         historyStore.pruneOrphans()
 
+        // Assigned before any closure captures `self` (even weakly), since Swift
+        // requires all non-optional stored properties to be initialized first.
+        panelViewModel = PanelViewModel(store: historyStore)
+
         let monitor = ClipboardMonitor { [weak self] candidate in
             guard let self else { return }
             do {
@@ -35,5 +46,19 @@ final class AppState {
         }
         monitor.start()
         self.monitor = monitor
+
+        let controller = PanelController(
+            viewModel: panelViewModel,
+            imageStore: imageStore,
+            onCommit: { [weak self] item in self?.commit(item) }
+        )
+        panelController = controller
+        KeyboardShortcuts.onKeyDown(for: .togglePanel) { [weak self] in
+            self?.panelController?.toggle()
+        }
+    }
+
+    private func commit(_ item: ClipboardItem) {
+        panelController?.hide()
     }
 }
