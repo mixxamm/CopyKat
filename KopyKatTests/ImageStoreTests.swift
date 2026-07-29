@@ -1,5 +1,5 @@
 import XCTest
-@testable import CopyCat
+@testable import KopyKat
 
 final class ImageStoreTests: XCTestCase {
     private var directory: URL!

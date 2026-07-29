@@ -1,11 +1,11 @@
 import SwiftUI
 
 @main
-struct CopyCatApp: App {
+struct KopyKatApp: App {
     @State private var appState = AppState()
 
     var body: some Scene {
-        MenuBarExtra("CopyCat", systemImage: "doc.on.clipboard") {
+        MenuBarExtra("KopyKat", systemImage: "doc.on.clipboard") {
             MenuContent(appState: appState)
         }
 
@@ -23,14 +23,14 @@ private struct MenuContent: View {
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        Button("Open CopyCat") { appState.panelController?.toggle() }
+        Button("Open KopyKat") { appState.panelController?.toggle() }
         Button("Settings…") {
             NSApp.activate(ignoringOtherApps: true)
             openSettings()
         }
         .keyboardShortcut(",")
         Divider()
-        Button("Quit CopyCat") { NSApp.terminate(nil) }
+        Button("Quit KopyKat") { NSApp.terminate(nil) }
             .keyboardShortcut("q")
     }
 }

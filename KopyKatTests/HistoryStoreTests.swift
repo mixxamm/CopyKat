@@ -1,6 +1,6 @@
 import XCTest
 import SwiftData
-@testable import CopyCat
+@testable import KopyKat
 
 @MainActor
 final class HistoryStoreTests: XCTestCase {

@@ -1,5 +1,5 @@
 import XCTest
-@testable import CopyCat
+@testable import KopyKat
 
 final class ClipboardClassifierTests: XCTestCase {
     private func snapshot(

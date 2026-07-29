@@ -16,5 +16,5 @@ jobs:
         run: xcodegen generate
       - name: Build and test
         run: |
-          xcodebuild -scheme CopyCat -destination 'platform=macOS' \
+          xcodebuild -scheme KopyKat -destination 'platform=macOS' \
             CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=NO test

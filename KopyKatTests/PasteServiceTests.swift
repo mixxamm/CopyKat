@@ -1,5 +1,5 @@
 import XCTest
-@testable import CopyCat
+@testable import KopyKat
 
 @MainActor
 final class PasteServiceTests: XCTestCase {
