@@ -51,6 +51,10 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
           TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          # Guard against stray whitespace pasted into the secrets.
+          APPLE_ID="$(printf '%s' "$APPLE_ID" | tr -d '[:space:]')"
+          APPLE_PASSWORD="$(printf '%s' "$APPLE_PASSWORD" | tr -d '[:space:]')"
+          TEAM_ID="$(printf '%s' "$TEAM_ID" | tr -d '[:space:]')"
           ditto -c -k --keepParent build/Build/Products/Release/CopyKat.app CopyKat.zip
           xcrun notarytool submit CopyKat.zip --wait \
             --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$TEAM_ID"
