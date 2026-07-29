@@ -1,5 +1,18 @@
 import Foundation
 import Observation
+import SwiftData
+
+// A run of consecutive items from the same app, rendered under one shared
+// app header when it holds more than one item.
+struct PanelSection: Equatable {
+    let sourceAppBundleID: String?
+    let sourceAppName: String?
+    let items: [ClipboardItem]
+    let firstIndex: Int
+
+    var isGrouped: Bool { items.count >= 2 }
+    var id: PersistentIdentifier { items[0].persistentModelID }
+}
 
 @MainActor
 @Observable
@@ -18,6 +31,36 @@ final class PanelViewModel {
 
     var selectedItem: ClipboardItem? {
         items.indices.contains(selectedIndex) ? items[selectedIndex] : nil
+    }
+
+    var sections: [PanelSection] {
+        var sections: [PanelSection] = []
+        var run: [ClipboardItem] = []
+
+        func closeRun(endingBefore index: Int) {
+            guard let first = run.first else { return }
+            sections.append(PanelSection(
+                sourceAppBundleID: first.sourceAppBundleID,
+                sourceAppName: first.sourceAppName,
+                items: run,
+                firstIndex: index - run.count
+            ))
+            run = []
+        }
+
+        for (index, item) in items.enumerated() {
+            if let previous = run.last {
+                let sameRun = previous.sourceAppBundleID != nil
+                    && previous.sourceAppBundleID == item.sourceAppBundleID
+                    && previous.isPinned == item.isPinned
+                if !sameRun {
+                    closeRun(endingBefore: index)
+                }
+            }
+            run.append(item)
+        }
+        closeRun(endingBefore: items.count)
+        return sections
     }
 
     init(store: HistoryStore) {

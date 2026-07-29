@@ -25,6 +25,8 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.delegate = self
     }
 
+    var isPanelVisible: Bool { panel.isVisible }
+
     func toggle() {
         panel.isVisible ? hide() : show()
     }

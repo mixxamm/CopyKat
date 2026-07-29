@@ -45,6 +45,7 @@ final class AppState {
         }
 
         historyStore.maxItems = AppSettings.maxItems
+        historyStore.migrateLegacyContentHashes()
         historyStore.pruneOrphans()
 
         // Assigned before any closure captures `self` (even weakly), since Swift
@@ -55,6 +56,9 @@ final class AppState {
             guard let self else { return }
             do {
                 try self.historyStore.add(candidate)
+                if self.panelController?.isPanelVisible == true {
+                    self.panelViewModel.refresh()
+                }
             } catch {
                 self.logger.error("Failed to store clipboard item: \(error)")
             }

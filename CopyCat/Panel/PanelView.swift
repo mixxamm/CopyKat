@@ -63,18 +63,47 @@ struct PanelView: View {
     private var itemList: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 2) {
-                    ForEach(Array(model.items.enumerated()), id: \.element.persistentModelID) { index, item in
-                        ItemRow(item: item, isSelected: index == model.selectedIndex, imageStore: imageStore)
-                            .id(index)
+                LazyVStack(alignment: .leading, spacing: 2) {
+                    ForEach(model.sections, id: \.id) { section in
+                        if section.isGrouped {
+                            sectionHeader(for: section)
+                        }
+                        ForEach(Array(section.items.enumerated()), id: \.element.persistentModelID) { offset, item in
+                            let index = section.firstIndex + offset
+                            ItemRow(
+                                item: item,
+                                isSelected: index == model.selectedIndex,
+                                imageStore: imageStore,
+                                showsSourceApp: !section.isGrouped
+                            )
+                            .padding(.leading, section.isGrouped ? 18 : 0)
+                            .id(item.persistentModelID)
                             .onTapGesture { onCommit(item) }
+                        }
                     }
                 }
                 .padding(6)
             }
             .onChange(of: model.selectedIndex) { _, index in
-                proxy.scrollTo(index)
+                guard model.items.indices.contains(index) else { return }
+                proxy.scrollTo(model.items[index].persistentModelID)
             }
         }
+    }
+
+    private func sectionHeader(for section: PanelSection) -> some View {
+        HStack(spacing: 6) {
+            if let icon = AppIconProvider.icon(forBundleID: section.sourceAppBundleID) {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+            }
+            Text(section.sourceAppName ?? "")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 10)
+        .padding(.top, 8)
+        .padding(.bottom, 2)
     }
 }

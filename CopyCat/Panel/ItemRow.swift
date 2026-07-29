@@ -4,6 +4,7 @@ struct ItemRow: View {
     let item: ClipboardItem
     let isSelected: Bool
     let imageStore: ImageStore
+    var showsSourceApp = true
 
     var body: some View {
         HStack(spacing: 10) {
@@ -37,7 +38,7 @@ struct ItemRow: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 36, height: 36)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-        } else if let icon = AppIconProvider.icon(forBundleID: item.sourceAppBundleID) {
+        } else if showsSourceApp, let icon = AppIconProvider.icon(forBundleID: item.sourceAppBundleID) {
             Image(nsImage: icon)
                 .resizable()
                 .frame(width: 24, height: 24)
@@ -67,7 +68,7 @@ struct ItemRow: View {
         HStack(spacing: 4) {
             if item.kind == .image, let width = item.imageWidth, let height = item.imageHeight {
                 Text("\(width) × \(height)")
-            } else if let appName = item.sourceAppName {
+            } else if showsSourceApp, let appName = item.sourceAppName {
                 Text(appName)
             }
             Text(item.createdAt, format: .relative(presentation: .named))
