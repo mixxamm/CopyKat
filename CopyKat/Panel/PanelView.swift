@@ -124,8 +124,20 @@ struct PanelView: View {
                 .padding(6)
             }
             .onChange(of: model.selectedID) { _, id in
-                if let id {
-                    proxy.scrollTo(id)
+                guard let id else { return }
+                // Keep the highlight at a fixed height and move the list under
+                // it, so the eye never has to chase the selection while cycling.
+                if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+                    proxy.scrollTo(id, anchor: .center)
+                } else {
+                    withAnimation(.easeOut(duration: 0.12)) {
+                        proxy.scrollTo(id, anchor: .center)
+                    }
+                }
+            }
+            .onAppear {
+                if let id = model.selectedID {
+                    proxy.scrollTo(id, anchor: .center)
                 }
             }
         }

@@ -66,6 +66,31 @@ final class PanelViewModelTests: XCTestCase {
         XCTAssertTrue(model.sections.allSatisfy { !$0.isGrouped })
     }
 
+    func testResetRestoresHighlightToLastPastedItem() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+
+        try seed(["a", "b", "c"])
+        let middle = try XCTUnwrap(model.items.first { $0.text == "b" })
+        AppSettings.lastPastedContentHash = middle.contentHash
+
+        model.reset()
+
+        XCTAssertEqual(model.selectedItem?.text, "b")
+    }
+
+    func testResetFallsBackToFirstWhenLastPastedItemIsGone() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+
+        try seed(["a", "b"])
+        AppSettings.lastPastedContentHash = "text:nonexistent"
+
+        model.reset()
+
+        XCTAssertEqual(model.selectedIndex, 0)
+    }
+
     func testSelectionFollowsItemWhenListRefreshesInBackground() throws {
         try seed(["a", "b", "c"])
         model.moveSelection(1)

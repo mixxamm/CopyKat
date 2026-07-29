@@ -83,7 +83,12 @@ final class PanelViewModel {
     func reset() {
         query = ""
         refresh()
-        selectedID = items.first?.persistentModelID
+        // Pick up where the user left off: highlight the item pasted last,
+        // even when newer copies have stacked on top of it since.
+        let remembered = AppSettings.lastPastedContentHash.flatMap { hash in
+            items.first { $0.contentHash == hash }
+        }
+        selectedID = (remembered ?? items.first)?.persistentModelID
     }
 
     func refresh() {

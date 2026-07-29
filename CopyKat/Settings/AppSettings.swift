@@ -37,6 +37,13 @@ enum AppSettings {
         builtInExcludedBundleIDs.union(excludedBundleIDs)
     }
 
+    // The panel reopens with the highlight on the item pasted last, tracked by
+    // content hash so it survives restarts and reordering.
+    static var lastPastedContentHash: String? {
+        get { defaults.string(forKey: "lastPastedContentHash") }
+        set { defaults.set(newValue, forKey: "lastPastedContentHash") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

@@ -125,6 +125,7 @@ final class AppState {
 
     private func paste(_ item: ClipboardItem) {
         guard pasteService.write(item) else { return }
+        AppSettings.lastPastedContentHash = item.contentHash
 
         if pasteService.isAccessibilityTrusted {
             // Give the key window a beat to restore focus before the keystroke arrives.
