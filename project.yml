@@ -11,6 +11,9 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: 2.6.0
+  Fuse:
+    url: https://github.com/krisk/fuse-swift
+    from: 1.4.0
 targets:
   CopyKat:
     type: application
@@ -19,6 +22,7 @@ targets:
     dependencies:
       - package: KeyboardShortcuts
       - package: Sparkle
+      - package: Fuse
     info:
       path: CopyKat/Info.plist
       properties:

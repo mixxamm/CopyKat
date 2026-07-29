@@ -8,6 +8,7 @@ final class HistoryStore {
     private let context: ModelContext
     private let imageStore: ImageStore
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "HistoryStore")
+    private let matcher = FuzzyMatcher()
 
     var maxItems = 200
     var pinsChanged: (() -> Void)?
@@ -61,10 +62,14 @@ final class HistoryStore {
         if query.isEmpty {
             filtered = all
         } else {
-            filtered = all.filter {
-                ($0.text?.localizedCaseInsensitiveContains(query) ?? false)
-                    || ($0.sourceAppName?.localizedCaseInsensitiveContains(query) ?? false)
+            // Fuzzy match on content and source app; best (lowest) score first,
+            // recency breaks ties.
+            let scored = all.compactMap { item -> (ClipboardItem, Double)? in
+                let haystacks = [item.text, item.sourceAppName].compactMap { $0 }
+                let best = haystacks.compactMap { matcher.score(query, in: $0) }.min()
+                return best.map { (item, $0) }
             }
+            filtered = scored.sorted { $0.1 < $1.1 }.map(\.0)
         }
         return filtered.filter(\.isPinned) + filtered.filter { !$0.isPinned }
     }
