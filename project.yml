@@ -27,8 +27,7 @@ targets:
         CFBundleShortVersionString: "0.1.0"
         SUFeedURL: https://github.com/mixxamm/CopyKat/releases/latest/download/appcast.xml
         SUEnableAutomaticChecks: true
-        # Fill in after running Sparkle's generate_keys; see docs/RELEASING.md.
-        SUPublicEDKey: ""
+        SUPublicEDKey: "78x0TuiNj31++gwt6eWVa0YvcXMo7iKPLGY910CHnvk="
     settings:
       base:
         SWIFT_VERSION: "5.9"
