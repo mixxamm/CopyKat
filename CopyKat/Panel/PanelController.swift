@@ -8,6 +8,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let onCommit: (ClipboardItem) -> Void
     private var tapTracker = FastPasteTapTracker()
     private var flagsMonitor: Any?
+    private var escapeMonitor: Any?
 
     init(
         viewModel: PanelViewModel,
@@ -36,6 +37,14 @@ final class PanelController: NSObject, NSWindowDelegate {
                 self.commitFastSelection()
             }
             return event
+        }
+
+        // Escape always cancels, including mid fast-paste with modifiers still
+        // held; hiding first clears the session so the release pastes nothing.
+        escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, self.panel.isVisible, event.keyCode == 53 else { return event }
+            self.hide()
+            return nil
         }
     }
 

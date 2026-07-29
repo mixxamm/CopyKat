@@ -3,6 +3,7 @@ import AppKit
 @MainActor
 final class PasteService {
     private let imageStore: ImageStore
+    let selfWriteTracker = SelfWriteTracker()
 
     init(imageStore: ImageStore) {
         self.imageStore = imageStore
@@ -12,25 +13,26 @@ final class PasteService {
     // file or nil text never leaves the user's existing clipboard wiped and empty.
     @discardableResult
     func write(_ item: ClipboardItem, to pasteboard: NSPasteboard = .general) -> Bool {
+        let written: Bool
         switch item.kind {
         case .text:
             guard let text = item.text else { return false }
             pasteboard.clearContents()
-            pasteboard.setString(text, forType: .string)
-            return true
+            written = pasteboard.setString(text, forType: .string)
         case .fileURL:
             guard let path = item.text else { return false }
             pasteboard.clearContents()
-            pasteboard.writeObjects([NSURL.fileURL(withPath: path) as NSURL])
-            return true
+            written = pasteboard.writeObjects([NSURL.fileURL(withPath: path) as NSURL])
         case .image:
             guard let filename = item.imageFilename,
                   let data = try? Data(contentsOf: imageStore.imageURL(for: filename))
             else { return false }
             pasteboard.clearContents()
-            pasteboard.setData(data, forType: .png)
-            return true
+            written = pasteboard.setData(data, forType: .png)
         }
+        // Pasting must not reorder history, so the monitor skips this change.
+        selfWriteTracker.record(changeCount: pasteboard.changeCount)
+        return written
     }
 
     var isAccessibilityTrusted: Bool {
