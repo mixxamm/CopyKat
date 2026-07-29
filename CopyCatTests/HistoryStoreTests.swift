@@ -95,6 +95,20 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: imageDirectory.appendingPathComponent(filename).path))
     }
 
+    func testDeleteAllKeepsOnlyPinnedItems() throws {
+        try store.add(textCandidate("one"))
+        try store.add(textCandidate("two"))
+        try store.add(textCandidate("three"))
+        let toPin = try XCTUnwrap(store.items(matching: "").first { $0.text == "two" })
+        store.togglePin(toPin)
+
+        store.deleteAll()
+
+        let items = store.items(matching: "")
+        XCTAssertEqual(items.map(\.text), ["two"])
+        XCTAssertTrue(items[0].isPinned)
+    }
+
     func testPruneOrphansDropsItemsWithMissingFilesAndStrayFiles() throws {
         try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))
         let item = try XCTUnwrap(store.items(matching: "").first)

@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftData
 import os
@@ -20,9 +21,9 @@ final class HistoryStore {
         let item: ClipboardItem
         switch candidate.content {
         case .text(let text):
-            item = ClipboardItem(kind: .text, text: text, contentHash: "text:\(text)")
+            item = ClipboardItem(kind: .text, text: text, contentHash: "text:\(Self.sha256Hex(text))")
         case .fileURL(let url):
-            item = ClipboardItem(kind: .fileURL, text: url.path, contentHash: "file:\(url.path)")
+            item = ClipboardItem(kind: .fileURL, text: url.path, contentHash: "file:\(Self.sha256Hex(url.path))")
         case .image(let data):
             let saved = try imageStore.save(pngData: data)
             item = ClipboardItem(
@@ -35,6 +36,10 @@ final class HistoryStore {
         }
 
         if let existing = try existingItem(withHash: item.contentHash) {
+            // CopyCat's own paste is re-captured by the monitor and collapses into this
+            // existing row via dedupe. We deliberately keep the row's original
+            // source-app attribution here rather than overwriting it with whatever
+            // app was pasted into, otherwise every paste would re-attribute the item.
             existing.createdAt = .now
             try context.save()
             return existing
@@ -108,6 +113,10 @@ final class HistoryStore {
             logger.error("Fetch failed: \(error)")
             return []
         }
+    }
+
+    private static func sha256Hex(_ string: String) -> String {
+        SHA256.hash(data: Data(string.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
     private func existingItem(withHash hash: String) throws -> ClipboardItem? {
