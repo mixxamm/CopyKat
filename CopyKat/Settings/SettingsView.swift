@@ -54,6 +54,16 @@ private struct GeneralSettingsView: View {
                     appState.historyStore.maxItems = value
                 }
 
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Fast paste", isOn: Binding(
+                        get: { AppSettings.fastPasteEnabled },
+                        set: { AppSettings.fastPasteEnabled = $0 }
+                    ))
+                    Text("Hold the shortcut and let go to paste the highlighted item right away. Double-tap V to search instead.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
                 Toggle("Automatically check for updates", isOn: Binding(
                     get: { appState.updaterController.updater.automaticallyChecksForUpdates },
                     set: { appState.updaterController.updater.automaticallyChecksForUpdates = $0 }
@@ -74,7 +84,7 @@ private struct GeneralSettingsView: View {
             }
 
             Section("Ignored apps") {
-                Text("Clipboard changes from these apps are never recorded. Password managers that mark entries as concealed are ignored automatically.")
+                Text("Clipboard changes from these apps are never recorded. Common password managers, including Apple Passwords, are already excluded by default.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
 
@@ -102,6 +112,9 @@ private struct GeneralSettingsView: View {
             }
 
             Section {
+                Button("Show Welcome Guide") {
+                    appState.onboardingController.show(appState: appState)
+                }
                 Button("Clear History…", role: .destructive) {
                     confirmClearHistory()
                 }

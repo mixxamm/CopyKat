@@ -16,6 +16,37 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "excludedBundleIDs") }
     }
 
+    // Password managers that don't mark their clipboard writes with the
+    // concealed-type convention (Apple's own Passwords app among them), so we
+    // exclude them by app identity instead.
+    static let builtInExcludedBundleIDs: Set<String> = [
+        "com.apple.Passwords",
+        "com.apple.keychainaccess",
+        "com.1password.1password",
+        "com.agilebits.onepassword7",
+        "com.bitwarden.desktop",
+        "org.keepassxc.keepassxc",
+        "com.dashlane.dashlanephonefinal",
+        "com.lastpass.lastpassmacdesktop",
+        "in.sinew.Enpass-Desktop",
+        "me.proton.pass.electron",
+        "com.keepersecurity.passwords",
+    ]
+
+    static var effectiveExcludedBundleIDs: Set<String> {
+        builtInExcludedBundleIDs.union(excludedBundleIDs)
+    }
+
+    static var fastPasteEnabled: Bool {
+        get { defaults.bool(forKey: "fastPasteEnabled") }
+        set { defaults.set(newValue, forKey: "fastPasteEnabled") }
+    }
+
+    static var hasCompletedOnboarding: Bool {
+        get { defaults.bool(forKey: "hasCompletedOnboarding") }
+        set { defaults.set(newValue, forKey: "hasCompletedOnboarding") }
+    }
+
     // Set when the user explicitly chose copy-only over granting Accessibility;
     // it silences the permission dialog for good.
     static var accessibilityDeclined: Bool {

@@ -62,6 +62,24 @@ final class ClipboardClassifierTests: XCTestCase {
         XCTAssertEqual(result?.content, .image(png))
     }
 
+    func testBuiltInExclusionsCoverApplePasswordsAndMergeWithUserList() {
+        XCTAssertTrue(AppSettings.builtInExcludedBundleIDs.contains("com.apple.Passwords"))
+
+        let previous = AppSettings.excludedBundleIDs
+        defer { AppSettings.excludedBundleIDs = previous }
+        AppSettings.excludedBundleIDs = ["com.example.custom"]
+
+        XCTAssertTrue(AppSettings.effectiveExcludedBundleIDs.contains("com.example.custom"))
+        XCTAssertTrue(AppSettings.effectiveExcludedBundleIDs.contains("com.apple.Passwords"))
+
+        let source = RunningAppInfo(bundleID: "com.apple.Passwords", name: "Passwords")
+        let result = ClipboardClassifier.classify(
+            snapshot(string: "hunter2"), source: source,
+            excludedBundleIDs: AppSettings.effectiveExcludedBundleIDs
+        )
+        XCTAssertNil(result)
+    }
+
     func testMarksUniversalClipboardContentAsRemoteWithoutSourceApp() {
         let remote = snapshot(
             types: [.string, NSPasteboard.PasteboardType("com.apple.is-remote-clipboard")],

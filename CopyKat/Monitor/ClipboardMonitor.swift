@@ -45,7 +45,7 @@ final class ClipboardMonitor {
         if let candidate = ClipboardClassifier.classify(
             snapshot,
             source: source,
-            excludedBundleIDs: Set(AppSettings.excludedBundleIDs)
+            excludedBundleIDs: AppSettings.effectiveExcludedBundleIDs
         ) {
             onCapture(candidate)
         }
