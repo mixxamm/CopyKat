@@ -11,7 +11,9 @@ final class FloatingPanel: NSPanel {
             defer: false
         )
         isFloatingPanel = true
-        level = .floating
+        // .floating sits below Spotlight and similar system overlays; .popUpMenu
+        // keeps the panel on top of them, like other launcher-style panels.
+        level = .popUpMenu
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         backgroundColor = .clear
         isOpaque = false
