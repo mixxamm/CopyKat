@@ -125,6 +125,36 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertTrue(items[0].isPinned)
     }
 
+    func testOurOwnPasteDoesNotMoveTheItemBackToTheTop() throws {
+        let tracker = SelfWriteTracker()
+        store.selfWriteTracker = tracker
+
+        try store.add(textCandidate("older"))
+        try store.add(textCandidate("newer"))
+        let older = try XCTUnwrap(store.items(matching: "").first { $0.text == "older" })
+        let originalDate = older.createdAt
+
+        // Pasting "older" puts it back on the pasteboard; the monitor sees it.
+        tracker.record(hash: older.contentHash)
+        try store.add(textCandidate("older"))
+
+        XCTAssertEqual(store.items(matching: "").map(\.text), ["newer", "older"])
+        XCTAssertEqual(older.createdAt, originalDate)
+    }
+
+    func testACopyFromAnotherAppStillMovesTheItemToTheTop() throws {
+        let tracker = SelfWriteTracker()
+        store.selfWriteTracker = tracker
+
+        try store.add(textCandidate("older"))
+        try store.add(textCandidate("newer"))
+        tracker.record(hash: "text:something-else")
+
+        try store.add(textCandidate("older"))
+
+        XCTAssertEqual(store.items(matching: "").map(\.text), ["older", "newer"])
+    }
+
     func testAddPersistsRemoteFlag() throws {
         try store.add(ClipboardCandidate(
             content: .text("from iPhone"), sourceAppBundleID: nil, sourceAppName: nil, isRemote: true

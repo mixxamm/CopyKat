@@ -30,8 +30,9 @@ final class PasteService {
             pasteboard.clearContents()
             written = pasteboard.setData(data, forType: .png)
         }
-        // Pasting must not reorder history, so the monitor skips this change.
-        selfWriteTracker.record(changeCount: pasteboard.changeCount)
+        // Pasting must not reorder history, so the store ignores this content
+        // when it comes back around through the monitor.
+        selfWriteTracker.record(hash: item.contentHash)
         return written
     }
 

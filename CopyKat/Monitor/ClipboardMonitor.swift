@@ -6,12 +6,10 @@ import AppKit
 final class ClipboardMonitor {
     private let pasteboard = NSPasteboard.general
     private let onCapture: (ClipboardCandidate) -> Void
-    private let selfWriteTracker: SelfWriteTracker
     private var timer: Timer?
     private var lastChangeCount: Int
 
-    init(selfWriteTracker: SelfWriteTracker, onCapture: @escaping (ClipboardCandidate) -> Void) {
-        self.selfWriteTracker = selfWriteTracker
+    init(onCapture: @escaping (ClipboardCandidate) -> Void) {
         self.onCapture = onCapture
         self.lastChangeCount = pasteboard.changeCount
     }
@@ -34,9 +32,6 @@ final class ClipboardMonitor {
         guard pasteboard.changeCount != lastChangeCount else { return }
         lastChangeCount = pasteboard.changeCount
 
-        // Our own paste already exists in the history; recapturing it would
-        // move it to the top and look like a duplicate.
-        guard !selfWriteTracker.consumeIfSelfWrite(changeCount: lastChangeCount) else { return }
 
         let snapshot = ClipboardSnapshot(
             types: pasteboard.types ?? [],

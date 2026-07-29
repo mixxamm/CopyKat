@@ -63,6 +63,7 @@ final class AppState {
             fatalError("CopyKat cannot open its storage: \(error)")
         }
 
+        historyStore.selfWriteTracker = pasteService.selfWriteTracker
         historyStore.maxItems = AppSettings.maxItems
         historyStore.migrateLegacyContentHashes()
         historyStore.backfillPinShortcutIDs()
@@ -72,7 +73,7 @@ final class AppState {
         // requires all non-optional stored properties to be initialized first.
         panelViewModel = PanelViewModel(store: historyStore)
 
-        let monitor = ClipboardMonitor(selfWriteTracker: pasteService.selfWriteTracker) { [weak self] candidate in
+        let monitor = ClipboardMonitor { [weak self] candidate in
             guard let self else { return }
             do {
                 try self.historyStore.add(candidate)

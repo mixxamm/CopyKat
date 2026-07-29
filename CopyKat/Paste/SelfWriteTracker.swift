@@ -1,21 +1,25 @@
 import Foundation
 
-// Pasting puts the item back on the pasteboard, which the monitor would
-// otherwise capture as a fresh copy and bump to the top of the history.
-// PasteService records the change count of its own write here so the monitor
-// can skip exactly that one change.
+// Pasting puts the item back on the pasteboard. Without this, the monitor
+// captures that write as a fresh copy and the store bumps the item to the top,
+// which reads as a duplicate. Matching on content rather than on a single
+// change count also covers the pasteboard changing more than once for the same
+// content (Universal Clipboard echoes, apps that rewrite on paste).
 @MainActor
 final class SelfWriteTracker {
-    private var pendingChangeCount: Int?
+    private let window: TimeInterval = 5
+    private var lastHash: String?
+    private var writtenAt: Date?
 
-    func record(changeCount: Int) {
-        pendingChangeCount = changeCount
+    func record(hash: String, at date: Date = .now) {
+        lastHash = hash
+        writtenAt = date
     }
 
-    // Returns true when this change came from our own paste, and forgets it.
-    func consumeIfSelfWrite(changeCount: Int) -> Bool {
-        guard pendingChangeCount == changeCount else { return false }
-        pendingChangeCount = nil
+    func isOurOwnWrite(hash: String, at date: Date = .now) -> Bool {
+        guard lastHash == hash, let writtenAt, date.timeIntervalSince(writtenAt) <= window else {
+            return false
+        }
         return true
     }
 }

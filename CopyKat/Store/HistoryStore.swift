@@ -12,6 +12,7 @@ final class HistoryStore {
 
     var maxItems = 200
     var pinsChanged: (() -> Void)?
+    var selfWriteTracker: SelfWriteTracker?
 
     init(container: ModelContainer, imageStore: ImageStore) {
         self.context = ModelContext(container)
@@ -38,12 +39,13 @@ final class HistoryStore {
         }
 
         if let existing = try existingItem(withHash: item.contentHash) {
-            // CopyKat's own paste is re-captured by the monitor and collapses into this
-            // existing row via dedupe. We deliberately keep the row's original
-            // source-app attribution here rather than overwriting it with whatever
-            // app was pasted into, otherwise every paste would re-attribute the item.
-            existing.createdAt = .now
-            try context.save()
+            // A re-copy moves the item back to the top, but our own paste must
+            // leave the history exactly as it was: same position, same source
+            // app attribution (the app pasted into is not where it came from).
+            if selfWriteTracker?.isOurOwnWrite(hash: item.contentHash) != true {
+                existing.createdAt = .now
+                try context.save()
+            }
             return existing
         }
 
