@@ -33,6 +33,10 @@ final class PanelViewModel {
     // double-tap escape.
     var isFastSession = false
 
+    // Bumped on every open. The panel view is reused between showings, so the
+    // list needs an explicit signal to scroll the selection back into place.
+    private(set) var openToken = 0
+
     // Selection follows the item, not its position. Index-based selection can
     // highlight the wrong row (or two rows) when a live refresh shifts the list
     // between renders; identities cannot collide.
@@ -89,6 +93,7 @@ final class PanelViewModel {
             items.first { $0.contentHash == hash }
         }
         selectedID = (remembered ?? items.first)?.persistentModelID
+        openToken += 1
     }
 
     func refresh() {

@@ -140,6 +140,11 @@ struct PanelView: View {
                     }
                 }
             }
+            .onChange(of: model.openToken) { _, _ in
+                if let id = model.selectedID {
+                    proxy.scrollTo(id, anchor: .center)
+                }
+            }
             .onAppear {
                 if let id = model.selectedID {
                     proxy.scrollTo(id, anchor: .center)
