@@ -10,6 +10,8 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 ROOT=$(pwd)
 CAPTIONS="$ROOT/scripts/screenshots/captions.json"
+RAW="${COPYKAT_RAW_DIR:-/tmp/copykat-shots}"
+mkdir -p "$RAW"
 OUT_ROOT="$ROOT/fastlane/screenshots"
 COMPOSE="$ROOT/scripts/screenshots/compose.swift"
 
@@ -63,10 +65,12 @@ capture_scene() {
   local lang
   lang=$(app_language "$locale")
   local caption
+  # Missing translation is fine here: capture now, add the caption later.
   caption=$(python3 -c "
-import json,sys
+import json
 data = json.load(open('$CAPTIONS'))
-print(data['$locale'][$index].replace(chr(10), '\\\\n'))
+entry = data.get('$locale')
+print(entry[$index].replace(chr(10), '\\\\n') if entry else '')
 ")
   local rtl=ltr
   [ "$locale" = "ar-SA" ] && rtl=rtl
@@ -84,13 +88,18 @@ print(data['$locale'][$index].replace(chr(10), '\\\\n'))
     return
   fi
 
-  screencapture -x "/tmp/copykat-capture.png"
+  screencapture -x "$RAW/$locale-$scene.png"
+  echo "$rect" > "$RAW/$locale-$scene.rect"
   pkill -x CopyKat 2>/dev/null || true
 
-  mkdir -p "$OUT_ROOT/$locale"
-  # shellcheck disable=SC2086
-  swift "$COMPOSE" /tmp/copykat-capture.png $rect "$caption" \
-    "$OUT_ROOT/$locale/$((index + 1))-$scene.png" "$rtl" >/dev/null
+  if [ -n "$caption" ]; then
+    mkdir -p "$OUT_ROOT/$locale"
+    # shellcheck disable=SC2086
+    local keys=nokeys
+    [ "$scene" = "panel" ] && keys=keys
+    swift "$COMPOSE" "$RAW/$locale-$scene.png" $rect "$caption" \
+      "$OUT_ROOT/$locale/$((index + 1))-$scene.png" "$rtl" "$keys" >/dev/null
+  fi
   echo "  $locale/$scene"
 }
 

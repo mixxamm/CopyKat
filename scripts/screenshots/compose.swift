@@ -18,10 +18,11 @@ let winW = Double(out[4])!, winH = Double(out[5])!
 let caption = out[6].replacingOccurrences(of: "\\n", with: "\n")
 let outPath = out[7]
 let rtl = out.count > 8 && out[8] == "rtl"
+let showKeys = out.count > 9 && out[9] == "keys"
 
 let canvasW = 2880.0, canvasH = 1800.0
-let captionTop = 150.0
-let windowTop = 520.0
+let captionTop = 130.0
+let windowTop = showKeys ? 690.0 : 520.0
 let bottomMargin = 90.0
 
 guard let capture = NSImage(contentsOfFile: capturePath),
@@ -104,6 +105,35 @@ attributed.draw(with: NSRect(
     width: canvasW * 0.86,
     height: textHeight
 ), options: [.usesLineFragmentOrigin])
+
+// Keycaps for the hotkey, the same three the website shows.
+if showKeys {
+    let caps = ["\u{21E7}", "\u{2318}", "V"]
+    let capSize = 132.0
+    let gap = 26.0
+    let totalWidth = Double(caps.count) * capSize + Double(caps.count - 1) * gap
+    var x = (canvasW - totalWidth) / 2
+    let y = canvasH - windowTop + 92
+
+    for cap in caps {
+        let face = NSRect(x: x, y: y, width: capSize, height: capSize)
+        let path = NSBezierPath(roundedRect: face, xRadius: 28, yRadius: 28)
+
+        NSColor(calibratedRed: 0.35, green: 0.12, blue: 0.02, alpha: 0.35).setFill()
+        NSBezierPath(roundedRect: face.offsetBy(dx: 0, dy: -9), xRadius: 28, yRadius: 28).fill()
+
+        NSColor(calibratedRed: 1.0, green: 0.97, blue: 0.93, alpha: 1).setFill()
+        path.fill()
+
+        let glyph = NSAttributedString(string: cap, attributes: [
+            .font: NSFont.systemFont(ofSize: 62, weight: .medium),
+            .foregroundColor: NSColor(calibratedRed: 0.17, green: 0.10, blue: 0.06, alpha: 1),
+        ])
+        let gs = glyph.size()
+        glyph.draw(at: NSPoint(x: x + (capSize - gs.width) / 2, y: y + (capSize - gs.height) / 2))
+        x += capSize + gap
+    }
+}
 
 NSGraphicsContext.restoreGraphicsState()
 
