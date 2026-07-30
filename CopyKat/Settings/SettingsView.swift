@@ -54,6 +54,11 @@ private struct GeneralSettingsView: View {
                     appState.historyStore.maxItems = value
                 }
 
+                Toggle("Animate scrolling", isOn: Binding(
+                    get: { AppSettings.animateScrolling },
+                    set: { AppSettings.animateScrolling = $0 }
+                ))
+
                 VStack(alignment: .leading, spacing: 4) {
                     Toggle("Fast paste", isOn: Binding(
                         get: { AppSettings.fastPasteEnabled },

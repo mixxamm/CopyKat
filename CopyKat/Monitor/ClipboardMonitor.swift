@@ -43,13 +43,22 @@ final class ClipboardMonitor {
         let source = frontmost.map {
             RunningAppInfo(bundleID: $0.bundleIdentifier, name: $0.localizedName)
         }
-        if let candidate = ClipboardClassifier.classify(
+        if var candidate = ClipboardClassifier.classify(
             snapshot,
             source: source,
             excludedBundleIDs: AppSettings.effectiveExcludedBundleIDs
         ) {
+            if case .fileURL(let url) = candidate.content {
+                candidate.fileBookmark = Self.securityScopedBookmark(for: url)
+            }
             onCapture(candidate)
         }
+    }
+
+    // Reading the pasteboard grants temporary access to the file, which is the
+    // only moment a sandboxed build can mint a bookmark it may use later.
+    private static func securityScopedBookmark(for url: URL) -> Data? {
+        try? url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
     }
 
     private func readImageData() -> Data? {

@@ -21,8 +21,16 @@ final class PasteService {
             written = pasteboard.setString(text, forType: .string)
         case .fileURL:
             guard let path = item.text else { return false }
+            // Under the sandbox the app has no standing access to the file, so
+            // the bookmark taken at copy time is what makes the pasted URL
+            // usable by the receiving app.
+            let url = resolvedFileURL(for: item) ?? URL(fileURLWithPath: path)
+            let scoped = url.startAccessingSecurityScopedResource()
             pasteboard.clearContents()
-            written = pasteboard.writeObjects([NSURL.fileURL(withPath: path) as NSURL])
+            written = pasteboard.writeObjects([url as NSURL])
+            if scoped {
+                releaseScopedAccess(for: url)
+            }
         case .image:
             guard let filename = item.imageFilename,
                   let data = try? Data(contentsOf: imageStore.imageURL(for: filename))
@@ -34,6 +42,25 @@ final class PasteService {
         // when it comes back around through the monitor.
         selfWriteTracker.record(hash: item.contentHash)
         return written
+    }
+
+    private func resolvedFileURL(for item: ClipboardItem) -> URL? {
+        guard let bookmark = item.fileBookmark else { return nil }
+        var isStale = false
+        return try? URL(
+            resolvingBookmarkData: bookmark,
+            options: .withSecurityScope,
+            relativeTo: nil,
+            bookmarkDataIsStale: &isStale
+        )
+    }
+
+    // The receiving app needs a moment to claim the file before we drop our
+    // own access to it.
+    private func releaseScopedAccess(for url: URL) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            url.stopAccessingSecurityScopedResource()
+        }
     }
 
     var isAccessibilityTrusted: Bool {

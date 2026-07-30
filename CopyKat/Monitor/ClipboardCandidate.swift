@@ -16,4 +16,7 @@ struct ClipboardCandidate: Equatable {
     let sourceAppBundleID: String?
     let sourceAppName: String?
     var isRemote = false
+    // Security-scoped bookmark for file items, so a sandboxed build can hand
+    // the file back to another app when pasting.
+    var fileBookmark: Data?
 }

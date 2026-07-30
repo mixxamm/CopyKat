@@ -27,6 +27,21 @@ final class PasteServiceTests: XCTestCase {
         XCTAssertEqual(pasteboard.string(forType: .string), "hello")
     }
 
+    func testFileItemWithBookmarkPastesTheBookmarkedURL() throws {
+        let file = FileManager.default.temporaryDirectory
+            .appendingPathComponent("copykat-bookmark-\(UUID().uuidString).txt")
+        try "hello".write(to: file, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: file) }
+
+        let bookmark = try file.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+        let item = ClipboardItem(kind: .fileURL, text: file.path, contentHash: "file:bookmarked")
+        item.fileBookmark = bookmark
+
+        XCTAssertTrue(service.write(item, to: pasteboard))
+        let urls = pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL]
+        XCTAssertEqual(urls?.first?.standardizedFileURL, file.standardizedFileURL)
+    }
+
     func testWritesFileURL() {
         let item = ClipboardItem(kind: .fileURL, text: "/tmp/x.pdf", contentHash: "file:/tmp/x.pdf")
         XCTAssertTrue(service.write(item, to: pasteboard))

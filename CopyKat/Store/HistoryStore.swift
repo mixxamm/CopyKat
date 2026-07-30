@@ -52,6 +52,7 @@ final class HistoryStore {
         item.sourceAppBundleID = candidate.sourceAppBundleID
         item.sourceAppName = candidate.sourceAppName
         item.isRemote = candidate.isRemote
+        item.fileBookmark = candidate.fileBookmark
         context.insert(item)
         trim()
         try context.save()

@@ -44,6 +44,13 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "lastPastedContentHash") }
     }
 
+    // Off by default: the sliding list reads as distracting to most people,
+    // while the jump keeps the highlight in the same spot just as well.
+    static var animateScrolling: Bool {
+        get { defaults.bool(forKey: "animateScrolling") }
+        set { defaults.set(newValue, forKey: "animateScrolling") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

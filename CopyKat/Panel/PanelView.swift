@@ -130,12 +130,12 @@ struct PanelView: View {
                 guard let id else { return }
                 // Keep the highlight at a fixed height and move the list under
                 // it, so the eye never has to chase the selection while cycling.
-                if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-                    proxy.scrollTo(id, anchor: .center)
-                } else {
+                if AppSettings.animateScrolling, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
                     withAnimation(.easeOut(duration: 0.12)) {
                         proxy.scrollTo(id, anchor: .center)
                     }
+                } else {
+                    proxy.scrollTo(id, anchor: .center)
                 }
             }
             .onChange(of: model.openToken) { _, _ in

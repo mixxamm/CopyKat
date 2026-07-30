@@ -21,6 +21,7 @@ final class ClipboardItem {
     var isPinned: Bool
     var pinShortcutID: String?
     var isRemote: Bool = false
+    var fileBookmark: Data?
 
     init(
         kind: ClipboardItemKind,
