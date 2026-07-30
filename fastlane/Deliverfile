@@ -1,0 +1,5 @@
+# Values that never change between runs.
+app_identifier "com.mixxamm.copykat"
+copyright "#{Time.now.year} Maxim Janssens"
+primary_category "MAC_APP_STORE_PRODUCTIVITY"
+secondary_category "MAC_APP_STORE_UTILITIES"
