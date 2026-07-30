@@ -160,7 +160,7 @@ final class AppState {
                         self.panelViewModel.query = ProcessInfo.processInfo.environment["COPYKAT_DEMO_QUERY"] ?? "interfce"
                     default:
                         self.panelController?.show()
-                        self.panelViewModel.moveSelection(3)
+                        self.panelViewModel.moveSelection(2)
                     }
                 }
             } else if !AppSettings.hasCompletedOnboarding {
@@ -183,11 +183,20 @@ final class AppState {
             ("com.apple.Notes", "Notes", "IBAN BE31 6792 0034 9355"),
             ("com.apple.finder", "Finder", "Q3-invoice.pdf"),
         ]
+        let fromIPhone = "Flight BA2158, seat 14A, boarding 18:05"
         for (bundleID, name, text) in demo {
             try? historyStore.add(ClipboardCandidate(
                 content: .text(text), sourceAppBundleID: bundleID, sourceAppName: name
             ))
         }
+        // One item that arrived through Universal Clipboard, so the screenshots
+        // show what a copy from another device looks like.
+        var remote = ClipboardCandidate(
+            content: .text(fromIPhone), sourceAppBundleID: nil, sourceAppName: nil
+        )
+        remote.isRemote = true
+        try? historyStore.add(remote)
+
         panelViewModel.refresh()
     }
 
