@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct PanelView: View {
@@ -8,6 +9,7 @@ struct PanelView: View {
     let onRecordShortcut: (ClipboardItem) -> Void
 
     @FocusState private var searchFocused: Bool
+    @State private var scrolledID: PersistentIdentifier?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -90,25 +92,26 @@ struct PanelView: View {
         GeometryReader { geometry in
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 2) {
-                    // Runway above and below the rows, so even the first and
-                    // last item can sit at the centered highlight position.
+                VStack(alignment: .leading, spacing: 2) {
+                    // Real spacer views, not contentMargins: only actual content
+                    // gives the scroll view room to move, so the first rows can
+                    // reach the centre line instead of clamping at the top.
                     Color.clear.frame(height: edgeRunway(in: geometry))
-                    ForEach(model.sections, id: \.id) { section in
-                        if section.isGrouped {
+                    ForEach(model.entries) { entry in
+                        switch entry {
+                        case .header(let section):
                             sectionHeader(for: section)
-                        }
-                        ForEach(Array(section.items.enumerated()), id: \.element.persistentModelID) { offset, item in
-                            let index = section.firstIndex + offset
+                                .id(entry.id)
+                        case .row(let item, let index, let indented, let showsSourceApp):
                             ItemRow(
                                 item: item,
                                 isSelected: item.persistentModelID == model.selectedID,
                                 imageStore: imageStore,
-                                showsSourceApp: !section.isGrouped,
+                                showsSourceApp: showsSourceApp,
                                 quickPasteBadge: index < 9 ? index + 1 : nil
                             )
-                            .padding(.leading, section.isGrouped ? 18 : 0)
-                            .id(item.persistentModelID)
+                            .padding(.leading, indented ? 18 : 0)
+                            .id(entry.id)
                             .onTapGesture { onCommit(item) }
                             .contextMenu {
                                 Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {
@@ -124,9 +127,12 @@ struct PanelView: View {
                     }
                     Color.clear.frame(height: edgeRunway(in: geometry))
                 }
+                .scrollTargetLayout()
                 .padding(6)
             }
+            .scrollPosition(id: $scrolledID, anchor: .center)
             .onChange(of: model.selectedID) { _, id in
+                scrolledID = id
                 guard let id else { return }
                 // Keep the highlight at a fixed height and move the list under
                 // it, so the eye never has to chase the selection while cycling.
@@ -138,17 +144,26 @@ struct PanelView: View {
                     proxy.scrollTo(id, anchor: .center)
                 }
             }
-            .onChange(of: model.openToken) { _, _ in
-                if let id = model.selectedID {
-                    proxy.scrollTo(id, anchor: .center)
-                }
-            }
-            .onAppear {
-                if let id = model.selectedID {
-                    proxy.scrollTo(id, anchor: .center)
-                }
-            }
+            // Both hooks are needed: on the very first showing the view is
+            // created after the token already changed, so onChange never fires.
+            .onChange(of: model.openToken) { _, _ in centre(proxy) }
+            .onAppear { centre(proxy) }
         }
+        }
+    }
+
+    // Scrolling straight away lands on a list that has not been laid out yet,
+    // so hop to the next runloop pass first.
+    // LazyVStack estimates the height of rows it has not built yet, so a single
+    // scroll lands beside the mark whenever the list just changed. A second
+    // pass, once the real heights are known, settles it exactly.
+    private func centre(_ proxy: ScrollViewProxy) {
+        for delay in [0.0, 0.05, 0.15] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                guard let id = model.selectedID else { return }
+                scrolledID = id
+                proxy.scrollTo(id, anchor: .center)
+            }
         }
     }
 

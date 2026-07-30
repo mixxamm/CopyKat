@@ -33,6 +33,32 @@ final class PanelViewModelTests: XCTestCase {
         try store.add(ClipboardCandidate(content: .text(text), sourceAppBundleID: app, sourceAppName: app))
     }
 
+    func testSectionIndicesStayContiguousAcrossMixedRuns() throws {
+        try seedApp("one", app: nil)
+        try seedApp("two", app: "Notes")
+        try seedApp("three", app: "Notes")
+        try seedApp("four", app: "Safari")
+        try seedApp("five", app: nil)
+        model.reset()
+
+        let numbered = model.sections.flatMap { section in
+            section.items.enumerated().map { section.firstIndex + $0.offset }
+        }
+        XCTAssertEqual(numbered, Array(0..<model.items.count))
+    }
+
+    func testRefreshWithNewItemsAsksForRecentring() throws {
+        try seed(["a", "b"])
+        let before = model.openToken
+        try store.add(ClipboardCandidate(content: .text("c"), sourceAppBundleID: nil, sourceAppName: nil))
+        model.refresh()
+        XCTAssertGreaterThan(model.openToken, before)
+
+        let unchanged = model.openToken
+        model.refresh()
+        XCTAssertEqual(model.openToken, unchanged)
+    }
+
     func testSectionsGroupConsecutiveSameAppRuns() throws {
         try seedApp("one", app: "Notes")
         try seedApp("two", app: "Notes")

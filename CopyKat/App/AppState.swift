@@ -128,6 +128,7 @@ final class AppState {
             if !AppSettings.hasCompletedOnboarding {
                 onboardingController.show(appState: self)
             }
+
         }
     }
 

@@ -86,6 +86,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         centerOnActiveScreen()
         panel.orderFrontRegardless()
         panel.makeKey()
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.panelDidAppear()
+        }
 
         if fastSession {
             // A very quick tap can release the modifiers before the panel is

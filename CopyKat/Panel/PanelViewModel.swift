@@ -14,6 +14,19 @@ struct PanelSection: Equatable {
     var id: PersistentIdentifier { items[0].persistentModelID }
 }
 
+// One flat sequence of things to draw, so every row is its own scroll target.
+enum PanelEntry: Identifiable {
+    case header(PanelSection)
+    case row(item: ClipboardItem, index: Int, indented: Bool, showsSourceApp: Bool)
+
+    var id: PersistentIdentifier {
+        switch self {
+        case .header(let section): section.id
+        case .row(let item, _, _, _): item.persistentModelID
+        }
+    }
+}
+
 @MainActor
 @Observable
 final class PanelViewModel {
@@ -80,6 +93,20 @@ final class PanelViewModel {
         return sections
     }
 
+    var entries: [PanelEntry] {
+        sections.flatMap { section -> [PanelEntry] in
+            let rows = section.items.enumerated().map { offset, item in
+                PanelEntry.row(
+                    item: item,
+                    index: section.firstIndex + offset,
+                    indented: section.isGrouped,
+                    showsSourceApp: !section.isGrouped
+                )
+            }
+            return section.isGrouped ? [.header(section)] + rows : rows
+        }
+    }
+
     init(store: HistoryStore) {
         self.store = store
     }
@@ -93,13 +120,25 @@ final class PanelViewModel {
             items.first { $0.contentHash == hash }
         }
         selectedID = (remembered ?? items.first)?.persistentModelID
+    }
+
+    // Called once the panel is actually on screen. Centering during reset()
+    // does nothing: the window is not laid out yet, so scrollTo is a no-op and
+    // the list stays at offset zero until the first arrow key.
+    func panelDidAppear() {
         openToken += 1
     }
 
     func refresh() {
+        let previousOrder = items.map(\.persistentModelID)
         items = store.items(matching: query)
         if selectedItem == nil {
             selectedID = items.first?.persistentModelID
+        }
+        // A copy made while the panel is open pushes every row down, so the
+        // selection has to be pulled back to the centre line.
+        if items.map(\.persistentModelID) != previousOrder {
+            openToken += 1
         }
     }
 
