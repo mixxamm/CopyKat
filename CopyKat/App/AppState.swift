@@ -34,6 +34,13 @@ final class AppState {
         NSClassFromString("XCTestCase") != nil
     }
 
+    // Screenshot mode: a throwaway store with a curated history, so App Store
+    // captures show the app doing its job instead of whatever is on the
+    // developer's clipboard.
+    private static var isDemo: Bool {
+        ProcessInfo.processInfo.environment["COPYKAT_DEMO"] != nil
+    }
+
     init() {
         AppSettings.migrateLegacyDefaults()
 
@@ -46,7 +53,7 @@ final class AppState {
         #endif
 
         let appSupport: URL
-        if Self.isRunningTests {
+        if Self.isRunningTests || Self.isDemo {
             appSupport = FileManager.default.temporaryDirectory
                 .appendingPathComponent("CopyKatTests-\(UUID().uuidString)")
         } else {
@@ -130,11 +137,45 @@ final class AppState {
             historyStore.pinsChanged = { [weak self] in self?.pinShortcutManager?.sync() }
             manager.sync()
 
-            if !AppSettings.hasCompletedOnboarding {
+            if Self.isDemo {
+                seedDemoHistory()
+                let scene = ProcessInfo.processInfo.environment["COPYKAT_DEMO"] ?? "panel"
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                    guard let self else { return }
+                    switch scene {
+                    case "settings":
+                        self.settingsWindowController.show(appState: self)
+                    case "search":
+                        self.panelController?.show()
+                        self.panelViewModel.query = "noets"
+                    default:
+                        self.panelController?.show()
+                        self.panelViewModel.moveSelection(3)
+                    }
+                }
+            } else if !AppSettings.hasCompletedOnboarding {
                 onboardingController.show(appState: self)
             }
 
         }
+    }
+
+    private func seedDemoHistory() {
+        let demo: [(String, String, String)] = [
+            ("com.apple.Safari", "Safari", "https://developer.apple.com/design/human-interface-guidelines"),
+            ("com.apple.mail", "Mail", "maxim@copykat.dev"),
+            ("com.apple.Notes", "Notes", "Standup: ship the release notes, then the changelog"),
+            ("com.apple.Safari", "Safari", "brew install --cask copykat"),
+            ("com.apple.dt.Xcode", "Xcode", "func paste(_ item: ClipboardItem) -> Bool"),
+            ("com.apple.Notes", "Notes", "IBAN BE31 6792 0034 9355"),
+            ("com.apple.finder", "Finder", "Q3-invoice.pdf"),
+        ]
+        for (bundleID, name, text) in demo {
+            try? historyStore.add(ClipboardCandidate(
+                content: .text(text), sourceAppBundleID: bundleID, sourceAppName: name
+            ))
+        }
+        panelViewModel.refresh()
     }
 
     private func commit(_ item: ClipboardItem) {
