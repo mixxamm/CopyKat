@@ -101,7 +101,6 @@ struct PanelView: View {
                         switch entry {
                         case .header(let section):
                             sectionHeader(for: section)
-                                .id(entry.id)
                         case .row(let item, let index, let indented, let showsSourceApp):
                             ItemRow(
                                 item: item,
@@ -111,7 +110,7 @@ struct PanelView: View {
                                 quickPasteBadge: index < 9 ? index + 1 : nil
                             )
                             .padding(.leading, indented ? 18 : 0)
-                            .id(entry.id)
+                            .id(item.persistentModelID)
                             .onTapGesture { onCommit(item) }
                             .contextMenu {
                                 Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {

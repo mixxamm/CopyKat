@@ -15,14 +15,22 @@ struct PanelSection: Equatable {
 }
 
 // One flat sequence of things to draw, so every row is its own scroll target.
+// Headers must not share an identity with their first row: two views with the
+// same id make SwiftUI draw duplicates and leave scrollTo aiming at the wrong
+// one.
+enum PanelEntryID: Hashable {
+    case header(PersistentIdentifier)
+    case row(PersistentIdentifier)
+}
+
 enum PanelEntry: Identifiable {
     case header(PanelSection)
     case row(item: ClipboardItem, index: Int, indented: Bool, showsSourceApp: Bool)
 
-    var id: PersistentIdentifier {
+    var id: PanelEntryID {
         switch self {
-        case .header(let section): section.id
-        case .row(let item, _, _, _): item.persistentModelID
+        case .header(let section): .header(section.id)
+        case .row(let item, _, _, _): .row(item.persistentModelID)
         }
     }
 }

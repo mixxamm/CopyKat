@@ -21,7 +21,10 @@ struct SettingsView: View {
                 .tabItem { Label("Pins", systemImage: "pin") }
                 .tag(SettingsTab.pins.rawValue)
         }
-        .frame(width: 440)
+        // The tab strip brings its own inset; without this the grouped form
+        // adds a second one and the first row floats far below the tabs.
+        .padding(.top, -8)
+        .frame(width: 460)
     }
 }
 
@@ -36,7 +39,7 @@ private struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
-            Section("General") {
+            Section("Panel") {
                 KeyboardShortcuts.Recorder("Open panel", name: .togglePanel)
 
                 Picker("Menu bar icon", selection: $menuBarIcon) {
@@ -45,14 +48,6 @@ private struct GeneralSettingsView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-
-                Stepper(value: $maxItems, in: 10...1000, step: 10) {
-                    Text("Keep \(maxItems) items")
-                }
-                .onChange(of: maxItems) { _, value in
-                    AppSettings.maxItems = value
-                    appState.historyStore.maxItems = value
-                }
 
                 Toggle("Animate scrolling", isOn: Binding(
                     get: { AppSettings.animateScrolling },
@@ -69,6 +64,23 @@ private struct GeneralSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
 
+            }
+
+            Section("History") {
+                Stepper(value: $maxItems, in: 10...1000, step: 10) {
+                    Text("Keep \(maxItems) items")
+                }
+                .onChange(of: maxItems) { _, value in
+                    AppSettings.maxItems = value
+                    appState.historyStore.maxItems = value
+                }
+
+                Button("Clear History…", role: .destructive) {
+                    confirmClearHistory()
+                }
+            }
+
+            Section("Startup") {
                 #if !MAS
                 Toggle("Automatically check for updates", isOn: Binding(
                     get: { appState.updaterController.updater.automaticallyChecksForUpdates },
@@ -115,12 +127,6 @@ private struct GeneralSettingsView: View {
                         selectedExclusion = nil
                     }
                     .disabled(selectedExclusion == nil)
-                }
-            }
-
-            Section {
-                Button("Clear History…", role: .destructive) {
-                    confirmClearHistory()
                 }
             }
         }

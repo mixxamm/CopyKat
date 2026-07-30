@@ -25,7 +25,7 @@ final class AppState {
     #if !MAS
     let updaterController: SPUStandardUpdaterController
     #endif
-    private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
+    private let logger = Logger(subsystem: "com.mixxamm.copykat", category: "AppState")
 
     // The unit-test bundle runs hosted inside this app, so `init` executes during
     // `xcodebuild test` too. Hosted tests must never touch the real user's clipboard
@@ -35,6 +35,8 @@ final class AppState {
     }
 
     init() {
+        AppSettings.migrateLegacyDefaults()
+
         #if !MAS
         updaterController = SPUStandardUpdaterController(
             startingUpdater: !Self.isRunningTests,

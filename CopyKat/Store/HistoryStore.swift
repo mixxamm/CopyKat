@@ -7,7 +7,7 @@ import os
 final class HistoryStore {
     private let context: ModelContext
     private let imageStore: ImageStore
-    private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "HistoryStore")
+    private let logger = Logger(subsystem: "com.mixxamm.copykat", category: "HistoryStore")
     private let matcher = FuzzyMatcher()
 
     var maxItems = 200

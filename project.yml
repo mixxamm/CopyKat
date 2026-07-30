@@ -1,6 +1,6 @@
 name: CopyKat
 options:
-  bundleIdPrefix: dev.mixxamm
+  bundleIdPrefix: com.mixxamm
   deploymentTarget:
     macOS: "14.0"
   createIntermediateGroups: true
@@ -30,7 +30,7 @@ targetTemplates:
         SWIFT_VERSION: "5.9"
         MARKETING_VERSION: "0.4.0"
         CURRENT_PROJECT_VERSION: "0.4.0"
-        PRODUCT_BUNDLE_IDENTIFIER: dev.mixxamm.CopyKat
+        PRODUCT_BUNDLE_IDENTIFIER: com.mixxamm.copykat
         CODE_SIGN_STYLE: Automatic
         # A stable signing identity keeps the Accessibility permission valid
         # across rebuilds; ad-hoc signing invalidated it on every build.

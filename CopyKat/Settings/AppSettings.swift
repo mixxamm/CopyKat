@@ -3,6 +3,23 @@ import Foundation
 enum AppSettings {
     private static let defaults = UserDefaults.standard
 
+    // Preferences live under the bundle identifier, so renaming it would reset
+    // everyone's settings. Copy the old domain over once.
+    private static let legacyDomain = "dev.mixxamm.CopyKat"
+
+    static func migrateLegacyDefaults() {
+        let migratedKey = "migratedFromLegacyDomain"
+        guard !defaults.bool(forKey: migratedKey),
+              let legacy = UserDefaults(suiteName: legacyDomain)
+        else { return }
+
+        for (key, value) in legacy.persistentDomain(forName: legacyDomain) ?? [:]
+        where defaults.object(forKey: key) == nil {
+            defaults.set(value, forKey: key)
+        }
+        defaults.set(true, forKey: migratedKey)
+    }
+
     static var maxItems: Int {
         get {
             let value = defaults.integer(forKey: "maxItems")
