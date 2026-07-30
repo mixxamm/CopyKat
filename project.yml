@@ -21,15 +21,22 @@ targetTemplates:
   App:
     type: application
     platform: macOS
-    sources: [CopyKat]
+    sources:
+      # Excluded, or Xcode copies them into the bundle as resources and Apple
+      # rejects the package for containing a nested bundle.
+      - path: CopyKat
+        excludes:
+          - "Info.plist"
+          - "Info-MAS.plist"
+          - "*.entitlements"
     dependencies:
       - package: KeyboardShortcuts
       - package: FuzzyMatch
     settings:
       base:
         SWIFT_VERSION: "5.9"
-        MARKETING_VERSION: "0.4.0"
-        CURRENT_PROJECT_VERSION: "0.4.0"
+        MARKETING_VERSION: "0.6.0"
+        CURRENT_PROJECT_VERSION: "1"
         PRODUCT_BUNDLE_IDENTIFIER: com.mixxamm.copykat
         CODE_SIGN_STYLE: Automatic
         # A stable signing identity keeps the Accessibility permission valid
@@ -46,6 +53,7 @@ targets:
       path: CopyKat/Info.plist
       properties:
         LSUIElement: true
+        LSApplicationCategoryType: public.app-category.productivity
         CFBundleDisplayName: CopyKat
         # Resolved from build settings so the release workflow can set the
         # version from the git tag.
@@ -68,6 +76,7 @@ targets:
       path: CopyKat/Info-MAS.plist
       properties:
         LSUIElement: true
+        LSApplicationCategoryType: public.app-category.productivity
         CFBundleDisplayName: CopyKat
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
