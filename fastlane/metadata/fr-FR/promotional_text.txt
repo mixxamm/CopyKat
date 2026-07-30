@@ -1,1 +1,1 @@
-CopyKat retient tout ce que vous copiez sur votre Mac : texte, images et fichiers. Appuyez sur un raccourci, choisissez un élément, et il atterrit là où vous êtes en train d'écrire.
+CopyKat retient tout ce que vous copiez sur votre Mac : texte, images et fichiers. Appuyez sur un raccourci, choisissez un élément, il atterrit là où vous écrivez.
