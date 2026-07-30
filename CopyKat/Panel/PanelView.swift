@@ -152,10 +152,11 @@ struct PanelView: View {
         }
     }
 
-    // Half the list height minus half a row: enough for any row to reach the
-    // vertical center of the visible list.
+    // A full half viewport of runway. Rows vary in height, and anything less
+    // leaves the first row a few points above centre because the scroll offset
+    // it would need is negative and gets clamped to zero.
     private func edgeRunway(in geometry: GeometryProxy) -> CGFloat {
-        max(0, geometry.size.height / 2 - 34)
+        geometry.size.height / 2
     }
 
     private func sectionHeader(for section: PanelSection) -> some View {
