@@ -11,9 +11,9 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: 2.6.0
-  Fuse:
-    url: https://github.com/krisk/fuse-swift
-    from: 1.4.0
+  FuzzyMatch:
+    url: https://github.com/ordo-one/FuzzyMatch.git
+    exactVersion: 1.3.2
 
 # Both apps ship the same sources; they differ only in sandboxing, updater and
 # signing. Keep shared settings here so the two cannot drift apart.
@@ -24,7 +24,7 @@ targetTemplates:
     sources: [CopyKat]
     dependencies:
       - package: KeyboardShortcuts
-      - package: Fuse
+      - package: FuzzyMatch
     settings:
       base:
         SWIFT_VERSION: "5.9"

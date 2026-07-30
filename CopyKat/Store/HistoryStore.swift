@@ -73,14 +73,15 @@ final class HistoryStore {
         if query.isEmpty {
             filtered = all
         } else {
-            // Fuzzy match on content and source app; best (lowest) score first,
-            // recency breaks ties.
+            // Fuzzy match on content and source app; best score first, and
+            // recency breaks ties because `all` is already newest first.
             let scored = all.compactMap { item -> (ClipboardItem, Double)? in
                 let haystacks = [item.text, item.sourceAppName].compactMap { $0 }
-                let best = haystacks.compactMap { matcher.score(query, in: $0) }.min()
-                return best.map { (item, $0) }
+                let best = haystacks.compactMap { matcher.score(query, in: $0) }.max()
+                guard let best, best > 0 else { return nil }
+                return (item, best)
             }
-            filtered = scored.sorted { $0.1 < $1.1 }.map(\.0)
+            filtered = scored.sorted { $0.1 > $1.1 }.map(\.0)
         }
         return filtered.filter(\.isPinned) + filtered.filter { !$0.isPinned }
     }

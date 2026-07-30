@@ -20,6 +20,7 @@ final class AppState {
     private var monitor: ClipboardMonitor?
     private var pinShortcutManager: PinShortcutManager?
     let onboardingController = OnboardingController()
+    private let demoBackdrop = DemoBackdrop()
     let settingsWindowController = SettingsWindowController()
     // The App Store build updates through the App Store, so it ships no updater.
     #if !MAS
@@ -139,15 +140,24 @@ final class AppState {
 
             if Self.isDemo {
                 seedDemoHistory()
+                demoBackdrop.show()
                 let scene = ProcessInfo.processInfo.environment["COPYKAT_DEMO"] ?? "panel"
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                     guard let self else { return }
                     switch scene {
                     case "settings":
                         self.settingsWindowController.show(appState: self)
+                        if let window = NSApp.windows.first(where: { $0.title.contains("CopyKat") }),
+                           let screen = NSScreen.main {
+                            let frame = window.frame
+                            window.setFrameOrigin(NSPoint(
+                                x: screen.frame.midX - frame.width / 2,
+                                y: screen.frame.midY - frame.height / 2 - 30
+                            ))
+                        }
                     case "search":
                         self.panelController?.show()
-                        self.panelViewModel.query = "noets"
+                        self.panelViewModel.query = ProcessInfo.processInfo.environment["COPYKAT_DEMO_QUERY"] ?? "interfce"
                     default:
                         self.panelController?.show()
                         self.panelViewModel.moveSelection(3)
@@ -161,12 +171,15 @@ final class AppState {
     }
 
     private func seedDemoHistory() {
+        // Oldest first: consecutive items from one app end up grouped under a
+        // single header in the panel, which is what the screenshots should show.
         let demo: [(String, String, String)] = [
-            ("com.apple.Safari", "Safari", "https://developer.apple.com/design/human-interface-guidelines"),
             ("com.apple.mail", "Mail", "maxim@copykat.dev"),
+            ("com.apple.Safari", "Safari", "https://swiftpackageindex.com/pointfreeco/swift-snapshot-testing"),
+            ("com.apple.Safari", "Safari", "https://developer.apple.com/design/human-interface-guidelines"),
+            ("com.apple.Terminal", "Terminal", "git rebase -i origin/main"),
+            ("com.apple.Terminal", "Terminal", "docker compose up -d"),
             ("com.apple.Notes", "Notes", "Standup: ship the release notes, then the changelog"),
-            ("com.apple.Safari", "Safari", "brew install --cask copykat"),
-            ("com.apple.dt.Xcode", "Xcode", "func paste(_ item: ClipboardItem) -> Bool"),
             ("com.apple.Notes", "Notes", "IBAN BE31 6792 0034 9355"),
             ("com.apple.finder", "Finder", "Q3-invoice.pdf"),
         ]
