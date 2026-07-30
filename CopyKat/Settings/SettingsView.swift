@@ -54,6 +54,16 @@ private struct GeneralSettingsView: View {
                 ))
 
                 VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Hide the list", isOn: Binding(
+                        get: { AppSettings.hideListUntilSearch },
+                        set: { AppSettings.hideListUntilSearch = $0 }
+                    ))
+                    Text("Opens a smaller panel showing only the highlighted item. Arrow keys still walk the history, and the list comes back as soon as you type.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
                     Toggle("Fast paste", isOn: Binding(
                         get: { AppSettings.fastPasteEnabled },
                         set: { AppSettings.fastPasteEnabled = $0 }

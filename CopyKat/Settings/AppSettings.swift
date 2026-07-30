@@ -78,6 +78,14 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "animateScrolling") }
     }
 
+    // Shrinks the panel to just the preview. People who cycle by feel rather
+    // than by reading the list get a smaller window in the way; typing brings
+    // the list straight back, since searching blind would be pointless.
+    static var hideListUntilSearch: Bool {
+        get { defaults.bool(forKey: "hideListUntilSearch") }
+        set { defaults.set(newValue, forKey: "hideListUntilSearch") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

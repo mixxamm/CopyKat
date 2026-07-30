@@ -25,6 +25,17 @@ final class PanelViewModel {
     // list needs an explicit signal to scroll the selection back into place.
     private(set) var openToken = 0
 
+    // Snapshotted per showing rather than read straight from AppSettings: a
+    // stored property is observable, so the panel resizes when the list comes
+    // and goes. The setting can only change while the panel is closed anyway.
+    private(set) var hidesList = AppSettings.hideListUntilSearch
+
+    // Searching without seeing what you matched is useless, so any query brings
+    // the list back however the setting is left.
+    var listIsVisible: Bool {
+        !hidesList || !query.isEmpty
+    }
+
     // Selection follows the item, not its position. Index-based selection can
     // highlight the wrong row (or two rows) when a live refresh shifts the list
     // between renders; identities cannot collide.
@@ -44,6 +55,7 @@ final class PanelViewModel {
 
     func reset() {
         query = ""
+        hidesList = AppSettings.hideListUntilSearch
         refresh()
         // Pick up where the user left off: highlight the item pasted last,
         // even when newer copies have stacked on top of it since.

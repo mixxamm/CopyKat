@@ -1,12 +1,28 @@
 import SwiftData
 import SwiftUI
 
+// The window and the SwiftUI content have to agree on a size, and the window is
+// built before the view exists, so both read it from here.
+enum PanelSize {
+    static let listWidth: CGFloat = 300
+    static let full = CGSize(width: 720, height: 440)
+    // Wide enough to read a paragraph, short enough to feel like a peek rather
+    // than a second window. Fixed rather than fitted to the content: cycling
+    // would otherwise resize the panel under the cursor on every key press.
+    static let previewOnly = CGSize(width: 460, height: 280)
+
+    static func current(listIsVisible: Bool) -> CGSize {
+        listIsVisible ? full : previewOnly
+    }
+}
+
 struct PanelView: View {
     @Bindable var model: PanelViewModel
     let imageStore: ImageStore
     let onCommit: (ClipboardItem) -> Void
     let onDismiss: () -> Void
     let onRecordShortcut: (ClipboardItem) -> Void
+    let onResize: (CGSize) -> Void
 
     @FocusState private var searchFocused: Bool
     @State private var scrolledID: PersistentIdentifier?
@@ -16,13 +32,16 @@ struct PanelView: View {
             searchBar
             Divider()
             HStack(spacing: 0) {
-                itemList
-                    .frame(width: 300)
-                Divider()
+                if model.listIsVisible {
+                    itemList
+                        .frame(width: PanelSize.listWidth)
+                    Divider()
+                }
                 PreviewPane(item: model.selectedItem, imageStore: imageStore)
             }
         }
-        .frame(width: 720, height: 440)
+        .frame(width: size.width, height: size.height)
+        .onChange(of: model.listIsVisible) { _, _ in onResize(size) }
         .background(VisualEffectView())
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
@@ -68,6 +87,10 @@ struct PanelView: View {
             onCommit(item)
             return .handled
         }
+    }
+
+    private var size: CGSize {
+        PanelSize.current(listIsVisible: model.listIsVisible)
     }
 
     private var searchBar: some View {

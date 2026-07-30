@@ -34,6 +34,62 @@ final class PanelViewModelTests: XCTestCase {
     }
 
 
+    func testListStaysVisibleWhenTheSettingIsOff() throws {
+        let previous = AppSettings.hideListUntilSearch
+        defer { AppSettings.hideListUntilSearch = previous }
+        AppSettings.hideListUntilSearch = false
+
+        try seed(["a", "b"])
+
+        XCTAssertTrue(model.listIsVisible)
+        XCTAssertEqual(PanelSize.current(listIsVisible: model.listIsVisible), PanelSize.full)
+    }
+
+    func testHiddenListComesBackWhileSearchingAndGoesAwayAgain() throws {
+        let previous = AppSettings.hideListUntilSearch
+        defer { AppSettings.hideListUntilSearch = previous }
+        AppSettings.hideListUntilSearch = true
+
+        try seed(["apple", "banana"])
+        XCTAssertFalse(model.listIsVisible)
+        XCTAssertEqual(PanelSize.current(listIsVisible: model.listIsVisible), PanelSize.previewOnly)
+
+        model.query = "app"
+        XCTAssertTrue(model.listIsVisible)
+
+        model.query = ""
+        XCTAssertFalse(model.listIsVisible)
+    }
+
+    func testHiddenListStillCyclesThroughItems() throws {
+        let previous = AppSettings.hideListUntilSearch
+        defer { AppSettings.hideListUntilSearch = previous }
+        AppSettings.hideListUntilSearch = true
+
+        try seed(["a", "b", "c"])
+        XCTAssertFalse(model.listIsVisible)
+
+        model.moveSelection(1)
+        XCTAssertEqual(model.selectedItem?.text, "b")
+        model.moveSelection(1)
+        XCTAssertEqual(model.selectedItem?.text, "a")
+        XCTAssertFalse(model.listIsVisible)
+    }
+
+    func testSettingIsPickedUpOnTheNextOpen() throws {
+        let previous = AppSettings.hideListUntilSearch
+        defer { AppSettings.hideListUntilSearch = previous }
+        AppSettings.hideListUntilSearch = false
+
+        try seed(["a"])
+        XCTAssertTrue(model.listIsVisible)
+
+        AppSettings.hideListUntilSearch = true
+        model.reset()
+
+        XCTAssertFalse(model.listIsVisible)
+    }
+
     func testRefreshWithNewItemsAsksForRecentring() throws {
         try seed(["a", "b"])
         let before = model.openToken

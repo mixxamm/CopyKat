@@ -18,7 +18,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     ) {
         self.viewModel = viewModel
         self.onCommit = onCommit
-        panel = FloatingPanel(contentRect: NSRect(x: 0, y: 0, width: 720, height: 440))
+        panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: PanelSize.full))
         super.init()
 
         let view = PanelView(
@@ -29,7 +29,8 @@ final class PanelController: NSObject, NSWindowDelegate {
             onRecordShortcut: { [weak self] item in
                 self?.hide()
                 onRecordShortcut(item)
-            }
+            },
+            onResize: { [weak self] size in self?.resize(to: size) }
         )
         panel.contentView = NSHostingView(rootView: view)
         panel.delegate = self
@@ -83,6 +84,10 @@ final class PanelController: NSObject, NSWindowDelegate {
     func show(fastSession: Bool = false) {
         viewModel.reset()
         viewModel.isFastSession = fastSession
+        panel.setFrame(
+            NSRect(origin: panel.frame.origin, size: PanelSize.current(listIsVisible: viewModel.listIsVisible)),
+            display: false
+        )
         centerOnActiveScreen()
         panel.orderFrontRegardless()
         panel.makeKey()
@@ -119,6 +124,15 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     func windowDidResignKey(_ notification: Notification) {
         hide()
+    }
+
+    // Typing brings the list back mid-session. Growing from a fixed top edge
+    // keeps the search field under the cursor instead of sliding it upwards.
+    private func resize(to size: CGSize) {
+        guard panel.frame.size != size else { return }
+        let frame = panel.frame
+        let origin = NSPoint(x: frame.midX - size.width / 2, y: frame.maxY - size.height)
+        panel.setFrame(NSRect(origin: origin, size: size), display: true)
     }
 
     private func centerOnActiveScreen() {

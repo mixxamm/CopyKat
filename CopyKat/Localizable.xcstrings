@@ -7840,6 +7840,230 @@
           }
         }
       }
+    },
+    "Hide the list": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lijst verbergen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste ausblenden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer la liste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar la lista"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascondi l'elenco"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar a lista"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukryj listę"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сховати список"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ascunde lista"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dölj listan"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть список"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏列表"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隱藏列表"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リストを隠す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목록 숨기기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listeyi gizle"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إخفاء القائمة"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सूची छिपाएँ"
+          }
+        }
+      }
+    },
+    "Opens a smaller panel showing only the highlighted item. Arrow keys still walk the history, and the list comes back as soon as you type.": {
+      "localizations": {
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opent een kleiner venster met alleen het gemarkeerde item. Met de pijltjestoetsen loop je nog steeds door de geschiedenis, en zodra je typt komt de lijst terug."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet ein kleineres Fenster, das nur das markierte Objekt zeigt. Mit den Pfeiltasten blätterst du weiterhin durch den Verlauf, und sobald du tippst, erscheint die Liste wieder."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre un panneau plus petit qui n'affiche que l'élément sélectionné. Les flèches permettent toujours de parcourir l'historique, et la liste réapparaît dès que vous tapez."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un panel más pequeño que solo muestra el elemento seleccionado. Las flechas siguen recorriendo el historial y la lista vuelve en cuanto escribes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un pannello più piccolo che mostra solo l'elemento selezionato. Le frecce continuano a scorrere la cronologia e l'elenco ricompare appena inizi a scrivere."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um painel mais pequeno que mostra apenas o item selecionado. As setas continuam a percorrer o histórico e a lista volta assim que começar a escrever."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otwiera mniejsze okno pokazujące tylko zaznaczony element. Strzałki nadal przewijają historię, a lista wraca, gdy tylko zaczniesz pisać."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відкриває менше вікно, у якому видно лише вибраний елемент. Стрілки й далі гортають історію, а список повертається, щойно ви почнете вводити текст."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deschide un panou mai mic care afișează doar elementul selectat. Săgețile parcurg în continuare istoricul, iar lista reapare de îndată ce începi să scrii."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öppnar en mindre panel som bara visar det markerade objektet. Piltangenterna bläddrar fortfarande genom historiken, och listan kommer tillbaka så fort du skriver."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает уменьшенное окно, в котором виден только выбранный элемент. Стрелки по-прежнему листают историю, а список возвращается, как только вы начнёте печатать."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开一个只显示当前选中项的小面板。方向键仍可浏览历史记录，开始输入时列表会重新出现。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟只顯示目前選取項目的小面板。方向鍵仍可瀏覽剪貼簿記錄，開始輸入時列表就會重新出現。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択中の項目だけを表示する小さなパネルを開きます。矢印キーでこれまでどおり履歴をたどれ、入力を始めるとリストが戻ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 항목만 보여 주는 더 작은 패널을 엽니다. 화살표 키로 계속 기록을 넘길 수 있고, 입력을 시작하면 목록이 다시 나타납니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca seçili ögeyi gösteren daha küçük bir panel açar. Ok tuşlarıyla geçmişte gezinmeye devam edebilir, yazmaya başladığınızda listeyi geri getirebilirsiniz."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يفتح لوحة أصغر تعرض العنصر المحدَّد فقط. تظل مفاتيح الأسهم تتنقل في السجل، وتعود القائمة بمجرد أن تبدأ الكتابة."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "एक छोटा पैनल खोलता है जिसमें केवल चुना हुआ आइटम दिखता है। तीर कुंजियों से आप पहले की तरह इतिहास में घूम सकते हैं, और टाइप करते ही सूची वापस आ जाती है।"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
