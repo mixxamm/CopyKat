@@ -6,6 +6,7 @@ struct OnboardingView: View {
 
     @State private var step = 0
     @State private var fastPaste = AppSettings.fastPasteEnabled
+    @State private var launchAtLogin = LoginItem.isEnabled
 
     private let stepCount = 4
 
@@ -110,6 +111,11 @@ struct OnboardingView: View {
             Text("CopyKat lives in your menu bar. Pin items with ⌘P, paste the top ones with ⌘1 to ⌘9, and tweak everything in Settings.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
+            Toggle("Launch at login", isOn: $launchAtLogin)
+                .onChange(of: launchAtLogin) { _, enabled in
+                    let actual = LoginItem.setEnabled(enabled)
+                    if actual != enabled { launchAtLogin = actual }
+                }
         }
     }
 }

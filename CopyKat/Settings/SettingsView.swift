@@ -29,7 +29,7 @@ private struct GeneralSettingsView: View {
 
     @State private var maxItems = AppSettings.maxItems
     @State private var excludedBundleIDs = AppSettings.excludedBundleIDs
-    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var launchAtLogin = LoginItem.isEnabled
     @State private var selectedExclusion: String?
     @AppStorage(AppSettings.menuBarIconKey) private var menuBarIcon = AppSettings.defaultMenuBarIcon
 
@@ -86,15 +86,8 @@ private struct GeneralSettingsView: View {
 
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, enabled in
-                        do {
-                            if enabled {
-                                try SMAppService.mainApp.register()
-                            } else {
-                                try SMAppService.mainApp.unregister()
-                            }
-                        } catch {
-                            launchAtLogin = SMAppService.mainApp.status == .enabled
-                        }
+                        let actual = LoginItem.setEnabled(enabled)
+                        if actual != enabled { launchAtLogin = actual }
                     }
             }
 
