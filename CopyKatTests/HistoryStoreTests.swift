@@ -69,6 +69,14 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertTrue(items[0].isPinned)
     }
 
+    func testUnlimitedHistoryKeepsEverything() throws {
+        store.maxItems = nil
+        for index in 0..<25 {
+            try store.add(textCandidate("item \(index)"))
+        }
+        XCTAssertEqual(store.items(matching: "").count, 25)
+    }
+
     func testPinnedItemsSurviveTrimAndSortFirst() throws {
         store.maxItems = 2
         try store.add(textCandidate("keep"))

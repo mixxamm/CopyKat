@@ -1,0 +1,29 @@
+Your Mac remembers exactly one thing you copied. CopyKat remembers the rest.
+
+Press a hotkey and a small panel appears with everything you have copied lately: text, images, screenshots, and files. Start typing to find the one you want, hit Return, and it is pasted into the app you were already working in. The panel never steals focus, so your cursor stays where you left it.
+
+WHAT IT KEEPS
+
+Text, images and files, all searchable. Copy a screenshot and it shows up with a thumbnail and its dimensions. Copy a file in the Finder and paste it again later. Items you copied on your iPhone or iPad arrive through Universal Clipboard and are marked as coming from another device.
+
+FAST WHEN YOU ARE IN A HURRY
+
+The top nine items have their own shortcuts, so Command-1 through Command-9 paste them instantly. Arrow keys walk the list. Turn on Fast paste and you can hold the hotkey, tap V to run through recent items, and let go to paste, without ever opening a menu.
+
+SEARCH THAT FORGIVES
+
+Typing "invoce" still finds your invoice. Search matches on content and on the app you copied from, so "safari" brings up everything you grabbed while browsing.
+
+PIN WHAT YOU USE EVERY DAY
+
+Pin your address, a license key, or that one snippet you keep retyping. Pinned items stay at the top and never expire. Give any of them a shortcut of its own and paste it from anywhere, without opening CopyKat at all.
+
+PRIVATE BY DEFAULT
+
+Everything stays on your Mac. There is no account, no sync service, and no analytics. Passwords are skipped: apps that mark their clipboard entries as sensitive are ignored automatically, and common password managers, including Apple Passwords, are excluded out of the box. You can add any other app to the ignore list yourself.
+
+BUILT FOR macOS
+
+CopyKat is a native app written in Swift. It lives in the menu bar, weighs a couple of megabytes, and speaks 18 languages. Requires macOS 14 or later.
+
+CopyKat is open source under the MIT license. You can read every line at github.com/mixxamm/CopyKat.

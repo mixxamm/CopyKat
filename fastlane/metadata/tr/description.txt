@@ -1,0 +1,29 @@
+Mac'iniz kopyaladığınız tam olarak tek bir şeyi hatırlar. CopyKat gerisini hatırlar.
+
+Bir kısayola basın, son zamanlarda kopyaladığınız her şeyin bulunduğu küçük bir panel açılsın: metin, görseller, ekran görüntüleri ve dosyalar. Aradığınızı bulmak için yazmaya başlayın, Return'e basın, ve zaten üzerinde çalıştığınız uygulamaya yapıştırılsın. Panel asla odağı çalmaz, imleciniz tam bıraktığınız yerde kalır.
+
+COPYKAT NELERİ SAKLAR
+
+Metin, görsel ve dosyalar, hepsi aranabilir. Bir ekran görüntüsü kopyalayın, küçük resmi ve boyutlarıyla birlikte görünsün. Finder'da bir dosya kopyalayın ve daha sonra tekrar yapıştırın. iPhone veya iPad'inizde kopyaladığınız öğeler Universal Clipboard üzerinden gelir ve başka bir cihazdan geldiği belirtilir.
+
+ACELENİZ VARKEN HIZLI
+
+En üstteki dokuz öğenin kendi kısayolu vardır, Command-1'den Command-9'a kadar anında yapıştırılır. Ok tuşlarıyla listede gezinirsiniz. Hızlı yapıştırmayı açın, kısayolu basılı tutup son öğeler arasında gezinmek için V'ye dokunun, bırakınca yapıştırılsın, hiçbir menü açmadan.
+
+HATALARI AFFEDEN ARAMA
+
+"faturra" diye yanlış yazsanız bile CopyKat faturanızı yine de bulur. Arama hem içeriğe hem de kopyaladığınız uygulamaya bakar, bu yüzden "safari" yazınca gezinirken kopyaladığınız her şey çıkar.
+
+HER GÜN KULLANDIĞINIZI SABİTLEYİN
+
+Adresinizi, bir lisans anahtarını ya da sürekli yeniden yazdığınız o metni sabitleyin. Sabitlenen öğeler en üstte kalır ve asla süresi dolmaz. Herhangi birine kendi kısayolunu verin ve CopyKat'ı hiç açmadan her yerden yapıştırın.
+
+VARSAYILAN OLARAK ÖZEL
+
+Her şey Mac'inizde kalır. Hesap yok, senkronizasyon hizmeti yok, analiz yok. Şifreler atlanır: kendi öğelerini hassas olarak işaretleyen uygulamalar otomatik olarak yok sayılır, Apple Parolalar dahil yaygın parola yöneticileri varsayılan olarak hariç tutulur. Başka herhangi bir uygulamayı da kendiniz yok sayma listesine ekleyebilirsiniz.
+
+MACOS İÇİN TASARLANDI
+
+CopyKat, Swift ile yazılmış yerel bir uygulamadır. Menü çubuğunda yaşar, birkaç megabayt ağırlığındadır ve 18 dil konuşur. macOS 14 veya üzeri gerektirir.
+
+CopyKat, MIT lisansı altında açık kaynaktır. Her satır kodu github.com/mixxamm/CopyKat adresinde okuyabilirsiniz.

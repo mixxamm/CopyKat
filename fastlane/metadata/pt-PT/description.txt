@@ -1,0 +1,29 @@
+O seu Mac lembra-se exatamente de uma coisa que copiou. O CopyKat lembra-se do resto.
+
+Prima um atalho e surge um pequeno painel com tudo o que copiou recentemente: texto, imagens, capturas de ecrã e ficheiros. Comece a escrever para encontrar o que procura, prima Return, e é colado na app onde já estava a trabalhar. O painel nunca rouba o foco, por isso o cursor fica exatamente onde o deixou.
+
+O QUE O COPYKAT GUARDA
+
+Texto, imagens e ficheiros, tudo pesquisável. Copie uma captura de ecrã e ela aparece com uma miniatura e as suas dimensões. Copie um ficheiro no Finder e cole-o novamente mais tarde. Os itens que copia no seu iPhone ou iPad chegam através do Universal Clipboard e são marcados como vindos de outro dispositivo.
+
+RÁPIDO QUANDO TEM PRESSA
+
+Os primeiros nove itens têm o seu próprio atalho, Command-1 até Command-9 colam-nos instantaneamente. As setas percorrem a lista. Ative a Colagem rápida e pode manter o atalho premido, tocar em V para percorrer os itens recentes, e soltar para colar, sem nunca abrir um menu.
+
+UMA PESQUISA QUE PERDOA ERROS
+
+Escreva "factua" por engano e o CopyKat continua a encontrar a sua fatura. A pesquisa procura no conteúdo e na app de origem, por isso "safari" mostra tudo o que copiou enquanto navegava.
+
+FIXE O QUE USA TODOS OS DIAS
+
+Fixe a sua morada, uma chave de licença, ou aquele texto que digita vezes sem conta. Os itens fixados ficam no topo e nunca expiram. Dê a qualquer um deles um atalho próprio e cole-o a partir de qualquer sítio, sem sequer abrir o CopyKat.
+
+PRIVADO POR DEFEITO
+
+Tudo fica no seu Mac. Não há conta, nem serviço de sincronização, nem análises. As palavras-passe são ignoradas: as apps que marcam os seus elementos como sensíveis são ignoradas automaticamente, e os gestores de palavras-passe mais comuns, incluindo o Apple Palavras-passe, estão excluídos por predefinição. Pode adicionar qualquer outra app à lista de exclusão você mesmo.
+
+FEITO PARA macOS
+
+O CopyKat é uma app nativa escrita em Swift. Vive na barra de menus, pesa alguns megabytes e fala 18 idiomas. Requer macOS 14 ou posterior.
+
+O CopyKat é open source sob a licença MIT. Pode ler cada linha de código em github.com/mixxamm/CopyKat.

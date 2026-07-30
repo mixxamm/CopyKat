@@ -1,0 +1,29 @@
+Dein Mac merkt sich genau eine Sache, die du kopiert hast. CopyKat merkt sich den Rest.
+
+Drück eine Tastenkombination, und ein kleines Fenster erscheint mit allem, was du zuletzt kopiert hast: Text, Bilder, Screenshots und Dateien. Tipp los, um das Gesuchte zu finden, drück Return, und es wird in die App eingefügt, in der du gerade gearbeitet hast. Das Fenster nimmt nie den Fokus weg, dein Cursor bleibt also genau dort, wo du ihn gelassen hast.
+
+WAS COPYKAT BEHÄLT
+
+Text, Bilder und Dateien, alles durchsuchbar. Kopier einen Screenshot, und er erscheint mit Vorschaubild und Abmessungen. Kopier eine Datei im Finder und füg sie später wieder ein. Elemente, die du auf deinem iPhone oder iPad kopiert hast, kommen über Universal Clipboard an und sind als von einem anderen Gerät stammend gekennzeichnet.
+
+SCHNELL, WENN ES EILT
+
+Die obersten neun Einträge haben ihre eigene Tastenkombination, Command-1 bis Command-9 fügen sie sofort ein. Mit den Pfeiltasten gehst du die Liste durch. Schalte Schnelles Einfügen ein, halte die Tastenkombination gedrückt, tipp V, um durch die letzten Einträge zu gehen, und lass los, um einzufügen, ganz ohne ein Menü zu öffnen.
+
+SUCHE, DIE NACHSICHTIG IST
+
+Auch wer "Rechnnung" tippt, findet seine Rechnung. Die Suche durchsucht Inhalt und die App, aus der du kopiert hast, also zeigt "safari" alles, was du beim Surfen aufgeschnappt hast.
+
+ANPINNEN, WAS DU JEDEN TAG BRAUCHST
+
+Pinn deine Adresse an, einen Lizenzschlüssel oder den einen Textbaustein, den du ständig neu tippst. Angepinnte Einträge bleiben oben und laufen nie ab. Gib jedem eine eigene Tastenkombination und füg ihn von überall ein, ohne CopyKat überhaupt zu öffnen.
+
+STANDARDMÄSSIG PRIVAT
+
+Alles bleibt auf deinem Mac. Es gibt kein Konto, keinen Sync-Dienst und keine Analysen. Passwörter werden übersprungen: Apps, die ihre Zwischenablage-Einträge als sensibel markieren, werden automatisch ignoriert, und gängige Passwort-Manager, einschließlich Apple Passwörter, sind von Haus aus ausgeschlossen. Du kannst jede andere App selbst zur Ignorierliste hinzufügen.
+
+GEBAUT FÜR macOS
+
+CopyKat ist eine native App, geschrieben in Swift. Sie lebt in der Menüleiste, wiegt ein paar Megabyte und spricht 18 Sprachen. Erfordert macOS 14 oder neuer.
+
+CopyKat ist Open Source unter der MIT-Lizenz. Du kannst jede Zeile Code lesen auf github.com/mixxamm/CopyKat.

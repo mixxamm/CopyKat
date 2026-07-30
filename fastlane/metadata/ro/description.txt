@@ -1,0 +1,29 @@
+Mac-ul tău își amintește exact un singur lucru pe care l-ai copiat. CopyKat le ține minte pe toate celelalte.
+
+Apasă o comandă rapidă și apare un panou mic cu tot ce ai copiat recent: text, imagini, capturi de ecran și fișiere. Începe să scrii ca să găsești ce cauți, apasă Return, și se lipește în aplicația în care lucrai deja. Panoul nu fură niciodată focusul, așa că cursorul rămâne exact unde l-ai lăsat.
+
+CE ȚINE MINTE COPYKAT
+
+Text, imagini și fișiere, toate căutabile. Copiază o captură de ecran și apare cu o previzualizare și dimensiunile ei. Copiază un fișier din Finder și lipește-l din nou mai târziu. Elementele copiate de pe iPhone sau iPad ajung prin Universal Clipboard și sunt marcate ca provenind de pe alt dispozitiv.
+
+RAPID CÂND EȘTI GRĂBIT
+
+Primele nouă elemente au propria comandă rapidă, Command-1 până la Command-9 le lipesc instant. Săgețile parcurg lista. Activează Lipire rapidă și poți ține apăsată comanda rapidă, atinge V pentru a parcurge elementele recente, și dă drumul pentru a lipi, fără să deschizi niciun meniu.
+
+O CĂUTARE CARE IARTĂ GREȘELILE
+
+Scrie "factua" din greșeală și CopyKat tot găsește factura. Căutarea se face după conținut și după aplicația din care ai copiat, așa că "safari" scoate tot ce ai copiat în timp ce navigai.
+
+FIXEAZĂ CE FOLOSEȘTI ZILNIC
+
+Fixează adresa ta, o cheie de licență, sau acel text pe care îl retastezi mereu. Elementele fixate rămân sus și nu expiră niciodată. Dă-i oricăruia propria comandă rapidă și lipește-l de oriunde, fără să deschizi măcar CopyKat.
+
+PRIVAT IMPLICIT
+
+Totul rămâne pe Mac-ul tău. Nu există cont, niciun serviciu de sincronizare și nicio analiză. Parolele sunt ignorate: aplicațiile care își marchează elementele ca fiind sensibile sunt excluse automat, iar managerii obișnuiți de parole, inclusiv Apple Parole, sunt excluși implicit. Poți adăuga tu însuți orice altă aplicație la lista de excluderi.
+
+CONSTRUIT PENTRU macOS
+
+CopyKat este o aplicație nativă scrisă în Swift. Stă în bara de meniu, cântărește câteva megaocteți și vorbește 18 limbi. Necesită macOS 14 sau mai nou.
+
+CopyKat este open source sub licența MIT. Poți citi fiecare linie de cod pe github.com/mixxamm/CopyKat.

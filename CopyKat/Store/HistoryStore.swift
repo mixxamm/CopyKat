@@ -10,7 +10,8 @@ final class HistoryStore {
     private let logger = Logger(subsystem: "com.mixxamm.copykat", category: "HistoryStore")
     private let matcher = FuzzyMatcher()
 
-    var maxItems = 200
+    // nil keeps everything; the user can turn the cap off in settings.
+    var maxItems: Int? = 200
     var pinsChanged: (() -> Void)?
     var selfWriteTracker: SelfWriteTracker?
     // Fires for copies the user actually made, so callers can drop state that
@@ -193,6 +194,7 @@ final class HistoryStore {
     }
 
     private func trim() {
+        guard let maxItems else { return }
         let unpinned = allItemsNewestFirst().filter { !$0.isPinned }
         for item in unpinned.dropFirst(maxItems) {
             if let filename = item.imageFilename {

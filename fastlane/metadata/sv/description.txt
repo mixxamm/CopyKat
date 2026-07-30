@@ -1,0 +1,29 @@
+Din Mac minns exakt en sak du har kopierat. CopyKat minns resten.
+
+Tryck på en genväg och en liten panel dyker upp med allt du har kopierat på sistone: text, bilder, skärmbilder och filer. Börja skriva för att hitta det du letar efter, tryck på Return, och det klistras in i appen du redan jobbade i. Panelen tar aldrig fokus, så markören stannar precis där du lämnade den.
+
+VAD COPYKAT SPARAR
+
+Text, bilder och filer, allt sökbart. Kopiera en skärmbild och den dyker upp med en miniatyr och sina mått. Kopiera en fil i Finder och klistra in den igen senare. Objekt du kopierar på din iPhone eller iPad kommer in via Universal Clipboard och märks som att de kommer från en annan enhet.
+
+SNABBT NÄR DU HAR BRÅTTOM
+
+De nio översta objekten har egna genvägar, Command-1 till Command-9 klistrar in dem direkt. Piltangenterna flyttar dig genom listan. Slå på Snabbklistring och du kan hålla ner genvägen, trycka på V för att bläddra genom senaste objekten, och släppa för att klistra in, utan att öppna någon meny.
+
+SÖKNING SOM FÖRLÅTER MISSTAG
+
+Skriv "fakturra" fel och CopyKat hittar ändå din faktura. Sökningen matchar både innehåll och appen du kopierade från, så "safari" tar fram allt du snappade upp medan du surfade.
+
+FÄST DET DU ANVÄNDER VARJE DAG
+
+Fäst din adress, en licensnyckel, eller den där textsnutten du skriver om och om igen. Fästa objekt stannar högst upp och löper aldrig ut. Ge vilket som helst av dem en egen genväg och klistra in det varifrån som helst, utan att ens öppna CopyKat.
+
+PRIVAT SOM STANDARD
+
+Allt stannar på din Mac. Det finns inget konto, ingen synktjänst och ingen analys. Lösenord hoppas över: appar som märker sina urklipp som känsliga ignoreras automatiskt, och vanliga lösenordshanterare, inklusive Apple Lösenord, är uteslutna som standard. Du kan själv lägga till vilken annan app som helst i ignoreringslistan.
+
+BYGGD FÖR macOS
+
+CopyKat är en inbyggd app skriven i Swift. Den bor i menyraden, väger några megabyte och talar 18 språk. Kräver macOS 14 eller senare.
+
+CopyKat är öppen källkod under MIT-licensen. Du kan läsa varje rad kod på github.com/mixxamm/CopyKat.

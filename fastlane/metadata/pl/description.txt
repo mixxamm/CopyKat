@@ -1,0 +1,29 @@
+Twój Mac pamięta dokładnie jedną rzecz, którą skopiowałeś. CopyKat pamięta resztę.
+
+Naciśnij skrót, a pojawi się mały panel ze wszystkim, co ostatnio skopiowałeś: tekst, obrazy, zrzuty ekranu i pliki. Zacznij pisać, aby znaleźć to, czego szukasz, naciśnij Return, a element zostanie wklejony w aplikacji, w której już pracowałeś. Panel nigdy nie przejmuje fokusu, więc kursor zostaje dokładnie tam, gdzie go zostawiłeś.
+
+CO PRZECHOWUJE COPYKAT
+
+Tekst, obrazy i pliki, wszystko przeszukiwalne. Skopiuj zrzut ekranu, a pojawi się z miniaturą i wymiarami. Skopiuj plik w Finderze i wklej go ponownie później. Elementy skopiowane na iPhonie lub iPadzie trafiają tu przez Universal Clipboard i są oznaczone jako pochodzące z innego urządzenia.
+
+SZYBKI, GDY SIĘ SPIESZYSZ
+
+Pierwszych dziewięć elementów ma własne skróty, Command-1 do Command-9 wklejają je natychmiast. Strzałki przesuwają listę. Włącz Szybkie wklejanie, a możesz przytrzymać skrót, stuknąć V, aby przejść przez ostatnie elementy, i puścić, aby wkleić, bez otwierania menu.
+
+WYSZUKIWANIE, KTÓRE WYBACZA
+
+Wpisz "fakura" przez pomyłkę, a CopyKat i tak znajdzie twoją fakturę. Wyszukiwanie działa na treści i na aplikacji źródłowej, więc "safari" pokaże wszystko, co skopiowałeś podczas przeglądania.
+
+PRZYPNIJ TO, CZEGO UŻYWASZ CODZIENNIE
+
+Przypnij swój adres, klucz licencyjny albo ten jeden fragment tekstu, który wciąż wpisujesz od nowa. Przypięte elementy zostają na górze i nigdy nie wygasają. Nadaj dowolnemu z nich własny skrót i wklejaj go skądkolwiek, nawet nie otwierając CopyKat.
+
+PRYWATNY DOMYŚLNIE
+
+Wszystko zostaje na twoim Macu. Nie ma konta, usługi synchronizacji ani analityki. Hasła są pomijane: aplikacje, które oznaczają swoje elementy jako wrażliwe, są automatycznie ignorowane, a popularne menedżery haseł, w tym Hasła Apple, są domyślnie wykluczone. Możesz sam dodać do listy wykluczeń dowolną inną aplikację.
+
+STWORZONY DLA macOS
+
+CopyKat to natywna aplikacja napisana w Swift. Mieszka na pasku menu, waży kilka megabajtów i mówi w 18 językach. Wymaga macOS 14 lub nowszego.
+
+CopyKat jest open source na licencji MIT. Możesz przeczytać każdą linię kodu na github.com/mixxamm/CopyKat.

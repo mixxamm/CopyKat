@@ -85,7 +85,7 @@ final class AppState {
         // Copying something new makes the remembered paste stale: the panel
         // should open on the newest item again.
         historyStore.externalCopyArrived = { AppSettings.lastPastedContentHash = nil }
-        historyStore.maxItems = AppSettings.maxItems
+        historyStore.maxItems = AppSettings.historyLimit
         historyStore.migrateLegacyContentHashes()
         historyStore.backfillPinShortcutIDs()
         historyStore.pruneOrphans()

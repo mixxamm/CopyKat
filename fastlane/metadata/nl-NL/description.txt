@@ -1,0 +1,29 @@
+Je Mac onthoudt precies een ding dat je hebt gekopieerd. CopyKat onthoudt de rest.
+
+Druk op een sneltoets en er verschijnt een klein paneel met alles wat je onlangs hebt gekopieerd: tekst, afbeeldingen, screenshots en bestanden. Begin te typen om te vinden wat je zoekt, druk op Return, en het wordt geplakt in de app waar je al mee bezig was. Het paneel neemt nooit de focus over, dus je cursor blijft precies staan waar je hem had gelaten.
+
+WAT COPYKAT BEWAART
+
+Tekst, afbeeldingen en bestanden, allemaal doorzoekbaar. Kopieer een screenshot en het verschijnt met een miniatuur en de afmetingen. Kopieer een bestand in de Finder en plak het later opnieuw. Items die je op je iPhone of iPad hebt gekopieerd komen binnen via Universal Clipboard en zijn gemarkeerd als afkomstig van een ander apparaat.
+
+SNEL ALS JE HAAST HEBT
+
+De bovenste negen items hebben hun eigen sneltoets, dus Command-1 tot en met Command-9 plakken ze meteen. Met de pijltjestoetsen loop je door de lijst. Zet Snel plakken aan en je kunt de sneltoets ingedrukt houden, op V tikken om door recente items te lopen, en loslaten om te plakken, zonder ooit een menu te openen.
+
+ZOEKEN DAT VERGEVINGSGEZIND IS
+
+Typ "factuur" verkeerd en CopyKat vindt hem toch. Zoeken werkt op inhoud en op de app waar je uit hebt gekopieerd, dus "safari" laat alles zien wat je tijdens het browsen hebt gepakt.
+
+ZET VAST WAT JE ELKE DAG GEBRUIKT
+
+Zet je adres vast, een licentiesleutel, of dat ene stukje tekst dat je steeds opnieuw typt. Vastgezette items blijven bovenaan staan en verlopen nooit. Geef er zelf een sneltoets aan en plak het overal vandaan, zonder CopyKat zelfs maar te openen.
+
+PRIVACY STAAT VOOROP
+
+Alles blijft op je Mac. Er is geen account, geen synchronisatieservice en geen analytics. Wachtwoorden worden overgeslagen: apps die hun klembordgegevens als gevoelig markeren, worden automatisch genegeerd, en bekende wachtwoordbeheerders, waaronder Apple Wachtwoorden, staan standaard op de negeerlijst. Je kunt zelf elke andere app aan die lijst toevoegen.
+
+GEBOUWD VOOR macOS
+
+CopyKat is een native app, geschreven in Swift. Hij leeft in de menubalk, weegt een paar megabyte en spreekt 18 talen. Vereist macOS 14 of hoger.
+
+CopyKat is open source onder de MIT-licentie. Je kunt elke regel code lezen op github.com/mixxamm/CopyKat.

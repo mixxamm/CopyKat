@@ -1,0 +1,29 @@
+Il tuo Mac ricorda esattamente una cosa che hai copiato. CopyKat ricorda il resto.
+
+Premi una scorciatoia e appare un piccolo pannello con tutto quello che hai copiato di recente: testo, immagini, screenshot e file. Inizia a digitare per trovare quello che cerchi, premi Invio, e viene incollato nell'app in cui stavi già lavorando. Il pannello non ruba mai il focus, quindi il cursore resta esattamente dove l'hai lasciato.
+
+COSA CONSERVA COPYKAT
+
+Testo, immagini e file, tutto ricercabile. Copia uno screenshot e appare con anteprima e dimensioni. Copia un file nel Finder e incollalo di nuovo più tardi. Gli elementi copiati dal tuo iPhone o iPad arrivano tramite Universal Clipboard e sono contrassegnati come provenienti da un altro dispositivo.
+
+VELOCE QUANDO HAI FRETTA
+
+I primi nove elementi hanno una scorciatoia propria, Command-1 fino a Command-9 li incollano all'istante. Le frecce scorrono la lista. Attiva Incolla rapido e puoi tenere premuta la scorciatoia, toccare V per scorrere gli elementi recenti, e rilasciare per incollare, senza mai aprire un menu.
+
+UNA RICERCA CHE PERDONA GLI ERRORI
+
+Scrivi "fattua" per sbaglio e CopyKat trova comunque la tua fattura. La ricerca funziona sul contenuto e sull'app di origine, quindi "safari" mostra tutto ciò che hai copiato navigando.
+
+FISSA CIÒ CHE USI OGNI GIORNO
+
+Fissa il tuo indirizzo, una chiave di licenza, o quel testo che ricopi in continuazione. Gli elementi fissati restano in cima e non scadono mai. Dai a ciascuno una scorciatoia propria e incollalo da qualsiasi punto, senza nemmeno aprire CopyKat.
+
+PRIVATO PER IMPOSTAZIONE PREDEFINITA
+
+Tutto resta sul tuo Mac. Non c'è account, nessun servizio di sincronizzazione, nessuna analisi. Le password vengono ignorate: le app che segnano i propri elementi come sensibili vengono escluse automaticamente, e i gestori di password più comuni, incluso Password di Apple, sono esclusi di default. Puoi aggiungere tu stesso qualsiasi altra app all'elenco di esclusione.
+
+PENSATO PER macOS
+
+CopyKat è un'app nativa scritta in Swift. Vive nella barra dei menu, pesa un paio di megabyte e parla 18 lingue. Richiede macOS 14 o successivo.
+
+CopyKat è open source con licenza MIT. Puoi leggere ogni riga di codice su github.com/mixxamm/CopyKat.

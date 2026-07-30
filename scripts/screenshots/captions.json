@@ -1,1 +1,97 @@
-{"en-US": ["Everything you copied,\none shortcut away", "Type what you remember.\nWe’ll find it.", "Set it up the way\nyou work"]}
+{
+  "en-US": [
+    "Everything you copied,\none shortcut away",
+    "Type what you remember.\nWe’ll find it.",
+    "Set it up the way\nyou work"
+  ],
+  "nl-NL": [
+    "Alles wat je kopieerde,\neen sneltoets verder",
+    "Typ wat je nog weet.\nWij vinden het wel.",
+    "Stel het in zoals\njij werkt"
+  ],
+  "de-DE": [
+    "Alles, was du kopierst,\nnur eine Taste entfernt",
+    "Tipp, was du noch weißt.\nWir finden es.",
+    "Richte es so ein,\nwie du arbeitest"
+  ],
+  "fr-FR": [
+    "Tout ce que vous copiez,\nà portée de raccourci",
+    "Tapez ce dont vous\nvous souvenez, on trouve.",
+    "Configurez-le comme\nvous travaillez"
+  ],
+  "es-ES": [
+    "Todo lo que copiaste,\na un atajo de distancia",
+    "Escribe lo que recuerdas.\nNosotros lo encontramos.",
+    "Configúralo a tu\nmanera de trabajar"
+  ],
+  "it": [
+    "Tutto quello che copi,\na una scorciatoia",
+    "Scrivi quello che\nricordi. Lo troviamo noi.",
+    "Impostalo come\nlavori tu"
+  ],
+  "pt-PT": [
+    "Tudo o que copiou,\na um atalho de distância",
+    "Escreva o que\nse lembra. Encontramos.",
+    "Configure-o à\nsua maneira"
+  ],
+  "pl": [
+    "Wszystko, co skopiujesz,\njeden skrót dalej",
+    "Wpisz, co pamiętasz.\nMy to znajdziemy.",
+    "Ustaw to tak,\njak Ty pracujesz"
+  ],
+  "uk": [
+    "Все скопійоване,\nна відстані скорочення",
+    "Введіть, що пам'ятаєте.\nМи це знайдемо.",
+    "Налаштуйте під\nсвій робочий стиль"
+  ],
+  "ro": [
+    "Tot ce ai copiat,\nla o comandă distanță",
+    "Scrie ce-ți amintești.\nNoi găsim restul.",
+    "Configurează-l cum\nlucrezi tu"
+  ],
+  "sv": [
+    "Allt du har kopierat,\nen genväg bort",
+    "Skriv vad du minns.\nVi hittar det.",
+    "Anpassa det efter\nhur du jobbar"
+  ],
+  "ru": [
+    "Все скопированное,\nв одном нажатии",
+    "Введите, что помните.\nМы это найдем.",
+    "Настройте под\nсвой стиль работы"
+  ],
+  "zh-Hans": [
+    "复制过的一切\n一键即达",
+    "打出你记得的\n我们帮你找到",
+    "按你的习惯\n自由设置"
+  ],
+  "zh-Hant": [
+    "複製過的一切\n一鍵即達",
+    "打出你記得的\n我們幫你找到",
+    "照你的習慣\n自由設定"
+  ],
+  "ja": [
+    "コピーしたものが\nショートカット一つで",
+    "覚えている言葉を入力\nあとは探し出します",
+    "自分のやり方に\n合わせて設定"
+  ],
+  "ko": [
+    "복사한 모든 것을\n단축키 하나로",
+    "기억나는 대로 입력하면\n우리가 찾아드려요",
+    "당신의 방식대로\n설정하세요"
+  ],
+  "tr": [
+    "Kopyaladığın her şey,\nbir kısayol uzağında",
+    "Hatırladığını yaz.\nBiz bulalım.",
+    "Kendi çalışma tarzına\ngöre ayarla"
+  ],
+  "ar-SA": [
+    "كل ما نسخته من قبل\nعلى بعد اختصار واحد",
+    "اكتب ما تتذكره\nوسنجده لك",
+    "اضبطه بالطريقة\nالتي تناسب عملك"
+  ],
+  "hi": [
+    "जो कुछ भी कॉपी किया,\nबस एक शॉर्टकट दूर",
+    "जो याद है वो टाइप करें,\nहम ढूंढ लेंगे",
+    "अपने तरीके से\nसेट कर लें"
+  ]
+}

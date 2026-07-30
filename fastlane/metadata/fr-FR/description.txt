@@ -1,0 +1,29 @@
+Votre Mac ne retient qu'une seule chose que vous avez copiée. CopyKat retient tout le reste.
+
+Appuyez sur un raccourci et un petit panneau apparaît avec tout ce que vous avez copié récemment : texte, images, captures d'écran et fichiers. Commencez à taper pour trouver ce que vous cherchez, appuyez sur Retour, et cela se colle dans l'application où vous travailliez déjà. Le panneau ne prend jamais le focus, votre curseur reste donc exactement où vous l'avez laissé.
+
+CE QUE COPYKAT GARDE
+
+Texte, images et fichiers, tout est cherchable. Copiez une capture d'écran et elle apparaît avec une miniature et ses dimensions. Copiez un fichier dans le Finder et collez-le à nouveau plus tard. Les éléments copiés depuis votre iPhone ou votre iPad arrivent via Universal Clipboard et sont marqués comme provenant d'un autre appareil.
+
+RAPIDE QUAND VOUS ÊTES PRESSÉ
+
+Les neuf premiers éléments ont leur propre raccourci, Command-1 à Command-9 les collent instantanément. Les flèches parcourent la liste. Activez Collage rapide et vous pouvez maintenir le raccourci, appuyer sur V pour parcourir les éléments récents, et relâcher pour coller, sans jamais ouvrir de menu.
+
+UNE RECHERCHE QUI PARDONNE
+
+Tapez "factur" par erreur et CopyKat trouve quand même votre facture. La recherche porte sur le contenu et sur l'application d'origine, donc "safari" fait remonter tout ce que vous avez copié en naviguant.
+
+ÉPINGLEZ CE QUE VOUS UTILISEZ CHAQUE JOUR
+
+Épinglez votre adresse, une clé de licence, ou ce texte que vous retapez sans cesse. Les éléments épinglés restent en haut et n'expirent jamais. Donnez-leur un raccourci propre et collez-les de n'importe où, sans même ouvrir CopyKat.
+
+PRIVÉ PAR DÉFAUT
+
+Tout reste sur votre Mac. Il n'y a ni compte, ni service de synchronisation, ni analyse. Les mots de passe sont ignorés : les applications qui marquent leurs éléments comme sensibles sont automatiquement exclues, et les gestionnaires de mots de passe courants, dont Apple Mots de passe, sont exclus par défaut. Vous pouvez ajouter vous-même n'importe quelle autre application à la liste d'exclusion.
+
+CONÇU POUR macOS
+
+CopyKat est une application native écrite en Swift. Elle vit dans la barre de menus, pèse quelques mégaoctets et parle 18 langues. Nécessite macOS 14 ou plus récent.
+
+CopyKat est open source sous licence MIT. Vous pouvez lire chaque ligne de code sur github.com/mixxamm/CopyKat.

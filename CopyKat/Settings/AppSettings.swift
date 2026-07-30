@@ -28,6 +28,16 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "maxItems") }
     }
 
+    static var unlimitedHistory: Bool {
+        get { defaults.bool(forKey: "unlimitedHistory") }
+        set { defaults.set(newValue, forKey: "unlimitedHistory") }
+    }
+
+    // nil when the user turned the cap off, so the store keeps everything.
+    static var historyLimit: Int? {
+        unlimitedHistory ? nil : maxItems
+    }
+
     static var excludedBundleIDs: [String] {
         get { defaults.stringArray(forKey: "excludedBundleIDs") ?? [] }
         set { defaults.set(newValue, forKey: "excludedBundleIDs") }

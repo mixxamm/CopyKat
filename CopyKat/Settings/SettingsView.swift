@@ -28,6 +28,7 @@ private struct GeneralSettingsView: View {
     let appState: AppState
 
     @State private var maxItems = AppSettings.maxItems
+    @State private var unlimitedHistory = AppSettings.unlimitedHistory
     @State private var excludedBundleIDs = AppSettings.excludedBundleIDs
     @State private var launchAtLogin = LoginItem.isEnabled
     @State private var selectedExclusion: String?
@@ -63,13 +64,20 @@ private struct GeneralSettingsView: View {
             }
 
             Section("History") {
+                Toggle("Keep everything", isOn: $unlimitedHistory)
+                    .onChange(of: unlimitedHistory) { _, value in
+                        AppSettings.unlimitedHistory = value
+                        appState.historyStore.maxItems = AppSettings.historyLimit
+                    }
+
                 Stepper(value: $maxItems, in: 10...1000, step: 10) {
                     Text("Keep \(maxItems) items")
                 }
                 .onChange(of: maxItems) { _, value in
                     AppSettings.maxItems = value
-                    appState.historyStore.maxItems = value
+                    appState.historyStore.maxItems = AppSettings.historyLimit
                 }
+                .disabled(unlimitedHistory)
 
                 Button("Clear History…", role: .destructive) {
                     confirmClearHistory()
