@@ -64,10 +64,12 @@ private struct GeneralSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                #if !MAS
                 Toggle("Automatically check for updates", isOn: Binding(
                     get: { appState.updaterController.updater.automaticallyChecksForUpdates },
                     set: { appState.updaterController.updater.automaticallyChecksForUpdates = $0 }
                 ))
+                #endif
 
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, enabled in

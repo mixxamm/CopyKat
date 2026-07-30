@@ -1,6 +1,8 @@
 import AppKit
 import KeyboardShortcuts
+#if !MAS
 import Sparkle
+#endif
 import SwiftData
 import os
 
@@ -18,7 +20,11 @@ final class AppState {
     private var monitor: ClipboardMonitor?
     private var pinShortcutManager: PinShortcutManager?
     let onboardingController = OnboardingController()
+    let settingsWindowController = SettingsWindowController()
+    // The App Store build updates through the App Store, so it ships no updater.
+    #if !MAS
     let updaterController: SPUStandardUpdaterController
+    #endif
     private let logger = Logger(subsystem: "dev.mixxamm.CopyKat", category: "AppState")
 
     // The unit-test bundle runs hosted inside this app, so `init` executes during
@@ -29,11 +35,13 @@ final class AppState {
     }
 
     init() {
+        #if !MAS
         updaterController = SPUStandardUpdaterController(
             startingUpdater: !Self.isRunningTests,
             updaterDelegate: nil,
             userDriverDelegate: nil
         )
+        #endif
 
         let appSupport: URL
         if Self.isRunningTests {
@@ -92,7 +100,11 @@ final class AppState {
         let controller = PanelController(
             viewModel: panelViewModel,
             imageStore: imageStore,
-            onCommit: { [weak self] item in self?.commit(item) }
+            onCommit: { [weak self] item in self?.commit(item) },
+            onRecordShortcut: { [weak self] _ in
+                guard let self else { return }
+                self.settingsWindowController.show(appState: self, tab: .pins)
+            }
         )
         panelController = controller
         if !Self.isRunningTests {

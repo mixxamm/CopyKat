@@ -14,15 +14,34 @@ packages:
   Fuse:
     url: https://github.com/krisk/fuse-swift
     from: 1.4.0
-targets:
-  CopyKat:
+
+# Both apps ship the same sources; they differ only in sandboxing, updater and
+# signing. Keep shared settings here so the two cannot drift apart.
+targetTemplates:
+  App:
     type: application
     platform: macOS
     sources: [CopyKat]
     dependencies:
       - package: KeyboardShortcuts
-      - package: Sparkle
       - package: Fuse
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "0.4.0"
+        CURRENT_PROJECT_VERSION: "0.4.0"
+        PRODUCT_BUNDLE_IDENTIFIER: dev.mixxamm.CopyKat
+        CODE_SIGN_STYLE: Automatic
+        # A stable signing identity keeps the Accessibility permission valid
+        # across rebuilds; ad-hoc signing invalidated it on every build.
+        DEVELOPMENT_TEAM: 826KF5XR57
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+targets:
+  CopyKat:
+    templates: [App]
+    dependencies:
+      - package: Sparkle
     info:
       path: CopyKat/Info.plist
       properties:
@@ -35,22 +54,32 @@ targets:
         SUFeedURL: https://github.com/mixxamm/CopyKat/releases/latest/download/appcast.xml
         SUEnableAutomaticChecks: true
         SUPublicEDKey: "78x0TuiNj31++gwt6eWVa0YvcXMo7iKPLGY910CHnvk="
+
+  # App Store build: sandboxed, updated by the App Store, so no Sparkle.
+  CopyKat-MAS:
+    templates: [App]
     settings:
       base:
-        SWIFT_VERSION: "5.9"
-        MARKETING_VERSION: "0.2.0"
-        CURRENT_PROJECT_VERSION: "0.2.0"
-        CODE_SIGN_STYLE: Automatic
-        # A stable signing identity keeps the Accessibility permission valid
-        # across rebuilds; ad-hoc signing invalidated it on every build.
-        DEVELOPMENT_TEAM: 826KF5XR57
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        PRODUCT_NAME: CopyKat
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: MAS
+        ENABLE_APP_SANDBOX: YES
+        CODE_SIGN_ENTITLEMENTS: CopyKat/CopyKat-MAS.entitlements
+    info:
+      path: CopyKat/Info-MAS.plist
+      properties:
+        LSUIElement: true
+        CFBundleDisplayName: CopyKat
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+
   CopyKatTests:
     type: bundle.unit-test
     platform: macOS
     sources: [CopyKatTests]
     dependencies:
       - target: CopyKat
+
 schemes:
   CopyKat:
     build:
@@ -58,3 +87,7 @@ schemes:
         CopyKat: all
     test:
       targets: [CopyKatTests]
+  CopyKat-MAS:
+    build:
+      targets:
+        CopyKat-MAS: all

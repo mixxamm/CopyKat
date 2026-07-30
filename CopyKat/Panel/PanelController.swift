@@ -13,7 +13,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     init(
         viewModel: PanelViewModel,
         imageStore: ImageStore,
-        onCommit: @escaping (ClipboardItem) -> Void
+        onCommit: @escaping (ClipboardItem) -> Void,
+        onRecordShortcut: @escaping (ClipboardItem) -> Void
     ) {
         self.viewModel = viewModel
         self.onCommit = onCommit
@@ -24,7 +25,11 @@ final class PanelController: NSObject, NSWindowDelegate {
             model: viewModel,
             imageStore: imageStore,
             onCommit: onCommit,
-            onDismiss: { [weak self] in self?.hide() }
+            onDismiss: { [weak self] in self?.hide() },
+            onRecordShortcut: { [weak self] item in
+                self?.hide()
+                onRecordShortcut(item)
+            }
         )
         panel.contentView = NSHostingView(rootView: view)
         panel.delegate = self

@@ -5,6 +5,7 @@ struct PanelView: View {
     let imageStore: ImageStore
     let onCommit: (ClipboardItem) -> Void
     let onDismiss: () -> Void
+    let onRecordShortcut: (ClipboardItem) -> Void
 
     @FocusState private var searchFocused: Bool
 
@@ -114,10 +115,7 @@ struct PanelView: View {
                                     model.togglePin(item)
                                 }
                                 if item.isPinned {
-                                    Button("Record Shortcut…") {
-                                        AppSettings.selectedSettingsTab = SettingsTab.pins.rawValue
-                                        SettingsOpener.open()
-                                    }
+                                    Button("Record Shortcut…") { onRecordShortcut(item) }
                                 }
                                 Divider()
                                 Button("Delete", role: .destructive) { model.delete(item) }
