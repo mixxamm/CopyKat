@@ -2,39 +2,6 @@ import Foundation
 import Observation
 import SwiftData
 
-// A run of consecutive items from the same app, rendered under one shared
-// app header when it holds more than one item.
-struct PanelSection: Equatable {
-    let sourceAppBundleID: String?
-    let sourceAppName: String?
-    let items: [ClipboardItem]
-    let firstIndex: Int
-
-    var isGrouped: Bool { items.count >= 2 }
-    var id: PersistentIdentifier { items[0].persistentModelID }
-}
-
-// One flat sequence of things to draw, so every row is its own scroll target.
-// Headers must not share an identity with their first row: two views with the
-// same id make SwiftUI draw duplicates and leave scrollTo aiming at the wrong
-// one.
-enum PanelEntryID: Hashable {
-    case header(PersistentIdentifier)
-    case row(PersistentIdentifier)
-}
-
-enum PanelEntry: Identifiable {
-    case header(PanelSection)
-    case row(item: ClipboardItem, index: Int, indented: Bool, showsSourceApp: Bool)
-
-    var id: PanelEntryID {
-        switch self {
-        case .header(let section): .header(section.id)
-        case .row(let item, _, _, _): .row(item.persistentModelID)
-        }
-    }
-}
-
 @MainActor
 @Observable
 final class PanelViewModel {
@@ -69,50 +36,6 @@ final class PanelViewModel {
 
     var selectedIndex: Int? {
         items.firstIndex { $0.persistentModelID == selectedID }
-    }
-
-    var sections: [PanelSection] {
-        var sections: [PanelSection] = []
-        var run: [ClipboardItem] = []
-
-        func closeRun(endingBefore index: Int) {
-            guard let first = run.first else { return }
-            sections.append(PanelSection(
-                sourceAppBundleID: first.sourceAppBundleID,
-                sourceAppName: first.sourceAppName,
-                items: run,
-                firstIndex: index - run.count
-            ))
-            run = []
-        }
-
-        for (index, item) in items.enumerated() {
-            if let previous = run.last {
-                let sameRun = previous.sourceAppBundleID != nil
-                    && previous.sourceAppBundleID == item.sourceAppBundleID
-                    && previous.isPinned == item.isPinned
-                if !sameRun {
-                    closeRun(endingBefore: index)
-                }
-            }
-            run.append(item)
-        }
-        closeRun(endingBefore: items.count)
-        return sections
-    }
-
-    var entries: [PanelEntry] {
-        sections.flatMap { section -> [PanelEntry] in
-            let rows = section.items.enumerated().map { offset, item in
-                PanelEntry.row(
-                    item: item,
-                    index: section.firstIndex + offset,
-                    indented: section.isGrouped,
-                    showsSourceApp: !section.isGrouped
-                )
-            }
-            return section.isGrouped ? [.header(section)] + rows : rows
-        }
     }
 
     init(store: HistoryStore) {

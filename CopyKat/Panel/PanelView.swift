@@ -97,31 +97,24 @@ struct PanelView: View {
                     // gives the scroll view room to move, so the first rows can
                     // reach the centre line instead of clamping at the top.
                     Color.clear.frame(height: edgeRunway(in: geometry))
-                    ForEach(model.entries) { entry in
-                        switch entry {
-                        case .header(let section):
-                            sectionHeader(for: section)
-                        case .row(let item, let index, let indented, let showsSourceApp):
-                            ItemRow(
-                                item: item,
-                                isSelected: item.persistentModelID == model.selectedID,
-                                imageStore: imageStore,
-                                showsSourceApp: showsSourceApp,
-                                quickPasteBadge: index < 9 ? index + 1 : nil
-                            )
-                            .padding(.leading, indented ? 18 : 0)
-                            .id(item.persistentModelID)
-                            .onTapGesture { onCommit(item) }
-                            .contextMenu {
-                                Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {
-                                    model.togglePin(item)
-                                }
-                                if item.isPinned {
-                                    Button("Record Shortcut…") { onRecordShortcut(item) }
-                                }
-                                Divider()
-                                Button("Delete", role: .destructive) { model.delete(item) }
+                    ForEach(Array(model.items.enumerated()), id: \.element.persistentModelID) { index, item in
+                        ItemRow(
+                            item: item,
+                            isSelected: item.persistentModelID == model.selectedID,
+                            imageStore: imageStore,
+                            quickPasteBadge: index < 9 ? index + 1 : nil
+                        )
+                        .id(item.persistentModelID)
+                        .onTapGesture { onCommit(item) }
+                        .contextMenu {
+                            Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {
+                                model.togglePin(item)
                             }
+                            if item.isPinned {
+                                Button("Record Shortcut…") { onRecordShortcut(item) }
+                            }
+                            Divider()
+                            Button("Delete", role: .destructive) { model.delete(item) }
                         }
                     }
                     Color.clear.frame(height: edgeRunway(in: geometry))
@@ -173,19 +166,4 @@ struct PanelView: View {
         geometry.size.height / 2
     }
 
-    private func sectionHeader(for section: PanelSection) -> some View {
-        HStack(spacing: 6) {
-            if let icon = AppIconProvider.icon(forBundleID: section.sourceAppBundleID) {
-                Image(nsImage: icon)
-                    .resizable()
-                    .frame(width: 16, height: 16)
-            }
-            Text(section.sourceAppName ?? "")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-        }
-        .padding(.horizontal, 10)
-        .padding(.top, 8)
-        .padding(.bottom, 2)
-    }
 }

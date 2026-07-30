@@ -33,19 +33,6 @@ final class PanelViewModelTests: XCTestCase {
         try store.add(ClipboardCandidate(content: .text(text), sourceAppBundleID: app, sourceAppName: app))
     }
 
-    func testSectionIndicesStayContiguousAcrossMixedRuns() throws {
-        try seedApp("one", app: nil)
-        try seedApp("two", app: "Notes")
-        try seedApp("three", app: "Notes")
-        try seedApp("four", app: "Safari")
-        try seedApp("five", app: nil)
-        model.reset()
-
-        let numbered = model.sections.flatMap { section in
-            section.items.enumerated().map { section.firstIndex + $0.offset }
-        }
-        XCTAssertEqual(numbered, Array(0..<model.items.count))
-    }
 
     func testRefreshWithNewItemsAsksForRecentring() throws {
         try seed(["a", "b"])
@@ -59,38 +46,8 @@ final class PanelViewModelTests: XCTestCase {
         XCTAssertEqual(model.openToken, unchanged)
     }
 
-    func testSectionsGroupConsecutiveSameAppRuns() throws {
-        try seedApp("one", app: "Notes")
-        try seedApp("two", app: "Notes")
-        try seedApp("three", app: "Safari")
-        model.reset()
 
-        let sections = model.sections
-        XCTAssertEqual(sections.map { $0.items.map(\.text) }, [["three"], ["two", "one"]])
-        XCTAssertEqual(sections.map(\.isGrouped), [false, true])
-        XCTAssertEqual(sections.map(\.firstIndex), [0, 1])
-        XCTAssertEqual(sections[1].sourceAppName, "Notes")
-    }
 
-    func testSectionsNeverGroupItemsWithoutSourceApp() throws {
-        try seedApp("one", app: nil)
-        try seedApp("two", app: nil)
-        model.reset()
-
-        XCTAssertEqual(model.sections.count, 2)
-        XCTAssertTrue(model.sections.allSatisfy { !$0.isGrouped })
-    }
-
-    func testSectionsSplitAtPinBoundary() throws {
-        try seedApp("one", app: "Notes")
-        try seedApp("two", app: "Notes")
-        let toPin = try XCTUnwrap(store.items(matching: "").first { $0.text == "one" })
-        store.togglePin(toPin)
-        model.reset()
-
-        XCTAssertEqual(model.sections.map { $0.items.map(\.text) }, [["one"], ["two"]])
-        XCTAssertTrue(model.sections.allSatisfy { !$0.isGrouped })
-    }
 
     func testResetRestoresHighlightToLastPastedItem() throws {
         let previous = AppSettings.lastPastedContentHash

@@ -4,7 +4,6 @@ struct ItemRow: View {
     let item: ClipboardItem
     let isSelected: Bool
     let imageStore: ImageStore
-    var showsSourceApp = true
     var quickPasteBadge: Int?
 
     var body: some View {
@@ -48,7 +47,7 @@ struct ItemRow: View {
             Image(systemName: "iphone")
                 .frame(width: 24, height: 24)
                 .foregroundStyle(.secondary)
-        } else if showsSourceApp, let icon = AppIconProvider.icon(forBundleID: item.sourceAppBundleID) {
+        } else if let icon = AppIconProvider.icon(forBundleID: item.sourceAppBundleID) {
             Image(nsImage: icon)
                 .resizable()
                 .frame(width: 24, height: 24)
@@ -78,11 +77,6 @@ struct ItemRow: View {
         HStack(spacing: 4) {
             if item.kind == .image, let width = item.imageWidth, let height = item.imageHeight {
                 Text(verbatim: "\(width) × \(height)")
-            }
-            if item.isRemote {
-                Text("Other device")
-            } else if showsSourceApp, item.kind != .image, let appName = item.sourceAppName {
-                Text(appName)
             }
             Text(item.createdAt, format: .relative(presentation: .named))
         }
