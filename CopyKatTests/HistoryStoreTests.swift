@@ -69,6 +69,34 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertTrue(items[0].isPinned)
     }
 
+    func testDeleteItemsOlderThanSparesRecentAndPinnedOnes() throws {
+        try store.add(textCandidate("ancient"))
+        try store.add(textCandidate("pinned but ancient"))
+        try store.add(textCandidate("fresh"))
+
+        let items = store.items(matching: "")
+        let old = Date().addingTimeInterval(-60 * 60 * 24 * 90)
+        try XCTUnwrap(items.first { $0.text == "ancient" }).createdAt = old
+        let pinned = try XCTUnwrap(items.first { $0.text == "pinned but ancient" })
+        pinned.createdAt = old
+        store.togglePin(pinned)
+
+        let removed = store.deleteItems(olderThan: Date().addingTimeInterval(-60 * 60 * 24 * 30))
+
+        XCTAssertEqual(removed, 1)
+        XCTAssertEqual(Set(store.items(matching: "").compactMap(\.text)), ["pinned but ancient", "fresh"])
+    }
+
+    func testStorageUsageCountsImagesAndText() throws {
+        try store.add(textCandidate("some text"))
+        try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))
+
+        let usage = store.storageUsage()
+        XCTAssertEqual(usage.textItems, 1)
+        XCTAssertEqual(usage.imageItems, 1)
+        XCTAssertGreaterThan(usage.imageBytes, 0)
+    }
+
     func testUnlimitedHistoryKeepsEverything() throws {
         store.maxItems = nil
         for index in 0..<25 {

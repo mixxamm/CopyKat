@@ -29,6 +29,8 @@ private struct GeneralSettingsView: View {
 
     @State private var maxItems = AppSettings.maxItems
     @State private var unlimitedHistory = AppSettings.unlimitedHistory
+    @State private var usedBytes: Int64 = 0
+    @State private var showingStorage = false
     @State private var excludedBundleIDs = AppSettings.excludedBundleIDs
     @State private var launchAtLogin = LoginItem.isEnabled
     @State private var selectedExclusion: String?
@@ -78,6 +80,14 @@ private struct GeneralSettingsView: View {
                     appState.historyStore.maxItems = AppSettings.historyLimit
                 }
                 .disabled(unlimitedHistory)
+
+                LabeledContent("On disk") {
+                    HStack(spacing: 10) {
+                        Text(ByteCountFormatter.string(fromByteCount: usedBytes, countStyle: .file))
+                            .foregroundStyle(.secondary)
+                        Button("Manage…") { showingStorage = true }
+                    }
+                }
 
                 Button("Clear History…", role: .destructive) {
                     confirmClearHistory()
@@ -130,6 +140,12 @@ private struct GeneralSettingsView: View {
         .formStyle(.grouped)
         .scrollDisabled(true)
         .fixedSize(horizontal: false, vertical: true)
+        .onAppear { usedBytes = appState.historyStore.storageUsage().totalBytes }
+        .sheet(isPresented: $showingStorage, onDismiss: {
+            usedBytes = appState.historyStore.storageUsage().totalBytes
+        }) {
+            StorageView(appState: appState)
+        }
     }
 
     private func addApp() {

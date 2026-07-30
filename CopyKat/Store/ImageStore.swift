@@ -60,6 +60,14 @@ final class ImageStore {
         try? FileManager.default.removeItem(at: imageURL(for: filename))
     }
 
+    func totalBytes() -> Int64 {
+        existingFilenames().reduce(into: Int64(0)) { total, name in
+            let path = imageURL(for: name).path
+            let size = (try? FileManager.default.attributesOfItem(atPath: path)[.size]) as? Int64
+            total += size ?? 0
+        }
+    }
+
     func existingFilenames() -> Set<String> {
         let names = (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
         return Set(names.filter { $0.hasSuffix(".png") })

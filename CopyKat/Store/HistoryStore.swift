@@ -106,6 +106,39 @@ final class HistoryStore {
         }
     }
 
+    struct StorageUsage {
+        var textItems = 0
+        var imageItems = 0
+        var imageBytes: Int64 = 0
+        var databaseBytes: Int64 = 0
+
+        var totalBytes: Int64 { imageBytes + databaseBytes }
+    }
+
+    func storageUsage() -> StorageUsage {
+        var usage = StorageUsage()
+        for item in allItemsNewestFirst() {
+            if item.kind == .image {
+                usage.imageItems += 1
+            } else {
+                usage.textItems += 1
+            }
+        }
+        usage.imageBytes = imageStore.totalBytes()
+        usage.databaseBytes = databaseBytes
+        return usage
+    }
+
+    // Pinned items are spared: they are kept on purpose, however old they are.
+    @discardableResult
+    func deleteItems(olderThan cutoff: Date) -> Int {
+        let stale = allItemsNewestFirst().filter { !$0.isPinned && $0.createdAt < cutoff }
+        for item in stale {
+            delete(item)
+        }
+        return stale.count
+    }
+
     func pinnedItems() -> [ClipboardItem] {
         allItemsNewestFirst().filter(\.isPinned)
     }
@@ -166,6 +199,17 @@ final class HistoryStore {
         try? context.save()
         for stray in imageStore.existingFilenames().subtracting(referenced) {
             imageStore.delete(named: stray)
+        }
+    }
+
+    private var databaseBytes: Int64 {
+        guard let url = context.container.configurations.first?.url else { return 0 }
+        // SwiftData keeps a write-ahead log and a shared memory file next to the
+        // store; all three count towards what the history costs on disk.
+        return ["", "-wal", "-shm"].reduce(into: Int64(0)) { total, suffix in
+            let path = url.path + suffix
+            let size = (try? FileManager.default.attributesOfItem(atPath: path)[.size]) as? Int64
+            total += size ?? 0
         }
     }
 
