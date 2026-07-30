@@ -82,11 +82,22 @@ final class PasteService {
     // Paste by simulating ⌘V. The panel never activated our app, so the
     // keystroke lands in the app the user was working in.
     func sendPasteKeystroke() {
+        postWhenKeyboardIsIdle(waited: 0)
+    }
+
+    private func postWhenKeyboardIsIdle(waited: TimeInterval) {
+        guard !PasteKeystrokeGate.shouldPost(flags: NSEvent.modifierFlags, waited: waited) else {
+            postPasteKeystroke()
+            return
+        }
+        let step: TimeInterval = 0.02
+        DispatchQueue.main.asyncAfter(deadline: .now() + step) { [weak self] in
+            self?.postWhenKeyboardIsIdle(waited: waited + step)
+        }
+    }
+
+    private func postPasteKeystroke() {
         guard let source = CGEventSource(stateID: .combinedSessionState) else { return }
-        // The user often still holds the hotkey's modifiers while this fires.
-        // Suppress local keyboard events during the injection so the physical
-        // ⇧⌘ can't merge into the synthetic ⌘V and leave apps with a stuck
-        // modifier state (reported as "can't type until lock/unlock").
         source.setLocalEventsFilterDuringSuppressionState(
             [.permitLocalMouseEvents, .permitSystemDefinedEvents],
             state: .eventSuppressionStateSuppressionInterval
@@ -100,7 +111,10 @@ final class PasteService {
         let up = CGEvent(keyboardEventSource: source, virtualKey: vKey, keyDown: false)
         down?.flags = .maskCommand
         up?.flags = .maskCommand
-        down?.post(tap: .cghidEventTap)
-        up?.post(tap: .cghidEventTap)
+        // Session tap, not the HID tap: posting at HID level makes the ⌘ flag
+        // part of the system's global modifier state, which macOS 15 can leave
+        // latched ("can't type anywhere until lock/unlock").
+        down?.post(tap: .cgAnnotatedSessionEventTap)
+        up?.post(tap: .cgAnnotatedSessionEventTap)
     }
 }
