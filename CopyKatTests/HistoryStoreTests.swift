@@ -5,6 +5,7 @@ import SwiftData
 @MainActor
 final class HistoryStoreTests: XCTestCase {
     private var store: HistoryStore!
+    private var externalCopyCount = 0
     private var imageDirectory: URL!
 
     override func setUpWithError() throws {
@@ -123,6 +124,35 @@ final class HistoryStoreTests: XCTestCase {
         let items = store.items(matching: "")
         XCTAssertEqual(items.map(\.text), ["two"])
         XCTAssertTrue(items[0].isPinned)
+    }
+
+    func testAFreshCopyReportsAnExternalCopyButOurOwnPasteDoesNot() throws {
+        let tracker = SelfWriteTracker()
+        store.selfWriteTracker = tracker
+        var externalCopies = 0
+        store.externalCopyArrived = { externalCopies += 1 }
+
+        try store.add(textCandidate("typed by hand"))
+        XCTAssertEqual(externalCopies, 1)
+
+        let item = try XCTUnwrap(store.items(matching: "").first)
+        tracker.record(hash: item.contentHash)
+        try store.add(textCandidate("typed by hand"))
+        XCTAssertEqual(externalCopies, 1, "pasting from CopyKat is not a new copy")
+
+        try store.add(textCandidate("copied again"))
+        XCTAssertEqual(externalCopies, 2)
+    }
+
+    func testRecopyingAnExistingItemAlsoCountsAsAnExternalCopy() throws {
+        store.externalCopyArrived = { self.externalCopyCount += 1 }
+        try store.add(textCandidate("a"))
+        try store.add(textCandidate("b"))
+        externalCopyCount = 0
+
+        try store.add(textCandidate("a"))
+
+        XCTAssertEqual(externalCopyCount, 1)
     }
 
     func testOurOwnPasteDoesNotMoveTheItemBackToTheTop() throws {

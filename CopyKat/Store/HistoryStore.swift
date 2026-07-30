@@ -13,6 +13,9 @@ final class HistoryStore {
     var maxItems = 200
     var pinsChanged: (() -> Void)?
     var selfWriteTracker: SelfWriteTracker?
+    // Fires for copies the user actually made, so callers can drop state that
+    // only made sense for the previous clipboard content.
+    var externalCopyArrived: (() -> Void)?
 
     init(container: ModelContainer, imageStore: ImageStore) {
         self.context = ModelContext(container)
@@ -38,11 +41,16 @@ final class HistoryStore {
             )
         }
 
+        let isOurOwnPaste = selfWriteTracker?.isOurOwnWrite(hash: item.contentHash) == true
+        if !isOurOwnPaste {
+            externalCopyArrived?()
+        }
+
         if let existing = try existingItem(withHash: item.contentHash) {
             // A re-copy moves the item back to the top, but our own paste must
             // leave the history exactly as it was: same position, same source
             // app attribution (the app pasted into is not where it came from).
-            if selfWriteTracker?.isOurOwnWrite(hash: item.contentHash) != true {
+            if !isOurOwnPaste {
                 existing.createdAt = .now
                 try context.save()
             }

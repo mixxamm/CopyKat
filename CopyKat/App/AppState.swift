@@ -74,6 +74,9 @@ final class AppState {
         }
 
         historyStore.selfWriteTracker = pasteService.selfWriteTracker
+        // Copying something new makes the remembered paste stale: the panel
+        // should open on the newest item again.
+        historyStore.externalCopyArrived = { AppSettings.lastPastedContentHash = nil }
         historyStore.maxItems = AppSettings.maxItems
         historyStore.migrateLegacyContentHashes()
         historyStore.backfillPinShortcutIDs()
