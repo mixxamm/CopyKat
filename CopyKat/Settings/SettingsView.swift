@@ -7,24 +7,20 @@ enum SettingsTab: String {
     case pins
 }
 
+// Two tabs for a handful of controls is more chrome than content, and SwiftUI's
+// tab strip sits on a grey band that reads as unfinished inside our own window.
+// One scrolling pane of grouped sections is calmer and more Mac-like.
 struct SettingsView: View {
     let appState: AppState
 
-    @AppStorage(AppSettings.selectedSettingsTabKey) private var selectedTab = SettingsTab.general.rawValue
-
     var body: some View {
-        TabView(selection: $selectedTab) {
-            GeneralSettingsView(appState: appState)
-                .tabItem { Label("General", systemImage: "gearshape") }
-                .tag(SettingsTab.general.rawValue)
-            PinsSettingsView(appState: appState)
-                .tabItem { Label("Pins", systemImage: "pin") }
-                .tag(SettingsTab.pins.rawValue)
+        ScrollView {
+            VStack(spacing: 0) {
+                GeneralSettingsView(appState: appState)
+                PinsSettingsView(appState: appState)
+            }
         }
-        // The tab strip brings its own inset; without this the grouped form
-        // adds a second one and the first row floats far below the tabs.
-        .padding(.top, -8)
-        .frame(width: 460)
+        .frame(width: 480, height: 560)
     }
 }
 
@@ -131,6 +127,7 @@ private struct GeneralSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .scrollDisabled(true)
         .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -166,12 +163,12 @@ private struct PinsSettingsView: View {
 
     var body: some View {
         Form {
-            if pinnedItems.isEmpty {
-                Text("No pinned items yet. Pin an item in the panel with ⌘P (or right-click it), then give it a shortcut here to paste it from anywhere.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            } else {
-                Section("Paste shortcuts") {
+            Section("Pinned items") {
+                if pinnedItems.isEmpty {
+                    Text("No pinned items yet. Pin an item in the panel with ⌘P (or right-click it), then give it a shortcut here to paste it from anywhere.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                } else {
                     ForEach(pinnedItems, id: \.persistentModelID) { item in
                         HStack(spacing: 10) {
                             rowIcon(for: item)
@@ -187,6 +184,7 @@ private struct PinsSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .scrollDisabled(true)
         .fixedSize(horizontal: false, vertical: true)
         .onAppear { pinnedItems = appState.historyStore.pinnedItems() }
     }
