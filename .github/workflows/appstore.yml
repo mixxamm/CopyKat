@@ -1,0 +1,82 @@
+name: App Store
+
+# Uploading to App Store Connect is deliberately manual: a store upload is not
+# something a stray push should trigger.
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Build number. Must be higher than every build already uploaded for this marketing version."
+        required: true
+        type: string
+
+jobs:
+  upload:
+    # macOS 26, not 15: Apple rejects binaries built on a beta OS (ITMS-90301),
+    # and the older image ships an SDK the store no longer accepts.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Write the App Store Connect API key
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          printf '%s\n' "$ASC_KEY_P8" > "$HOME/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8"
+          chmod 600 "$HOME/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8"
+
+      - name: Archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          # Signing is left to Xcode's cloud signing, so no certificate has to
+          # be exported and kept in sync as a secret.
+          xcodebuild -scheme CopyKat-MAS -configuration Release \
+            -archivePath build/CopyKat.xcarchive archive \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$HOME/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+      - name: Report what is about to be uploaded
+        run: |
+          APP=build/CopyKat.xcarchive/Products/Applications/CopyKat.app
+          echo "version $(defaults read "$PWD/$APP/Contents/Info.plist" CFBundleShortVersionString)" \
+               "build $(defaults read "$PWD/$APP/Contents/Info.plist" CFBundleVersion)"
+          defaults read "$PWD/$APP/Contents/Info.plist" DTSDKName
+          # Sparkle must never reach the sandboxed build; fail loudly if it does.
+          if [ -d "$APP/Contents/Frameworks/Sparkle.framework" ]; then
+            echo "Sparkle is bundled in the App Store build" >&2
+            exit 1
+          fi
+
+      - name: Export and upload
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          xcodebuild -exportArchive -archivePath build/CopyKat.xcarchive \
+            -exportOptionsPlist docs/appstore/ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$HOME/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+      - name: Remove the API key
+        if: always()
+        run: rm -f "$HOME/.appstoreconnect/private_keys/"*.p8
