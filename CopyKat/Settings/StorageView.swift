@@ -30,7 +30,22 @@ struct StorageView: View {
 
     @State private var usage = HistoryStore.StorageUsage()
     @State private var age: HistoryAge = .month
+    @State private var scope: CleanupScope = .imagesOnly
     @State private var lastDeleted: Int?
+
+    enum CleanupScope: Hashable, CaseIterable, Identifiable {
+        case imagesOnly
+        case everything
+
+        var id: Self { self }
+
+        var label: LocalizedStringKey {
+            switch self {
+            case .imagesOnly: "Images only"
+            case .everything: "Everything"
+            }
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -49,6 +64,13 @@ struct StorageView: View {
                             Text(option.label).tag(option)
                         }
                     }
+
+                    Picker("What to delete", selection: $scope) {
+                        ForEach(CleanupScope.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                    .pickerStyle(.segmented)
 
                     HStack {
                         Button("Delete Older Items", role: .destructive, action: deleteOlder)
@@ -78,7 +100,10 @@ struct StorageView: View {
     }
 
     private func deleteOlder() {
-        lastDeleted = appState.historyStore.deleteItems(olderThan: age.cutoff)
+        lastDeleted = appState.historyStore.deleteItems(
+            olderThan: age.cutoff,
+            imagesOnly: scope == .imagesOnly
+        )
         usage = appState.historyStore.storageUsage()
     }
 

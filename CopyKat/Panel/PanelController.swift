@@ -56,13 +56,16 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
 
         // hjkl has to be caught before the search field turns it into text, so
-        // it lives in a monitor rather than in the view.
+        // it lives in a monitor rather than in the view. ⌘ and ⇧ may be held:
+        // during a fast-paste session they are, and letting go of them pastes,
+        // so insisting on bare keys would put these out of reach exactly there.
         vimMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, self.panel.isVisible, self.viewModel.vimNavigationIsActive,
-                  event.modifierFlags.intersection([.command, .control, .option]).isEmpty
+                  event.modifierFlags.intersection([.control, .option]).isEmpty,
+                  let key = event.characters(byApplyingModifiers: [])?.lowercased()
             else { return event }
 
-            switch event.charactersIgnoringModifiers?.lowercased() {
+            switch key {
             case "j", "l":
                 self.viewModel.moveSelection(1)
                 return nil

@@ -87,6 +87,40 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertEqual(Set(store.items(matching: "").compactMap(\.text)), ["pinned but ancient", "fresh"])
     }
 
+    func testDeleteImagesOnlyLeavesOldTextAlone() throws {
+        try store.add(textCandidate("old text"))
+        try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))
+
+        let old = Date().addingTimeInterval(-60 * 60 * 24 * 90)
+        for item in store.items(matching: "") {
+            item.createdAt = old
+        }
+
+        let removed = store.deleteItems(
+            olderThan: Date().addingTimeInterval(-60 * 60 * 24 * 30),
+            imagesOnly: true
+        )
+
+        XCTAssertEqual(removed, 1)
+        XCTAssertEqual(store.items(matching: "").compactMap(\.text), ["old text"])
+        XCTAssertEqual(store.storageUsage().imageItems, 0)
+    }
+
+    func testDeleteImagesOnlySparesAPinnedImage() throws {
+        try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))
+        let image = try XCTUnwrap(store.items(matching: "").first)
+        image.createdAt = Date().addingTimeInterval(-60 * 60 * 24 * 90)
+        store.togglePin(image)
+
+        let removed = store.deleteItems(
+            olderThan: Date().addingTimeInterval(-60 * 60 * 24 * 30),
+            imagesOnly: true
+        )
+
+        XCTAssertEqual(removed, 0)
+        XCTAssertEqual(store.storageUsage().imageItems, 1)
+    }
+
     func testStorageUsageCountsImagesAndText() throws {
         try store.add(textCandidate("some text"))
         try store.add(ClipboardCandidate(content: .image(pngFixture()), sourceAppBundleID: nil, sourceAppName: nil))

@@ -246,9 +246,14 @@ final class HistoryStore {
     }
 
     // Pinned items are spared: they are kept on purpose, however old they are.
+    // Images are the only kind that costs real disk space, so they can be swept
+    // on their own without touching the text you came for.
     @discardableResult
-    func deleteItems(olderThan cutoff: Date) -> Int {
-        let stale = allItemsNewestFirst().filter { !$0.isPinned && $0.createdAt < cutoff }
+    func deleteItems(olderThan cutoff: Date, imagesOnly: Bool = false) -> Int {
+        let stale = allItemsNewestFirst().filter { item in
+            guard !item.isPinned, item.createdAt < cutoff else { return false }
+            return imagesOnly ? item.kind == .image : true
+        }
         for item in stale {
             delete(item)
         }
