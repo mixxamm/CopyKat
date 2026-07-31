@@ -119,6 +119,43 @@ final class ImageIndexerTests: XCTestCase {
         XCTAssertEqual(item.contentHash, "text:\(SelfWriteTracker.sha256Hex("same words"))")
     }
 
+    // OCR output is long and noisy: dozens of lines of interface fragments
+    // around the words that matter. Search has to find a word from the middle
+    // of that anyway, the way it finds a word in ordinary text.
+    func testSearchFindsAWordBuriedInLongRecognizedText() throws {
+        let item = try XCTUnwrap(store.add(ClipboardCandidate(
+            content: .image(textImage("noise")),
+            sourceAppBundleID: nil, sourceAppName: nil
+        )))
+        let ocr = """
+        19:18
+        • Safari
+        ...
+        74
+        Mark Arrow
+        Melark
+        "Flutter"ing away
+        Hard working developer with a passion for mobile
+        and web applications.
+        Info Support
+        Belgium
+        markarrow6@gmail.com
+        20 followers
+        48 following
+        Following
+        Repositories
+        49
+        Starred
+        63
+        Organizations
+        """
+        store.applyInsights(ImageInsights(recognizedText: ocr, labels: ["document", "screenshot"]), to: item)
+
+        for query in ["mark arrow", "flutter", "followers", "belgium"] {
+            XCTAssertFalse(store.items(matching: query).isEmpty, "no hit for '\(query)'")
+        }
+    }
+
     func testBackfillSkipsAlreadyIndexedImages() throws {
         let item = try XCTUnwrap(store.add(ClipboardCandidate(
             content: .image(textImage("done already")),

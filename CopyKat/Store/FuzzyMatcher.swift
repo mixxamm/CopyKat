@@ -6,10 +6,16 @@ import FuzzyMatch
 struct FuzzyMatcher {
     private let matcher = FuzzyMatch.FuzzyMatcher()
 
+    // Scored per line, best line wins. The matcher only finds a needle within
+    // the first stretch of a haystack, so a word deep inside a long text (OCR
+    // output most of all) would silently stop matching if scored whole.
     func score(_ query: String, in text: String) -> Double? {
         let needle = Self.normalize(query)
         guard !needle.isEmpty else { return nil }
-        return matcher.score(Self.normalize(text), against: needle)?.score
+        return Self.normalize(text)
+            .split(whereSeparator: \.isNewline)
+            .compactMap { matcher.score(String($0), against: needle)?.score }
+            .max()
     }
 
     private static func normalize(_ string: String) -> String {
