@@ -126,6 +126,19 @@ final class HistoryStore {
             createdAt: createdAt,
             isPinned: isPinned
         )
+        context.insert(item)
+        // Re-asserted after insert: on current OS builds, values set before
+        // context.insert have been observed to persist as bare defaults for
+        // rows created on this path. Insert first, then write, then save.
+        item.kind = kind
+        item.text = text
+        item.imageFilename = imageFilename
+        item.imageWidth = width
+        item.imageHeight = height
+        item.contentHash = contentHash
+        item.sourceAppName = sourceAppName
+        item.createdAt = createdAt
+        item.isPinned = isPinned
         item.isRemote = true
         item.recognizedText = insights.recognizedText
         item.qrPayload = insights.qrPayload
@@ -134,9 +147,13 @@ final class HistoryStore {
         if isPinned {
             item.pinShortcutID = UUID().uuidString
         }
-        context.insert(item)
         trim()
         try? context.save()
+        // Verify what actually reached the store; a ghost here means the save
+        // dropped the row's identity and the sync layer must know.
+        if (try? existingItem(withHash: contentHash)) == nil {
+            logger.error("insertSynced persisted a ghost for hash \(contentHash.prefix(16), privacy: .public)")
+        }
         if isPinned {
             pinsChanged?()
         }
