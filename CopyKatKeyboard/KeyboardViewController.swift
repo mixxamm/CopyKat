@@ -128,16 +128,15 @@ private struct KeyboardView: View {
             }
             bottomBar
         }
-        // The app's warm wash, same direction as there: falling in from the
-        // top. From the bottom it collided with the grey of the system
-        // keyboard chrome underneath.
-        .background(alignment: .top) {
+        // The app's warm wash, spanning the whole keyboard: a partial band
+        // reads as a stain against the system chrome above and below, so the
+        // gradient runs edge to edge and simply thins out on the way down.
+        .background {
             LinearGradient(
-                colors: [Color.brand.opacity(0.16), .clear],
+                colors: [Color.brand.opacity(0.16), Color.brand.opacity(0.03)],
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .frame(height: 110)
         }
         .background(Color(.systemGroupedBackground).opacity(0.01))
     }

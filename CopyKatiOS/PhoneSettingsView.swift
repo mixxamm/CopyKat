@@ -61,6 +61,22 @@ struct PhoneSettingsView: View {
                         }
                     }
                     .disabled(!syncEnabled)
+
+                    if syncEnabled, let sync = model.cloudSync {
+                        if let error = sync.lastError {
+                            Label {
+                                Text(verbatim: error)
+                            } icon: {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.yellow)
+                            }
+                            .font(.footnote)
+                        } else {
+                            Text("\(sync.syncedCount) items in iCloud")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 } header: {
                     Text("Sync")
                 } footer: {

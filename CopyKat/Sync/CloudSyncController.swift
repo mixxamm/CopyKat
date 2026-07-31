@@ -1,5 +1,6 @@
 import CloudKit
 import Foundation
+import Observation
 import os
 
 // Sync through the user's own iCloud, built on CKSyncEngine. This is not
@@ -10,6 +11,7 @@ import os
 // (because a toggle changed or an item rolled out of scope) are never turned
 // into local deletions. Local history only grows through sync.
 @MainActor
+@Observable
 final class CloudSyncController {
     static let containerIdentifier = "iCloud.com.mixxamm.copykat"
 
@@ -26,6 +28,9 @@ final class CloudSyncController {
     private let syncedURL: URL
 
     private(set) var lastError: String?
+
+    // What the settings screens show: how much of the history is in iCloud.
+    var syncedCount: Int { synced.count }
 
     init(store: HistoryStore, imageStore: ImageStore, stateDirectory: URL) {
         self.store = store
@@ -63,10 +68,33 @@ final class CloudSyncController {
         configuration.automaticallySync = true
         engine = CKSyncEngine(configuration)
         scheduleReconcile()
+
+        // Surface the one failure people actually hit: no iCloud account.
+        Task { [weak self] in
+            let status = try? await CKContainer(identifier: Self.containerIdentifier).accountStatus()
+            await MainActor.run {
+                guard let self else { return }
+                switch status {
+                case .available:
+                    break
+                case .noAccount:
+                    self.lastError = String(localized: "Sign in to iCloud on this device to sync.")
+                default:
+                    self.lastError = String(localized: "iCloud is not available on this device right now.")
+                }
+            }
+        }
     }
 
     func stop() {
         engine = nil
+    }
+
+    // Pull-to-refresh: fetch whatever the other devices sent, right now.
+    func fetchNow() async {
+        if engine == nil { start() }
+        try? await engine?.fetchChanges()
+        try? await engine?.sendChanges()
     }
 
     // Called whenever the history or the policy moves. Debounced: a paste can

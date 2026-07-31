@@ -129,6 +129,10 @@ struct HistoryView: View {
             }
             .padding(12)
         }
+        .refreshable {
+            await model.refreshFromCloud()
+            refresh()
+        }
     }
 
     private func refresh() {

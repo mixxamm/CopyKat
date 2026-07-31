@@ -33,6 +33,11 @@ private struct GeneralSettingsView: View {
     @State private var showingStorage = false
     @State private var excludedBundleIDs = AppSettings.excludedBundleIDs
     @State private var launchAtLogin = LoginItem.isEnabled
+    @State private var cloudSyncEnabled = AppSettings.cloudSyncEnabled
+    @State private var cloudSyncText = AppSettings.cloudSyncText
+    @State private var cloudSyncFiles = AppSettings.cloudSyncFiles
+    @State private var cloudSyncImages = AppSettings.cloudSyncImages
+    @State private var cloudSyncScope = AppSettings.cloudSyncScope
     @State private var selectedExclusion: String?
     @AppStorage(AppSettings.menuBarIconKey) private var menuBarIcon = AppSettings.defaultMenuBarIcon
 
@@ -151,43 +156,64 @@ private struct GeneralSettingsView: View {
 
             Section("Sync") {
                 VStack(alignment: .leading, spacing: 4) {
-                    Toggle("Sync with iCloud", isOn: Binding(
-                        get: { AppSettings.cloudSyncEnabled },
-                        set: { AppSettings.cloudSyncEnabled = $0; appState.cloudSyncSettingsChanged() }
-                    ))
+                    Toggle("Sync with iCloud", isOn: $cloudSyncEnabled)
+                        .onChange(of: cloudSyncEnabled) { _, value in
+                            AppSettings.cloudSyncEnabled = value
+                            appState.cloudSyncSettingsChanged()
+                        }
                     Text("Carries your history to your other devices through your own iCloud. Nothing ever touches our servers, and nothing syncs until you turn this on.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
 
                 Group {
-                    Toggle("Text", isOn: Binding(
-                        get: { AppSettings.cloudSyncText },
-                        set: { AppSettings.cloudSyncText = $0; appState.cloudSyncSettingsChanged() }
-                    ))
-                    Toggle("Files", isOn: Binding(
-                        get: { AppSettings.cloudSyncFiles },
-                        set: { AppSettings.cloudSyncFiles = $0; appState.cloudSyncSettingsChanged() }
-                    ))
+                    Toggle("Text", isOn: $cloudSyncText)
+                        .onChange(of: cloudSyncText) { _, value in
+                            AppSettings.cloudSyncText = value
+                            appState.cloudSyncSettingsChanged()
+                        }
+                    Toggle("Files", isOn: $cloudSyncFiles)
+                        .onChange(of: cloudSyncFiles) { _, value in
+                            AppSettings.cloudSyncFiles = value
+                            appState.cloudSyncSettingsChanged()
+                        }
                     VStack(alignment: .leading, spacing: 4) {
-                        Toggle("Images", isOn: Binding(
-                            get: { AppSettings.cloudSyncImages },
-                            set: { AppSettings.cloudSyncImages = $0; appState.cloudSyncSettingsChanged() }
-                        ))
+                        Toggle("Images", isOn: $cloudSyncImages)
+                            .onChange(of: cloudSyncImages) { _, value in
+                                AppSettings.cloudSyncImages = value
+                                appState.cloudSyncSettingsChanged()
+                            }
                         Text("Images are what costs real iCloud space.")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                     }
-                    Picker("What syncs", selection: Binding(
-                        get: { AppSettings.cloudSyncScope },
-                        set: { AppSettings.cloudSyncScope = $0; appState.cloudSyncSettingsChanged() }
-                    )) {
+                    Picker("What syncs", selection: $cloudSyncScope) {
                         Text("Everything").tag("everything")
                         Text("Pinned only").tag("pinned")
                         Text("Recent and pinned").tag("recent")
                     }
+                    .onChange(of: cloudSyncScope) { _, value in
+                        AppSettings.cloudSyncScope = value
+                        appState.cloudSyncSettingsChanged()
+                    }
+
+                    if let sync = appState.cloudSync {
+                        if let error = sync.lastError {
+                            Label {
+                                Text(verbatim: error)
+                            } icon: {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.yellow)
+                            }
+                            .font(.callout)
+                        } else {
+                            Text("\(sync.syncedCount) items in iCloud")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
-                .disabled(!AppSettings.cloudSyncEnabled)
+                .disabled(!cloudSyncEnabled)
             }
 
             Section("Ignored apps") {

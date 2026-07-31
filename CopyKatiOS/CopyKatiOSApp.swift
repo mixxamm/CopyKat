@@ -43,12 +43,21 @@ final class PhoneAppModel {
             fatalError("Could not open the history store: \(error)")
         }
 
+        // Images the share extension captured skipped OCR (its memory ceiling
+        // is tight); pick them up here, exactly like the Mac does at launch.
+        historyStore.backfillVisionIndex()
+
         cloudSync = CloudSyncController(store: historyStore, imageStore: imageStore, stateDirectory: dataDirectory)
         syncTransports = [cloudSync].compactMap { $0 }
         historyStore.historyChanged = { [weak self] in
             self?.syncTransports.forEach { $0.scheduleReconcile() }
         }
         syncTransports.forEach { $0.start() }
+    }
+
+    // Pull-to-refresh: sync first when enabled, then reread the store.
+    func refreshFromCloud() async {
+        await cloudSync?.fetchNow()
     }
 
     func cloudSyncSettingsChanged() {
