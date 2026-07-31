@@ -52,6 +52,23 @@ The iPhone side is three targets:
   It is the only part that touches the network.
 - **The keyboard extension.** The history wherever you type, with search. Reads a
   snapshot from the app group container. No network, no Full Access.
+
+  It is a picker, not a typing keyboard: a searchable list of history items, tap
+  to insert, globe key back to the system keyboard for actual typing. iOS has no
+  way to extend Apple's keyboard, only to stand next to it, and rebuilding QWERTY,
+  autocorrect and eighteen layouts would be all cost and no point.
+
+  It inserts **text only**. The document proxy a keyboard writes through carries
+  text and nothing else; the Giphy-style workaround (write the image to the
+  pasteboard, tell the user to long-press Paste) needs Full Access for the
+  pasteboard, which is exactly the permission this design refuses to ask for.
+  Images are pasted from the main app instead, which has no such limits. A Full
+  Access opt-in for keyboard image pasting can come later if people ask.
+
+  Enabling a keyboard happens in Settings and cannot be done from the app, so
+  onboarding has to carry it: one button that deep-links to the app's own
+  Settings page via `openSettingsURLString`, which contains the Keyboards entry
+  because the app bundles a keyboard, plus a visual of what to toggle.
 - **The share extension.** Adds whatever you share into the history.
 
 ## Sync
