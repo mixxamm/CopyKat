@@ -89,43 +89,32 @@ struct HistoryView: View {
         }
     }
 
-    // Cards, not rows: clipboard items are glanceable blobs, and a grid shows
-    // twice as many of them per screen.
+    // A masonry of two independent columns, not a row-aligned grid: a tall
+    // portrait screenshot fills one column while its neighbours stack past it,
+    // so nothing leaves craters in the layout.
+    private var masonryColumns: ([ClipboardItem], [ClipboardItem]) {
+        var left: [ClipboardItem] = []
+        var right: [ClipboardItem] = []
+        var leftHeight = 0.0
+        var rightHeight = 0.0
+        for item in items {
+            let height = PhoneItemCard.height(for: item)
+            if leftHeight <= rightHeight {
+                left.append(item)
+                leftHeight += height
+            } else {
+                right.append(item)
+                rightHeight += height
+            }
+        }
+        return (left, right)
+    }
+
     private var list: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
-                ForEach(items) { item in
-                    Button {
-                        model.copyToClipboard(item)
-                        AppSettings.lastPastedContentHash = item.contentHash
-                        flashCopied(item)
-                    } label: {
-                        PhoneItemCard(
-                            item: item,
-                            imageStore: model.imageStore,
-                            showsCopied: copiedID == item.persistentModelID
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .contextMenu {
-                        Button {
-                            model.historyStore.togglePin(item)
-                            refresh()
-                        } label: {
-                            Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash" : "pin")
-                        }
-                        Button(role: .destructive) {
-                            model.historyStore.deleteUndoably(item)
-                            refresh()
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        // The app-wide brand tint would paint the trash icon
-                        // orange while the destructive role reds the text;
-                        // destructive means red through and through.
-                        .tint(.red)
-                    }
-                }
+            HStack(alignment: .top, spacing: 12) {
+                masonryColumn(masonryColumns.0)
+                masonryColumn(masonryColumns.1)
             }
             .padding(12)
         }
@@ -133,6 +122,41 @@ struct HistoryView: View {
             await model.refreshFromCloud()
             refresh()
         }
+    }
+
+    private func masonryColumn(_ column: [ClipboardItem]) -> some View {
+        LazyVStack(spacing: 12) {
+            ForEach(column) { item in
+                Button {
+                    model.copyToClipboard(item)
+                    AppSettings.lastPastedContentHash = item.contentHash
+                    flashCopied(item)
+                } label: {
+                    PhoneItemCard(
+                        item: item,
+                        imageStore: model.imageStore,
+                        showsCopied: copiedID == item.persistentModelID
+                    )
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    Button {
+                        model.historyStore.togglePin(item)
+                        refresh()
+                    } label: {
+                        Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash" : "pin")
+                    }
+                    Button(role: .destructive) {
+                        model.historyStore.deleteUndoably(item)
+                        refresh()
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .tint(.red)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
     }
 
     private func refresh() {
@@ -213,15 +237,18 @@ struct PhoneItemCard: View {
     }
 
     // Portrait screenshots squashed into a landscape card show a sliver of
-    // nothing useful, so tall images get a taller card while text and files
-    // keep the compact height.
-    private var cardHeight: CGFloat {
+    // nothing useful, so tall images get a card tall enough to actually read,
+    // while text and files keep the compact height. Static so the masonry can
+    // budget columns with the same numbers the cards will use.
+    static func height(for item: ClipboardItem) -> CGFloat {
         guard item.kind == .image,
               let width = item.imageWidth,
               let height = item.imageHeight,
               height > width else { return 150 }
-        return 230
+        return 300
     }
+
+    private var cardHeight: CGFloat { Self.height(for: item) }
 
     // Short snippets get display type, paragraphs get reading type: a card
     // holding "4589" should not whisper it in fine print.

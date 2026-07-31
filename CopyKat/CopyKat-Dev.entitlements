@@ -7,6 +7,11 @@
 	<array>
 		<string>CloudKit</string>
 	</array>
+	<!-- Development-signed builds must say so, or CloudKit routes them to the
+	     Production environment and the server rejects every request. Release
+	     signing overrides this at archive time. -->
+	<key>com.apple.developer.icloud-container-environment</key>
+	<string>Development</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
 		<string>iCloud.com.mixxamm.copykat</string>

@@ -153,8 +153,15 @@ final class CloudSyncController {
         engine.state.add(pendingRecordZoneChanges: changes)
         // Automatic scheduling proved too lazy here, so we force the send after every reconcile.
         Task { [weak self] in
-            try? await engine.sendChanges()
-            await MainActor.run { self?.trace("sendChanges completed") }
+            do {
+                try await engine.sendChanges()
+                await MainActor.run { self?.trace("sendChanges completed") }
+            } catch {
+                await MainActor.run {
+                    self?.trace("sendChanges FAILED: \(error)")
+                    self?.lastError = error.localizedDescription
+                }
+            }
         }
     }
 
