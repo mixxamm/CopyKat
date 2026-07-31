@@ -111,10 +111,8 @@ final class PasteService {
         let up = CGEvent(keyboardEventSource: source, virtualKey: vKey, keyDown: false)
         down?.flags = .maskCommand
         up?.flags = .maskCommand
-        // Session tap, not the HID tap: posting at HID level makes the ⌘ flag
-        // part of the system's global modifier state, which macOS 15 can leave
-        // latched ("can't type anywhere until lock/unlock").
-        down?.post(tap: .cgAnnotatedSessionEventTap)
-        up?.post(tap: .cgAnnotatedSessionEventTap)
+        let tap = PasteKeystrokeGate.tap(flags: NSEvent.modifierFlags)
+        down?.post(tap: tap)
+        up?.post(tap: tap)
     }
 }
