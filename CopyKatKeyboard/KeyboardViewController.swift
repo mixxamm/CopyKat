@@ -229,9 +229,10 @@ private struct KeyboardView: View {
                     .frame(width: 44, height: 36)
             }
             Spacer()
-            Text(verbatim: "CopyKat")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            Image(systemName: "cat.fill")
+                .font(.caption)
+                .foregroundStyle(Color.brand)
+                .accessibilityLabel(Text(verbatim: "CopyKat"))
             Spacer()
             Button(action: onDelete) {
                 Image(systemName: "delete.left")

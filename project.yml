@@ -185,6 +185,7 @@ targets:
     sources:
       - path: CopyKatKeyboard
       - path: CopyKatiOS/KeyboardSnapshot.swift
+      - path: CopyKatiOS/Brand.swift
       - path: CopyKat/Store/ClipboardItem.swift
       - path: CopyKat/Store/ImageStore.swift
       - path: CopyKat/Localizable.xcstrings

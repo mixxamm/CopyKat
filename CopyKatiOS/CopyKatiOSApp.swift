@@ -8,6 +8,7 @@ struct CopyKatiOSApp: App {
     var body: some Scene {
         WindowGroup {
             HistoryView(model: model)
+                .tint(.brand)
         }
     }
 }

@@ -19,8 +19,14 @@ struct HistoryView: View {
                     list
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background(backdrop)
             .navigationTitle("CopyKat")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    BrandMark()
+                }
+            }
             .searchable(text: $query, prompt: Text("Search clipboard history"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -51,12 +57,33 @@ struct HistoryView: View {
         .onChange(of: query) { _, _ in refresh() }
     }
 
+    // systemGroupedBackground with a breath of the brand falling in from the
+    // top. Strong enough to register as CopyKat, weak enough to keep every
+    // contrast ratio where the grouped palette put it.
+    private var backdrop: some View {
+        Color(.systemGroupedBackground)
+            .overlay(alignment: .top) {
+                LinearGradient(
+                    colors: [Color.brand.opacity(0.16), .clear],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 260)
+            }
+            .ignoresSafeArea()
+    }
+
     private var emptyState: some View {
-        ContentUnavailableView(
-            "Nothing here yet",
-            systemImage: "doc.on.clipboard",
-            description: Text("Copy something and tap Paste below, or share it to CopyKat from any app.")
-        )
+        ContentUnavailableView {
+            Label {
+                Text("Nothing here yet")
+            } icon: {
+                Image(systemName: "cat.fill")
+                    .foregroundStyle(LinearGradient.brand)
+            }
+        } description: {
+            Text("Copy something and tap Paste below, or share it to CopyKat from any app.")
+        }
     }
 
     // Cards, not rows: clipboard items are glanceable blobs, and a grid shows
@@ -152,11 +179,15 @@ struct PhoneItemCard: View {
             footer
         }
         .frame(height: 150)
+        .background(
+            item.isPinned ? Color.brand.opacity(0.10) : Color(.secondarySystemGroupedBackground),
+            in: RoundedRectangle(cornerRadius: 14)
+        )
         .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
         .overlay(alignment: .topTrailing) {
             if showsCopied {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.white, .green)
+                    .foregroundStyle(.white, Color.brand)
                     .font(.title3)
                     .padding(6)
                     .transition(.scale.combined(with: .opacity))

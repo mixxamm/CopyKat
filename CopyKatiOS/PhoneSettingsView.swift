@@ -75,6 +75,7 @@ struct PhoneSettingsView: View {
                     Text("Your Mac records the clipboard; this app carries it. Everything stays on your devices.")
                 }
             }
+            .tint(.brand)
             .navigationTitle(Text("Settings"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
