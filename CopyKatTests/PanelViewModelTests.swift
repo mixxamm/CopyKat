@@ -34,6 +34,31 @@ final class PanelViewModelTests: XCTestCase {
     }
 
 
+    func testVimNavigationOnlyAppliesWhileTheQueryIsEmpty() throws {
+        let previous = AppSettings.vimNavigation
+        defer { AppSettings.vimNavigation = previous }
+        AppSettings.vimNavigation = true
+
+        try seed(["apple", "banana"])
+        XCTAssertTrue(model.vimNavigationIsActive)
+
+        model.query = "a"
+        XCTAssertFalse(model.vimNavigationIsActive)
+
+        model.query = ""
+        XCTAssertTrue(model.vimNavigationIsActive)
+    }
+
+    func testVimNavigationStaysOffWhenTheSettingIsOff() throws {
+        let previous = AppSettings.vimNavigation
+        defer { AppSettings.vimNavigation = previous }
+        AppSettings.vimNavigation = false
+
+        try seed(["a"])
+
+        XCTAssertFalse(model.vimNavigationIsActive)
+    }
+
     func testDeleteIsUndoableAndRestoresTheItem() throws {
         try seed(["a", "b", "c"])
         let middle = try XCTUnwrap(model.items.first { $0.text == "b" })

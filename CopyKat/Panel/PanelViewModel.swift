@@ -31,7 +31,16 @@ final class PanelViewModel {
     private(set) var hidesList = AppSettings.hideListUntilSearch
     private(set) var hidesSearch = AppSettings.hideSearchBar
 
+    private(set) var vimNavigation = AppSettings.vimNavigation
+
     var searchIsVisible: Bool { !hidesSearch }
+
+    // Letters can only stand in for the arrow keys while nothing is being
+    // typed, or searching for anything containing h, j, k or l would be
+    // impossible.
+    var vimNavigationIsActive: Bool {
+        vimNavigation && query.isEmpty
+    }
 
     // Searching without seeing what you matched is useless, so any query brings
     // the list back however the setting is left.
@@ -60,6 +69,7 @@ final class PanelViewModel {
         query = ""
         hidesList = AppSettings.hideListUntilSearch
         hidesSearch = AppSettings.hideSearchBar
+        vimNavigation = AppSettings.vimNavigation
         refresh()
         // Pick up where the user left off: highlight the item pasted last,
         // even when newer copies have stacked on top of it since.

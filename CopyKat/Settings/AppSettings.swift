@@ -93,6 +93,13 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "hideSearchBar") }
     }
 
+    // h/j/k/l walk the list exactly as the arrow keys do. Only while the search
+    // field is empty, otherwise those letters could never be typed.
+    static var vimNavigation: Bool {
+        get { defaults.bool(forKey: "vimNavigation") }
+        set { defaults.set(newValue, forKey: "vimNavigation") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

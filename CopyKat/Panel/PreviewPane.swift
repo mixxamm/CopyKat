@@ -3,6 +3,10 @@ import SwiftUI
 struct PreviewPane: View {
     let item: ClipboardItem?
     let imageStore: ImageStore
+    // Where the highlight sits. With the list hidden there is nothing else to
+    // tell you how far into the history you have cycled.
+    var position: Int?
+    var total: Int = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -58,8 +62,15 @@ struct PreviewPane: View {
             }
 
             Spacer(minLength: 0)
+            if let position, total > 0 {
+                Text("\(position) of \(total)")
+                    .monospacedDigit()
+                    .foregroundStyle(.tertiary)
+            }
             Text(item.createdAt, format: .relative(presentation: .named))
                 .foregroundStyle(.secondary)
+                // Two numbers side by side read as one without a wider gap.
+                .padding(.leading, 6)
         }
         .font(.caption)
         .padding(.horizontal, 14)

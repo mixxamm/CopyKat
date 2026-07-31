@@ -64,6 +64,16 @@ private struct GeneralSettingsView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Vim navigation", isOn: Binding(
+                        get: { AppSettings.vimNavigation },
+                        set: { AppSettings.vimNavigation = $0 }
+                    ))
+                    Text("Adds h, j, k and l alongside the arrow keys. They only move the highlight while the search field is empty, so searching stays possible.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
                     Toggle("Hide the search field", isOn: Binding(
                         get: { AppSettings.hideSearchBar },
                         set: { AppSettings.hideSearchBar = $0 }

@@ -48,12 +48,20 @@ struct PanelView: View {
                         .frame(width: PanelSize.listWidth)
                     Divider()
                 }
-                PreviewPane(item: model.selectedItem, imageStore: imageStore)
+                PreviewPane(
+                    item: model.selectedItem,
+                    imageStore: imageStore,
+                    position: model.selectedIndex.map { $0 + 1 },
+                    total: model.items.count
+                )
             }
         }
         .frame(width: size.width, height: size.height)
         .focusable(!model.searchIsVisible)
         .focused($panelFocused)
+        // The focus is only there to receive key presses; macOS would otherwise
+        // draw its ring around the whole panel and show through as a blue edge.
+        .focusEffectDisabled()
         .onChange(of: model.listIsVisible) { _, _ in onResize(size) }
         .background(VisualEffectView())
         .clipShape(RoundedRectangle(cornerRadius: 16))

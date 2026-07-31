@@ -10,6 +10,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var flagsMonitor: Any?
     private var escapeMonitor: Any?
     private var commandMonitor: Any?
+    private var vimMonitor: Any?
 
     init(
         viewModel: PanelViewModel,
@@ -52,6 +53,25 @@ final class PanelController: NSObject, NSWindowDelegate {
             guard let self, self.panel.isVisible, event.keyCode == 53 else { return event }
             self.hide()
             return nil
+        }
+
+        // hjkl has to be caught before the search field turns it into text, so
+        // it lives in a monitor rather than in the view.
+        vimMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, self.panel.isVisible, self.viewModel.vimNavigationIsActive,
+                  event.modifierFlags.intersection([.command, .control, .option]).isEmpty
+            else { return event }
+
+            switch event.charactersIgnoringModifiers?.lowercased() {
+            case "j", "l":
+                self.viewModel.moveSelection(1)
+                return nil
+            case "k", "h":
+                self.viewModel.moveSelection(-1)
+                return nil
+            default:
+                return event
+            }
         }
 
         // Every ⌘ shortcut in the panel, in one place. Shift is optional for all
