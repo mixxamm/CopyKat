@@ -157,8 +157,12 @@ final class CloudSyncController {
                 try await engine.sendChanges()
                 await MainActor.run { self?.trace("sendChanges completed") }
             } catch {
+                let ns = error as NSError
+                let deep = (ns.userInfo[NSUnderlyingErrorKey] as? NSError)?.userInfo ?? [:]
+                let flat = "\(ns.domain) \(ns.code) info=\(ns.userInfo) deep=\(deep)"
+                    .replacingOccurrences(of: "\n", with: " ")
                 await MainActor.run {
-                    self?.trace("sendChanges FAILED: \(error)")
+                    self?.trace("sendChanges FAILED: \(flat)")
                     self?.lastError = error.localizedDescription
                 }
             }
