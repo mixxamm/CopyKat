@@ -11,7 +11,7 @@ final class PanelViewModel {
         didSet {
             guard query != oldValue else { return }
             refresh()
-            selectedID = items.first?.persistentModelID
+            selectedID = query.isEmpty ? defaultSelectionID : items.first?.persistentModelID
         }
     }
     private(set) var items: [ClipboardItem] = []
@@ -65,6 +65,13 @@ final class PanelViewModel {
         self.store = store
     }
 
+    // Pins sit at the top of the list for reach, not because a session starts
+    // there: the opening highlight is the newest copy, and pins are what you
+    // deliberately navigate up to.
+    private var defaultSelectionID: PersistentIdentifier? {
+        (items.first { !$0.isPinned } ?? items.first)?.persistentModelID
+    }
+
     func reset() {
         query = ""
         hidesList = AppSettings.hideListUntilSearch
@@ -76,7 +83,7 @@ final class PanelViewModel {
         let remembered = AppSettings.lastPastedContentHash.flatMap { hash in
             items.first { $0.contentHash == hash }
         }
-        selectedID = (remembered ?? items.first)?.persistentModelID
+        selectedID = remembered?.persistentModelID ?? defaultSelectionID
     }
 
     // Called once the panel is actually on screen. Centering during reset()
@@ -90,7 +97,9 @@ final class PanelViewModel {
         let previousOrder = items.map(\.persistentModelID)
         items = store.items(matching: query)
         if selectedItem == nil {
-            selectedID = items.first?.persistentModelID
+            // While searching the top row is the best match, pins included;
+            // otherwise fall past the pins to the newest copy.
+            selectedID = query.isEmpty ? defaultSelectionID : items.first?.persistentModelID
         }
         // A copy made while the panel is open pushes every row down, so the
         // selection has to be pulled back to the centre line.

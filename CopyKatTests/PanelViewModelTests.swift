@@ -35,6 +35,63 @@ final class PanelViewModelTests: XCTestCase {
     }
 
 
+    func testOpeningSkipsPinsAndHighlightsTheNewestCopy() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+        AppSettings.lastPastedContentHash = nil
+
+        try seed(["old pinned", "fresh copy"])
+        let pinned = try XCTUnwrap(model.items.first { $0.text == "old pinned" })
+        model.togglePin(pinned)
+        XCTAssertEqual(model.items.first?.text, "old pinned")
+
+        model.reset()
+
+        XCTAssertEqual(model.selectedItem?.text, "fresh copy")
+    }
+
+    func testOpeningStillHonoursTheLastPastedItemEvenWhenItIsAPin() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+
+        try seed(["pinned favourite", "newer copy"])
+        let pinned = try XCTUnwrap(model.items.first { $0.text == "pinned favourite" })
+        model.togglePin(pinned)
+        AppSettings.lastPastedContentHash = pinned.contentHash
+
+        model.reset()
+
+        XCTAssertEqual(model.selectedItem?.text, "pinned favourite")
+    }
+
+    func testOpeningFallsBackToAPinWhenEverythingIsPinned() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+        AppSettings.lastPastedContentHash = nil
+
+        try seed(["only item"])
+        model.togglePin(try XCTUnwrap(model.items.first))
+
+        model.reset()
+
+        XCTAssertEqual(model.selectedItem?.text, "only item")
+    }
+
+    func testClearingTheQuerySkipsPinsAgain() throws {
+        let previous = AppSettings.lastPastedContentHash
+        defer { AppSettings.lastPastedContentHash = previous }
+        AppSettings.lastPastedContentHash = nil
+
+        try seed(["pinned note", "loose note"])
+        model.togglePin(try XCTUnwrap(model.items.first { $0.text == "pinned note" }))
+
+        model.query = "note"
+        XCTAssertEqual(model.selectedItem?.text, model.items.first?.text)
+
+        model.query = ""
+        XCTAssertEqual(model.selectedItem?.text, "loose note")
+    }
+
     func testVimNavigationOnlyAppliesWhileTheQueryIsEmpty() throws {
         let previous = AppSettings.vimNavigation
         defer { AppSettings.vimNavigation = previous }
