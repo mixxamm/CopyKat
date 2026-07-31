@@ -90,29 +90,9 @@ struct PanelView: View {
             model.deleteSelected()
             return .handled
         }
-        // Shift is never required. The hotkey that opens the panel holds it
-        // down, and plenty of people never let go before reaching for these.
-        .onKeyPress(phases: .down) { press in
-            guard press.modifiers.contains(.command) else { return .ignored }
-            switch press.characters.lowercased() {
-            case "d":
-                model.deleteSelected()
-                return .handled
-            case "u":
-                model.undoDelete()
-                return .handled
-            case "p":
-                model.togglePinSelected()
-                return .handled
-            default:
-                break
-            }
-            guard let digit = press.characters.first?.wholeNumberValue,
-                  let item = model.quickPasteItem(at: digit)
-            else { return .ignored }
-            onCommit(item)
-            return .handled
-        }
+        // The ⌘ shortcuts live in PanelController: shift has to be optional for
+        // all of them, and SwiftUI reports the shifted character (⌘⇧1 arrives
+        // as "!"), so only NSEvent can say which key was actually pressed.
     }
 
     private func takeFocus() {

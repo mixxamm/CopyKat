@@ -9,6 +9,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var tapTracker = FastPasteTapTracker()
     private var flagsMonitor: Any?
     private var escapeMonitor: Any?
+    private var commandMonitor: Any?
 
     init(
         viewModel: PanelViewModel,
@@ -50,6 +51,39 @@ final class PanelController: NSObject, NSWindowDelegate {
         escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, self.panel.isVisible, event.keyCode == 53 else { return event }
             self.hide()
+            return nil
+        }
+
+        // Every ⌘ shortcut in the panel, in one place. Shift is optional for all
+        // of them: the hotkey that opens the panel holds it down and people
+        // reach for these without letting go. SwiftUI cannot do this, because it
+        // reports the shifted character, so ⌘⇧1 arrives as "!" rather than "1";
+        // asking NSEvent for the keystroke with no modifiers applied is both
+        // shift-proof and correct on layouts where digits need shift anyway.
+        commandMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, self.panel.isVisible,
+                  event.modifierFlags.contains(.command),
+                  let key = event.characters(byApplyingModifiers: [])?.lowercased()
+            else { return event }
+
+            switch key {
+            case "d":
+                self.viewModel.deleteSelected()
+                return nil
+            case "u":
+                self.viewModel.undoDelete()
+                return nil
+            case "p":
+                self.viewModel.togglePinSelected()
+                return nil
+            default:
+                break
+            }
+
+            guard let digit = key.first?.wholeNumberValue,
+                  let item = self.viewModel.quickPasteItem(at: digit)
+            else { return event }
+            self.onCommit(item)
             return nil
         }
     }
