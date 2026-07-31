@@ -91,6 +91,16 @@ final class CloudSyncController {
         try? FileManager.default.removeItem(at: traceURL)
         trace("sync started")
 
+        // One-time full refetch: tokens minted during the ghost-record era
+        // claim records were seen that never actually survived locally. The
+        // content-hash dedupe makes re-applying everything harmless.
+        let markerURL = tokenURL.deletingLastPathComponent().appendingPathComponent("cloudsync-refetch-1")
+        if !FileManager.default.fileExists(atPath: markerURL.path) {
+            saveToken(nil)
+            try? Data().write(to: markerURL)
+            trace("change token reset for a full refetch")
+        }
+
         // Surface the one failure people actually hit: no iCloud account.
         Task { [weak self] in
             let status = try? await CKContainer(identifier: Self.containerIdentifier).accountStatus()
