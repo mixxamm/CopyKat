@@ -36,18 +36,21 @@ struct HistoryView: View {
                         Label("Settings", systemImage: "gearshape")
                     }
                 }
-                ToolbarItem(placement: .bottomBar) {
-                    // Apple's paste control: capturing the clipboard is one tap
-                    // and never shows the paste alert.
-                    PasteButton(payloadType: CapturedPayload.self) { payloads in
-                        Task { @MainActor in
-                            for payload in payloads {
-                                model.capture(payload.content)
-                            }
-                            refresh()
+            }
+            // Free-floating, not in the bottom toolbar: the toolbar wraps its
+            // items in glass, and a glass shell around a solid system control
+            // reads as neither one thing nor the other.
+            .safeAreaInset(edge: .bottom) {
+                PasteButton(payloadType: CapturedPayload.self) { payloads in
+                    Task { @MainActor in
+                        for payload in payloads {
+                            model.capture(payload.content)
                         }
+                        refresh()
                     }
                 }
+                .buttonBorderShape(.capsule)
+                .padding(.bottom, 6)
             }
             .sheet(isPresented: $showingSettings) {
                 PhoneSettingsView(model: model)
@@ -117,6 +120,10 @@ struct HistoryView: View {
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
+                        // The app-wide brand tint would paint the trash icon
+                        // orange while the destructive role reds the text;
+                        // destructive means red through and through.
+                        .tint(.red)
                     }
                 }
             }

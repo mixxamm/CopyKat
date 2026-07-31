@@ -16,17 +16,13 @@ extension LinearGradient {
     )
 }
 
-// The app icon in miniature: the same gradient squircle and the same cat,
-// standing where a dry wordmark used to sit.
+// The cat alone, standing where a dry wordmark used to sit. No tile around
+// it: the warm wash behind the bar already carries the colour.
 struct BrandMark: View {
-    var size: CGFloat = 30
-
     var body: some View {
-        Image(systemName: "cat.fill")
-            .font(.system(size: size * 0.52, weight: .semibold))
-            .foregroundStyle(.white)
-            .frame(width: size, height: size)
-            .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: size * 0.24, style: .continuous))
+        Image(systemName: "cat")
+            .font(.title3.weight(.semibold))
+            .foregroundStyle(Color.brand)
             .accessibilityLabel(Text(verbatim: "CopyKat"))
     }
 }
