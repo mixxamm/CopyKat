@@ -15,8 +15,8 @@ struct ImageInsights: Equatable {
 // on device. Serial by design: images arrive one at a time, and racing several
 // accurate-mode OCR passes just trades latency for memory pressure.
 final class ImageIndexer: Sendable {
-    // Classification is the noisiest of the three; below this it is guesswork.
-    private static let labelConfidenceThreshold: Float = 0.6
+    // More labels than this is noise, not description.
+    private static let maxLabels = 6
 
     func insights(for imageData: Data) -> ImageInsights {
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil),
@@ -45,8 +45,13 @@ final class ImageIndexer: Sendable {
 
         insights.qrPayload = (barcodes.results ?? []).compactMap(\.payloadStringValue).first
 
+        // Precision/recall, not raw confidence: confidences are not comparable
+        // across the taxonomy's classes, which is why Vision ships this filter.
+        // High precision, low recall: a wrong label in search is worse than a
+        // missing one.
         insights.labels = (classify.results ?? [])
-            .filter { $0.confidence >= Self.labelConfidenceThreshold }
+            .filter { $0.hasMinimumRecall(0.01, forPrecision: 0.9) }
+            .prefix(Self.maxLabels)
             .map(\.identifier)
 
         return insights
