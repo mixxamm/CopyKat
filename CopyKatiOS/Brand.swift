@@ -16,12 +16,17 @@ extension LinearGradient {
     )
 }
 
-// The cat alone, standing where a dry wordmark used to sit. No tile around
-// it: the warm wash behind the bar already carries the colour.
+// The cat alone, standing where a dry wordmark used to sit. Not the SF
+// outline, whose leg strokes run up through the body: this contour is traced
+// from our own icon's silhouette, holes included, so the eye stays and the
+// edges are only the cat's real edges.
 struct BrandMark: View {
     var body: some View {
-        Image(systemName: "cat")
-            .font(.title3.weight(.semibold))
+        Image("BrandCat")
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .frame(height: 26)
             .foregroundStyle(Color.brand)
             .accessibilityLabel(Text(verbatim: "CopyKat"))
     }
