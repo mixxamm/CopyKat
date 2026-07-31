@@ -106,6 +106,122 @@ final class HistoryStore {
         }
     }
 
+    // Everything needed to put a row back. The SwiftData object is gone once
+    // deleted, so the values have to be copied out before that happens.
+    private struct DeletedItem {
+        var kind: ClipboardItemKind
+        var text: String?
+        var imageFilename: String?
+        var imageWidth: Int?
+        var imageHeight: Int?
+        var contentHash: String
+        var sourceAppBundleID: String?
+        var sourceAppName: String?
+        var createdAt: Date
+        var isPinned: Bool
+        var pinShortcutID: String?
+        var isRemote: Bool
+        var fileBookmark: Data?
+        var deletedAt: Date
+    }
+
+    static let undoWindow: TimeInterval = 60
+    private var recentlyDeleted: [DeletedItem] = []
+
+    var canUndoDelete: Bool {
+        forgetExpiredDeletions()
+        return !recentlyDeleted.isEmpty
+    }
+
+    // Deleting by hand is a keystroke away, so it stays reversible for a while.
+    // The image file is kept back until the window closes; restoring a picture
+    // whose bytes are gone would put an empty row back.
+    func deleteUndoably(_ item: ClipboardItem, at date: Date = .now) {
+        forgetExpiredDeletions()
+        recentlyDeleted.append(
+            DeletedItem(
+                kind: item.kind,
+                text: item.text,
+                imageFilename: item.imageFilename,
+                imageWidth: item.imageWidth,
+                imageHeight: item.imageHeight,
+                contentHash: item.contentHash,
+                sourceAppBundleID: item.sourceAppBundleID,
+                sourceAppName: item.sourceAppName,
+                createdAt: item.createdAt,
+                isPinned: item.isPinned,
+                pinShortcutID: item.pinShortcutID,
+                isRemote: item.isRemote,
+                fileBookmark: item.fileBookmark,
+                deletedAt: date
+            )
+        )
+
+        let wasPinned = item.isPinned
+        context.delete(item)
+        try? context.save()
+        if wasPinned {
+            pinsChanged?()
+        }
+    }
+
+    // Returns the restored row so the panel can highlight it again.
+    @discardableResult
+    func undoLastDelete(at date: Date = .now) -> ClipboardItem? {
+        forgetExpiredDeletions(at: date)
+        guard let deleted = recentlyDeleted.popLast() else { return nil }
+
+        // The same content may have been copied again while the undo was still
+        // open; a second row with that hash would never dedupe away.
+        if let existing = try? existingItem(withHash: deleted.contentHash) {
+            existing.isPinned = deleted.isPinned || existing.isPinned
+            existing.pinShortcutID = existing.isPinned
+                ? (existing.pinShortcutID ?? deleted.pinShortcutID ?? UUID().uuidString)
+                : nil
+            try? context.save()
+            if existing.isPinned {
+                pinsChanged?()
+            }
+            return existing
+        }
+
+        let item = ClipboardItem(
+            kind: deleted.kind,
+            text: deleted.text,
+            imageFilename: deleted.imageFilename,
+            imageWidth: deleted.imageWidth,
+            imageHeight: deleted.imageHeight,
+            contentHash: deleted.contentHash,
+            sourceAppBundleID: deleted.sourceAppBundleID,
+            sourceAppName: deleted.sourceAppName,
+            createdAt: deleted.createdAt,
+            isPinned: deleted.isPinned
+        )
+        item.pinShortcutID = deleted.pinShortcutID
+        item.isRemote = deleted.isRemote
+        item.fileBookmark = deleted.fileBookmark
+        context.insert(item)
+        try? context.save()
+        if item.isPinned {
+            pinsChanged?()
+        }
+        return item
+    }
+
+    private func forgetExpiredDeletions(at date: Date = .now) {
+        let expired = recentlyDeleted.filter { date.timeIntervalSince($0.deletedAt) > Self.undoWindow }
+        recentlyDeleted.removeAll { date.timeIntervalSince($0.deletedAt) > Self.undoWindow }
+
+        for filename in Set(expired.compactMap(\.imageFilename)) {
+            // An identical image copied again since points at the same file,
+            // and that row is still alive.
+            let stillReferenced = allItemsNewestFirst().contains { $0.imageFilename == filename }
+            if !stillReferenced {
+                imageStore.delete(named: filename)
+            }
+        }
+    }
+
     struct StorageUsage {
         var textItems = 0
         var imageItems = 0

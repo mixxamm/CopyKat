@@ -64,6 +64,16 @@ private struct GeneralSettingsView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Hide the search field", isOn: Binding(
+                        get: { AppSettings.hideSearchBar },
+                        set: { AppSettings.hideSearchBar = $0 }
+                    ))
+                    Text("Leaves out the search field entirely, for cycling with the keyboard alone. Double-tapping V then keeps stepping through the history instead of starting a search.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
                     Toggle("Fast paste", isOn: Binding(
                         get: { AppSettings.fastPasteEnabled },
                         set: { AppSettings.fastPasteEnabled = $0 }

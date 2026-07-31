@@ -86,6 +86,13 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "hideListUntilSearch") }
     }
 
+    // For people who only ever cycle. With no field to type in there is nothing
+    // to search, so the double-tap shortcut stops offering it too.
+    static var hideSearchBar: Bool {
+        get { defaults.bool(forKey: "hideSearchBar") }
+        set { defaults.set(newValue, forKey: "hideSearchBar") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

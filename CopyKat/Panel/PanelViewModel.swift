@@ -29,6 +29,9 @@ final class PanelViewModel {
     // stored property is observable, so the panel resizes when the list comes
     // and goes. The setting can only change while the panel is closed anyway.
     private(set) var hidesList = AppSettings.hideListUntilSearch
+    private(set) var hidesSearch = AppSettings.hideSearchBar
+
+    var searchIsVisible: Bool { !hidesSearch }
 
     // Searching without seeing what you matched is useless, so any query brings
     // the list back however the setting is left.
@@ -56,6 +59,7 @@ final class PanelViewModel {
     func reset() {
         query = ""
         hidesList = AppSettings.hideListUntilSearch
+        hidesSearch = AppSettings.hideSearchBar
         refresh()
         // Pick up where the user left off: highlight the item pasted last,
         // even when newer copies have stacked on top of it since.
@@ -105,13 +109,24 @@ final class PanelViewModel {
     func delete(_ item: ClipboardItem) {
         let previousIndex = selectedIndex
         let deletingSelected = item.persistentModelID == selectedID
-        store.delete(item)
+        store.deleteUndoably(item)
         items = store.items(matching: query)
         if deletingSelected, let previousIndex, !items.isEmpty {
             selectedID = items[min(previousIndex, items.count - 1)].persistentModelID
         } else if selectedItem == nil {
             selectedID = items.first?.persistentModelID
         }
+    }
+
+    var canUndoDelete: Bool { store.canUndoDelete }
+
+    // Puts the last hand-deleted item back and highlights it, so the undo is
+    // visible even when the row lands somewhere off screen.
+    func undoDelete() {
+        guard let restored = store.undoLastDelete() else { return }
+        refresh()
+        selectedID = restored.persistentModelID
+        openToken += 1
     }
 
     func togglePin(_ item: ClipboardItem) {

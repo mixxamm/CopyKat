@@ -4594,7 +4594,116 @@
       }
     },
     "Keep %@ items" : {
-
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الاحتفاظ بـ %@ عنصر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Objekte behalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar %@ elementos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserver %@ éléments"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ आइटम रखें"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserva %@ elementi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 件を保持"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@개 항목 보관"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaar %@ items"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachowaj %@ elementów"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar %@ itens"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Păstrează %@ elemente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хранить %@ элементов"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behåll %@ objekt"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ öge sakla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберігати %@ елементів"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留 %@ 项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留 %@ 項"
+          }
+        }
+      }
     },
     "Keep %lld items" : {
       "localizations" : {
@@ -8064,6 +8173,230 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一切就緒"
+          }
+        }
+      }
+    },
+    "Hide the search field" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء حقل البحث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchfeld ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar el campo de búsqueda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le champ de recherche"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खोज फ़ील्ड छिपाएँ"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi il campo di ricerca"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索フィールドを隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색 필드 숨기기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoekveld verbergen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj pole wyszukiwania"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar o campo de pesquisa"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ascunde câmpul de căutare"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыть поле поиска"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dölj sökfältet"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama alanını gizle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сховати поле пошуку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏搜索栏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏搜尋欄"
+          }
+        }
+      }
+    },
+    "Leaves out the search field entirely, for cycling with the keyboard alone. Double-tapping V then keeps stepping through the history instead of starting a search." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحذف حقل البحث تمامًا، لمن يتنقل بلوحة المفاتيح وحدها. عندئذ يواصل النقر المزدوج على V التنقل في السجل بدلًا من بدء بحث."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lässt das Suchfeld ganz weg, für alle, die nur mit der Tastatur blättern. Zweimal V tippen blättert dann weiter durch den Verlauf, statt eine Suche zu starten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina por completo el campo de búsqueda, para quien solo navega con el teclado. Pulsar dos veces V sigue recorriendo el historial en lugar de iniciar una búsqueda."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime complètement le champ de recherche, pour ceux qui naviguent uniquement au clavier. Appuyer deux fois sur V continue alors de parcourir l'historique au lieu de lancer une recherche."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खोज फ़ील्ड को पूरी तरह हटा देता है, उनके लिए जो केवल कीबोर्ड से चलते हैं। तब V को दो बार दबाने पर खोज शुरू होने के बजाय इतिहास में आगे बढ़ना जारी रहता है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina del tutto il campo di ricerca, per chi si muove solo con la tastiera. Premere due volte V continua a scorrere la cronologia invece di avviare una ricerca."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索フィールドを完全に省き、キーボードだけで送る人向けです。V を二度叩くと検索は始まらず、そのまま履歴を送り続けます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색 필드를 아예 없애며, 키보드만으로 넘기는 사람을 위한 설정입니다. V를 두 번 누르면 검색을 시작하는 대신 계속 기록을 넘깁니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laat het zoekveld helemaal weg, voor wie alleen met het toetsenbord cyclet. Twee keer op V tikken blijft dan door de geschiedenis stappen in plaats van een zoekopdracht te starten."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Całkowicie pomija pole wyszukiwania, dla osób poruszających się tylko klawiaturą. Dwukrotne naciśnięcie V dalej przewija historię, zamiast rozpoczynać wyszukiwanie."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixa de fora o campo de pesquisa, para quem navega apenas com o teclado. Tocar duas vezes em V continua a percorrer o histórico em vez de iniciar uma pesquisa."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimină complet câmpul de căutare, pentru cine navighează doar de la tastatură. Apăsarea de două ori pe V parcurge în continuare istoricul în loc să pornească o căutare."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полностью убирает поле поиска, для тех, кто листает только с клавиатуры. Двойное нажатие V тогда продолжает листать историю, а не начинает поиск."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utelämnar sökfältet helt, för dig som bara bläddrar med tangentbordet. Att trycka V två gånger fortsätter då genom historiken i stället för att starta en sökning."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama alanını tamamen kaldırır, yalnızca klavyeyle gezinenler için. V tuşuna iki kez basmak o zaman arama başlatmak yerine geçmişte ilerlemeye devam eder."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повністю прибирає поле пошуку, для тих, хто гортає лише з клавіатури. Подвійне натискання V тоді й далі гортає історію, а не починає пошук."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全去掉搜索栏，适合只用键盘循环的人。这时连按两次 V 会继续浏览历史记录，而不是开始搜索。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全省去搜尋欄，適合只用鍵盤循環的人。此時連按兩次 V 會繼續瀏覽記錄，而不是開始搜尋。"
           }
         }
       }

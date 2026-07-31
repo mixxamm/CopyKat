@@ -10,9 +10,15 @@ enum PanelSize {
     // than a second window. Fixed rather than fitted to the content: cycling
     // would otherwise resize the panel under the cursor on every key press.
     static let previewOnly = CGSize(width: 460, height: 280)
+    // The field and the divider under it.
+    private static let searchBar: CGFloat = 49
 
-    static func current(listIsVisible: Bool) -> CGSize {
-        listIsVisible ? full : previewOnly
+    static func current(listIsVisible: Bool, searchIsVisible: Bool = true) -> CGSize {
+        var size = listIsVisible ? full : previewOnly
+        if !searchIsVisible {
+            size.height -= searchBar
+        }
+        return size
     }
 }
 
@@ -25,12 +31,17 @@ struct PanelView: View {
     let onResize: (CGSize) -> Void
 
     @FocusState private var searchFocused: Bool
+    // Without a search field there is nothing to focus, and an unfocused panel
+    // never sees a key press.
+    @FocusState private var panelFocused: Bool
     @State private var scrolledID: PersistentIdentifier?
 
     var body: some View {
         VStack(spacing: 0) {
-            searchBar
-            Divider()
+            if model.searchIsVisible {
+                searchBar
+                Divider()
+            }
             HStack(spacing: 0) {
                 if model.listIsVisible {
                     itemList
@@ -41,6 +52,8 @@ struct PanelView: View {
             }
         }
         .frame(width: size.width, height: size.height)
+        .focusable(!model.searchIsVisible)
+        .focused($panelFocused)
         .onChange(of: model.listIsVisible) { _, _ in onResize(size) }
         .background(VisualEffectView())
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -48,7 +61,10 @@ struct PanelView: View {
             RoundedRectangle(cornerRadius: 16)
                 .strokeBorder(.separator, lineWidth: 1)
         )
-        .onAppear { searchFocused = true }
+        // The panel is reused between showings, so focus has to be claimed again
+        // on every open, not just the first.
+        .onAppear { takeFocus() }
+        .onChange(of: model.openToken) { _, _ in takeFocus() }
         .onKeyPress(.downArrow) { model.moveSelection(1); return .handled }
         .onKeyPress(.upArrow) { model.moveSelection(-1); return .handled }
         // With a query, ←/→ belong to the text caret; on an empty field they
@@ -69,19 +85,29 @@ struct PanelView: View {
             return .handled
         }
         .onKeyPress(.escape) { onDismiss(); return .handled }
-        .onKeyPress("p", phases: .down) { press in
-            guard press.modifiers.contains(.command) else { return .ignored }
-            model.togglePinSelected()
-            return .handled
-        }
         .onKeyPress(.delete, phases: .down) { press in
             guard press.modifiers.contains(.command) else { return .ignored }
             model.deleteSelected()
             return .handled
         }
+        // Shift is never required. The hotkey that opens the panel holds it
+        // down, and plenty of people never let go before reaching for these.
         .onKeyPress(phases: .down) { press in
-            guard press.modifiers.contains(.command),
-                  let digit = press.characters.first?.wholeNumberValue,
+            guard press.modifiers.contains(.command) else { return .ignored }
+            switch press.characters.lowercased() {
+            case "d":
+                model.deleteSelected()
+                return .handled
+            case "u":
+                model.undoDelete()
+                return .handled
+            case "p":
+                model.togglePinSelected()
+                return .handled
+            default:
+                break
+            }
+            guard let digit = press.characters.first?.wholeNumberValue,
                   let item = model.quickPasteItem(at: digit)
             else { return .ignored }
             onCommit(item)
@@ -89,8 +115,16 @@ struct PanelView: View {
         }
     }
 
+    private func takeFocus() {
+        if model.searchIsVisible {
+            searchFocused = true
+        } else {
+            panelFocused = true
+        }
+    }
+
     private var size: CGSize {
-        PanelSize.current(listIsVisible: model.listIsVisible)
+        PanelSize.current(listIsVisible: model.listIsVisible, searchIsVisible: model.searchIsVisible)
     }
 
     private var searchBar: some View {

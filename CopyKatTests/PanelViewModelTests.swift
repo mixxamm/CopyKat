@@ -34,6 +34,81 @@ final class PanelViewModelTests: XCTestCase {
     }
 
 
+    func testDeleteIsUndoableAndRestoresTheItem() throws {
+        try seed(["a", "b", "c"])
+        let middle = try XCTUnwrap(model.items.first { $0.text == "b" })
+
+        model.delete(middle)
+        XCTAssertEqual(model.items.map(\.text), ["c", "a"])
+        XCTAssertTrue(model.canUndoDelete)
+
+        model.undoDelete()
+
+        XCTAssertEqual(model.items.map(\.text), ["c", "b", "a"])
+        XCTAssertEqual(model.selectedItem?.text, "b")
+        XCTAssertFalse(model.canUndoDelete)
+    }
+
+    func testUndoWalksBackThroughSeveralDeletions() throws {
+        try seed(["a", "b", "c"])
+        model.deleteSelected()
+        model.deleteSelected()
+        XCTAssertEqual(model.items.map(\.text), ["a"])
+
+        model.undoDelete()
+        XCTAssertEqual(model.items.map(\.text), ["b", "a"])
+        model.undoDelete()
+        XCTAssertEqual(model.items.map(\.text), ["c", "b", "a"])
+        XCTAssertFalse(model.canUndoDelete)
+    }
+
+    func testUndoDoesNothingOnceTheWindowHasPassed() throws {
+        try seed(["a", "b"])
+        let item = try XCTUnwrap(model.items.first)
+        store.deleteUndoably(item, at: .now.addingTimeInterval(-HistoryStore.undoWindow - 1))
+
+        XCTAssertNil(store.undoLastDelete())
+        XCTAssertFalse(model.canUndoDelete)
+    }
+
+    func testUndoKeepsAPinnedItemPinned() throws {
+        try seed(["a"])
+        let item = try XCTUnwrap(model.items.first)
+        model.togglePin(item)
+
+        model.deleteSelected()
+        model.undoDelete()
+
+        XCTAssertEqual(model.items.count, 1)
+        XCTAssertTrue(model.items.first?.isPinned ?? false)
+        XCTAssertNotNil(model.items.first?.pinShortcutID)
+    }
+
+    func testUndoDoesNotDuplicateContentCopiedAgainMeanwhile() throws {
+        try seed(["a"])
+        let item = try XCTUnwrap(model.items.first)
+        model.delete(item)
+
+        try store.add(ClipboardCandidate(content: .text("a"), sourceAppBundleID: nil, sourceAppName: nil))
+        model.undoDelete()
+
+        XCTAssertEqual(model.items.map(\.text), ["a"])
+    }
+
+    func testSearchHiddenAlsoShrinksThePanel() throws {
+        let previous = AppSettings.hideSearchBar
+        defer { AppSettings.hideSearchBar = previous }
+        AppSettings.hideSearchBar = true
+
+        try seed(["a"])
+
+        XCTAssertFalse(model.searchIsVisible)
+        XCTAssertLessThan(
+            PanelSize.current(listIsVisible: true, searchIsVisible: false).height,
+            PanelSize.current(listIsVisible: true, searchIsVisible: true).height
+        )
+    }
+
     func testListStaysVisibleWhenTheSettingIsOff() throws {
         let previous = AppSettings.hideListUntilSearch
         defer { AppSettings.hideListUntilSearch = previous }

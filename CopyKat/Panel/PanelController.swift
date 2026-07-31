@@ -69,6 +69,12 @@ final class PanelController: NSObject, NSWindowDelegate {
         } else if viewModel.isFastSession {
             switch tapTracker.register() {
             case .enterSearch(let undoAdvance):
+                // With the search field hidden there is nothing to switch to,
+                // so a quick second press is just another step through history.
+                guard viewModel.searchIsVisible else {
+                    viewModel.moveSelection(1)
+                    break
+                }
                 if undoAdvance {
                     viewModel.moveSelection(-1)
                 }
@@ -85,7 +91,13 @@ final class PanelController: NSObject, NSWindowDelegate {
         viewModel.reset()
         viewModel.isFastSession = fastSession
         panel.setFrame(
-            NSRect(origin: panel.frame.origin, size: PanelSize.current(listIsVisible: viewModel.listIsVisible)),
+            NSRect(
+                origin: panel.frame.origin,
+                size: PanelSize.current(
+                    listIsVisible: viewModel.listIsVisible,
+                    searchIsVisible: viewModel.searchIsVisible
+                )
+            ),
             display: false
         )
         centerOnActiveScreen()
