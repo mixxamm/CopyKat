@@ -125,7 +125,9 @@ enum AppSettings {
     }
 
     static var selectedSettingsTab: String {
-        get { defaults.string(forKey: selectedSettingsTabKey) ?? SettingsTab.general.rawValue }
+        // The raw string, not SettingsTab.general.rawValue: this file is shared
+        // with iOS, where the Mac settings window does not exist.
+        get { defaults.string(forKey: selectedSettingsTabKey) ?? "general" }
         set { defaults.set(newValue, forKey: selectedSettingsTabKey) }
     }
     static let selectedSettingsTabKey = "selectedSettingsTab"

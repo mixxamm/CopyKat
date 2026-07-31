@@ -89,6 +89,45 @@ targets:
     dependencies:
       - target: CopyKat
 
+  # The iPhone companion. Same bundle identifier as the Mac app, which is what
+  # universal purchase requires. It shares the store and search core; capture
+  # and paste are platform code of its own.
+  CopyKat-iOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CopyKat/Store
+      - path: CopyKat/Monitor/ClipboardCandidate.swift
+      - path: CopyKat/Paste/SelfWriteTracker.swift
+      - path: CopyKat/Settings/AppSettings.swift
+      - path: CopyKat/Localizable.xcstrings
+      - path: CopyKatiOS
+    dependencies:
+      - package: FuzzyMatch
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "0.11.0"
+        CURRENT_PROJECT_VERSION: "1"
+        PRODUCT_NAME: CopyKat
+        PRODUCT_BUNDLE_IDENTIFIER: com.mixxamm.copykat
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 826KF5XR57
+        CODE_SIGN_ENTITLEMENTS: CopyKatiOS/CopyKat-iOS.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    info:
+      path: CopyKatiOS/Info.plist
+      properties:
+        CFBundleDisplayName: CopyKat
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+
 schemes:
   CopyKat:
     build:
@@ -100,3 +139,7 @@ schemes:
     build:
       targets:
         CopyKat-MAS: all
+  CopyKat-iOS:
+    build:
+      targets:
+        CopyKat-iOS: all

@@ -9,16 +9,18 @@ enum ClipboardItemKind: String, Codable {
 
 @Model
 final class ClipboardItem {
-    var kind: ClipboardItemKind
+    // Every attribute carries a default: CloudKit-backed SwiftData stores
+    // refuse a model without them, and the iPhone app is on its way.
+    var kind: ClipboardItemKind = ClipboardItemKind.text
     var text: String?
     var imageFilename: String?
     var imageWidth: Int?
     var imageHeight: Int?
-    var contentHash: String
+    var contentHash: String = ""
     var sourceAppBundleID: String?
     var sourceAppName: String?
-    var createdAt: Date
-    var isPinned: Bool
+    var createdAt: Date = Date.now
+    var isPinned: Bool = false
     var pinShortcutID: String?
     var isRemote: Bool = false
     var fileBookmark: Data?
