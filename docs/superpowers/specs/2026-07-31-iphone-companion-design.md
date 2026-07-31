@@ -81,9 +81,19 @@ app makes.
   `createdAt` and `isPinned` currently have none, and CloudKit rejects that.
 - Images live as PNG files on disk keyed by SHA256, outside the store. They have to
   move into the model to sync. Existing users need a migration.
-- The free Developer ID build needs a provisioning profile carrying the iCloud
-  entitlement, which is more awkward than for the App Store build. Restricting sync
-  to the paid build is a defensible alternative and should be decided explicitly.
+- Sync ships in both builds, the free Developer ID one included. It costs us
+  nothing, because the data sits in the user's own iCloud, and it is mainly
+  worth having for people who also buy the iPhone app.
+
+  Developer ID apps may use CloudKit, but not for free in effort: the build needs
+  a Developer ID provisioning profile carrying the iCloud capability, embedded in
+  the bundle, which means the release workflow gains a profile alongside the
+  certificate it already imports. `com.apple.developer.icloud-container-environment`
+  has to be set to Production explicitly; App Store builds get that inferred, and
+  Developer ID builds do not, which is the usual place this comes apart.
+
+  Both builds already share the bundle identifier, so they share one CloudKit
+  container. Moving between the free and the paid build keeps the synced history.
 
 ## Getting things back to the Mac
 
