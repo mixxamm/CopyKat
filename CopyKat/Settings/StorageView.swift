@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 enum HistoryAge: Int, CaseIterable, Identifiable {
@@ -73,7 +74,7 @@ struct StorageView: View {
                     .pickerStyle(.segmented)
 
                     HStack {
-                        Button("Delete Older Items", role: .destructive, action: deleteOlder)
+                        Button("Delete Older Items", role: .destructive, action: confirmDeleteOlder)
                         if let lastDeleted {
                             Text(lastDeleted == 1 ? "1 item removed" : "\(lastDeleted) items removed")
                                 .foregroundStyle(.secondary)
@@ -97,6 +98,21 @@ struct StorageView: View {
         }
         .frame(width: 460, height: 470)
         .onAppear { usage = appState.historyStore.storageUsage() }
+    }
+
+    // A sweep can take out hundreds of items at once and, unlike deleting a
+    // single row in the panel, there is no undo for it.
+    private func confirmDeleteOlder() {
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Delete older items?")
+        alert.informativeText = scope == .imagesOnly
+            ? String(localized: "Images older than the chosen age are removed. Text is left alone, pinned items are always kept, and this cannot be undone.")
+            : String(localized: "Everything older than the chosen age is removed, except pinned items. This cannot be undone.")
+        alert.addButton(withTitle: String(localized: "Delete Older Items"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
+        alert.buttons.first?.hasDestructiveAction = true
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        deleteOlder()
     }
 
     private func deleteOlder() {

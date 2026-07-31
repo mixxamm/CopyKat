@@ -8960,6 +8960,342 @@
           }
         }
       }
+    },
+    "Delete older items?" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حذف العناصر الأقدم؟"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ältere Objekte löschen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar los elementos más antiguos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les éléments plus anciens ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पुराने आइटम हटाएँ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminare gli elementi più vecchi?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "古い項目を削除しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오래된 항목을 삭제할까요?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oudere items verwijderen?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usunąć starsze elementy?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar os itens mais antigos?"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ștergi elementele mai vechi?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить старые элементы?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort äldre objekt?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha eski ögeler silinsin mi?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити старіші елементи?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除较旧的项目？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除較舊的項目？"
+          }
+        }
+      }
+    },
+    "Images older than the chosen age are removed. Text is left alone, pinned items are always kept, and this cannot be undone." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُحذف الصور الأقدم من المدة المختارة. يبقى النص كما هو، وتُحفظ العناصر المثبتة دائمًا، ولا يمكن التراجع عن ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder, die älter als der gewählte Zeitraum sind, werden gelöscht. Text bleibt unberührt, angeheftete Objekte bleiben immer erhalten, und das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se eliminan las imágenes anteriores al periodo elegido. El texto se mantiene, los elementos fijados se conservan siempre y esto no se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les images plus anciennes que la durée choisie sont supprimées. Le texte est conservé, les éléments épinglés le sont toujours, et cette action est irréversible."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुनी गई अवधि से पुरानी छवियाँ हटा दी जाती हैं। पाठ वैसा ही रहता है, पिन किए आइटम हमेशा रखे जाते हैं, और यह वापस नहीं लिया जा सकता।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le immagini più vecchie del periodo scelto vengono eliminate. Il testo resta, gli elementi fissati vengono sempre conservati e l'operazione non è reversibile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選んだ期間より古い画像を削除します。テキストはそのまま残り、ピン留めした項目は常に保持されます。この操作は取り消せません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 기간보다 오래된 이미지를 삭제합니다. 텍스트는 그대로 두고 고정한 항목은 항상 유지되며, 이 작업은 되돌릴 수 없습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afbeeldingen ouder dan de gekozen periode worden verwijderd. Tekst blijft staan, gepinde items blijven altijd bewaard, en dit kan niet ongedaan worden gemaakt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrazy starsze niż wybrany okres zostaną usunięte. Tekst pozostaje, przypięte elementy są zawsze zachowywane, a tej operacji nie można cofnąć."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As imagens mais antigas do que o período escolhido são eliminadas. O texto mantém-se, os itens afixados são sempre guardados e isto não pode ser anulado."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imaginile mai vechi decât perioada aleasă sunt șterse. Textul rămâne, elementele fixate sunt păstrate mereu, iar operațiunea nu poate fi anulată."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изображения старше выбранного срока будут удалены. Текст останется, закреплённые элементы сохраняются всегда, и отменить это нельзя."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder som är äldre än den valda tiden tas bort. Text lämnas orörd, fästa objekt behålls alltid, och detta går inte att ångra."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilen süreden eski görseller silinir. Metne dokunulmaz, sabitlenmiş ögeler her zaman korunur ve bu geri alınamaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зображення, старіші за вибраний строк, буде видалено. Текст залишиться, закріплені елементи зберігаються завжди, і скасувати це не можна."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将删除早于所选时间的图片。文本保持不变，置顶项目始终保留，此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將刪除早於所選時間的圖片。文字保持不變，釘選項目一律保留，此操作無法還原。"
+          }
+        }
+      }
+    },
+    "Everything older than the chosen age is removed, except pinned items. This cannot be undone." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُحذف كل ما هو أقدم من المدة المختارة، باستثناء العناصر المثبتة. لا يمكن التراجع عن ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles, was älter als der gewählte Zeitraum ist, wird gelöscht, außer angehefteten Objekten. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se elimina todo lo anterior al periodo elegido, salvo los elementos fijados. Esto no se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout ce qui est plus ancien que la durée choisie est supprimé, sauf les éléments épinglés. Cette action est irréversible."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुनी गई अवधि से पुराना सब कुछ हटा दिया जाता है, पिन किए आइटम को छोड़कर। यह वापस नहीं लिया जा सकता।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viene eliminato tutto ciò che è più vecchio del periodo scelto, tranne gli elementi fissati. L'operazione non è reversibile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選んだ期間より古いものをすべて削除します。ピン留めした項目は除きます。この操作は取り消せません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 기간보다 오래된 항목을 모두 삭제합니다. 고정한 항목은 제외되며, 이 작업은 되돌릴 수 없습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles ouder dan de gekozen periode wordt verwijderd, behalve gepinde items. Dit kan niet ongedaan worden gemaakt."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuwane jest wszystko starsze niż wybrany okres, poza przypiętymi elementami. Tej operacji nie można cofnąć."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É eliminado tudo o que for mais antigo do que o período escolhido, exceto os itens afixados. Isto não pode ser anulado."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se șterge tot ce este mai vechi decât perioada aleasă, cu excepția elementelor fixate. Operațiunea nu poate fi anulată."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Будет удалено всё старше выбранного срока, кроме закреплённых элементов. Отменить это нельзя."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allt som är äldre än den valda tiden tas bort, utom fästa objekt. Detta går inte att ångra."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilen süreden eski her şey silinir, sabitlenmiş ögeler hariç. Bu geri alınamaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Буде видалено все, старіше за вибраний строк, окрім закріплених елементів. Скасувати це не можна."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将删除早于所选时间的全部内容，置顶项目除外。此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將刪除早於所選時間的全部內容，釘選項目除外。此操作無法還原。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
