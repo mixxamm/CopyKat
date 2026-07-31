@@ -212,7 +212,10 @@ targets:
             IsASCIICapable: false
             PrefersRightToLeft: false
             PrimaryLanguage: mul
-            RequestsOpenAccess: false
+            # True makes the Full Access toggle exist in Settings; it stays off
+            # until the user flips it. Without this the image rows could never
+            # unlock, because iOS hides the toggle entirely.
+            RequestsOpenAccess: true
 
 schemes:
   CopyKat:
