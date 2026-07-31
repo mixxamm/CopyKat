@@ -15,6 +15,7 @@ final class AppState {
     let historyStore: HistoryStore
     let imageStore: ImageStore
     private(set) var cloudSync: CloudSyncController?
+    private(set) var syncTransports: [any SyncTransport] = []
     let pasteService: PasteService
     let panelViewModel: PanelViewModel
     private(set) var panelController: PanelController?
@@ -97,9 +98,14 @@ final class AppState {
         panelViewModel = PanelViewModel(store: historyStore)
 
         cloudSync = CloudSyncController(store: historyStore, imageStore: imageStore, stateDirectory: appSupport)
-        historyStore.historyChanged = { [weak self] in self?.cloudSync?.scheduleReconcile() }
+        // Transports, plural: CloudKit today, and the seam for a local-network
+        // one tomorrow. Everything below fans out over the list.
+        syncTransports = [cloudSync].compactMap { $0 }
+        historyStore.historyChanged = { [weak self] in
+            self?.syncTransports.forEach { $0.scheduleReconcile() }
+        }
         if !Self.isRunningTests, !Self.isDemo {
-            cloudSync?.start()
+            syncTransports.forEach { $0.start() }
         }
 
         let monitor = ClipboardMonitor { [weak self] candidate in
@@ -275,10 +281,9 @@ final class AppState {
     // The settings window calls this after any sync toggle moves.
     func cloudSyncSettingsChanged() {
         if AppSettings.cloudSyncEnabled {
-            cloudSync?.start()
-            cloudSync?.scheduleReconcile()
+            syncTransports.forEach { $0.start(); $0.scheduleReconcile() }
         } else {
-            cloudSync?.stop()
+            syncTransports.forEach { $0.stop() }
         }
     }
 

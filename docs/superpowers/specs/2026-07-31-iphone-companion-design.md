@@ -76,6 +76,12 @@ The iPhone side is three targets:
 CloudKit private database, in the user's own iCloud. Off by default and always
 optional.
 
+Architecturally, CloudKit is one *transport* behind a small `SyncTransport`
+protocol (start / stop / scheduleReconcile), and the apps drive a list of
+transports rather than the one. That seam exists for a planned local-network
+transport for people who would rather not spend iCloud storage; the policy,
+the record mapping and the store hooks are all transport-agnostic already.
+
 One master switch, "Sync with iCloud". Under it, only meaningful when the switch is
 on, individual toggles for what leaves the Mac:
 

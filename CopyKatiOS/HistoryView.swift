@@ -169,12 +169,22 @@ struct PhoneItemCard: View {
         .accessibilityElement(children: .combine)
     }
 
+    // Short snippets get display type, paragraphs get reading type: a card
+    // holding "4589" should not whisper it in fine print.
+    private func textFont(for text: String) -> Font {
+        switch text.count {
+        case ..<25: .title2.weight(.medium)
+        case ..<80: .callout
+        default: .footnote
+        }
+    }
+
     @ViewBuilder
     private var content: some View {
         switch item.kind {
         case .text:
             Text(item.text ?? "")
-                .font(.footnote)
+                .font(textFont(for: item.text ?? ""))
                 .lineLimit(6)
                 .padding(10)
         case .fileURL:
@@ -207,16 +217,25 @@ struct PhoneItemCard: View {
                     .font(.caption2)
                     .foregroundStyle(.orange)
             }
+            // Where it came from: the recording app's name travels along with
+            // the sync, and the laptop marks anything that arrived from a Mac.
             if item.isRemote {
                 Image(systemName: "macbook")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
+            if let source = item.sourceAppName, !source.isEmpty {
+                Text(verbatim: source)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+            Spacer(minLength: 2)
             Text(item.createdAt, format: .relative(presentation: .named))
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
                 .lineLimit(1)
-            Spacer(minLength: 0)
+                .layoutPriority(1)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)

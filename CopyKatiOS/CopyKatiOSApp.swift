@@ -21,6 +21,7 @@ final class PhoneAppModel {
     let historyStore: HistoryStore
     let imageStore: ImageStore
     private(set) var cloudSync: CloudSyncController?
+    private(set) var syncTransports: [any SyncTransport] = []
 
     init() {
         // The store lives in the app group from day one: the share extension
@@ -42,18 +43,18 @@ final class PhoneAppModel {
         }
 
         cloudSync = CloudSyncController(store: historyStore, imageStore: imageStore, stateDirectory: dataDirectory)
+        syncTransports = [cloudSync].compactMap { $0 }
         historyStore.historyChanged = { [weak self] in
-            self?.cloudSync?.scheduleReconcile()
+            self?.syncTransports.forEach { $0.scheduleReconcile() }
         }
-        cloudSync?.start()
+        syncTransports.forEach { $0.start() }
     }
 
     func cloudSyncSettingsChanged() {
         if AppSettings.cloudSyncEnabled {
-            cloudSync?.start()
-            cloudSync?.scheduleReconcile()
+            syncTransports.forEach { $0.start(); $0.scheduleReconcile() }
         } else {
-            cloudSync?.stop()
+            syncTransports.forEach { $0.stop() }
         }
     }
 
