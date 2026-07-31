@@ -14,6 +14,9 @@ final class HistoryStore {
     var maxItems: Int? = 200
     private let imageIndexer = ImageIndexer()
     var pinsChanged: (() -> Void)?
+    // Anything that moved the history: adds, deletes, pins, undo, insights.
+    // The sync engine listens here.
+    var historyChanged: (() -> Void)?
     var selfWriteTracker: SelfWriteTracker?
     // Fires for copies the user actually made, so callers can drop state that
     // only made sense for the previous clipboard content.
@@ -74,6 +77,65 @@ final class HistoryStore {
         trim()
         try context.save()
         indexInBackground(item)
+        historyChanged?()
+        return item
+    }
+
+    func item(withContentHash hash: String) -> ClipboardItem? {
+        try? existingItem(withHash: hash)
+    }
+
+    // A record arriving from another device. It bypasses the capture path on
+    // purpose: no self-write suppression, no re-indexing, no reordering.
+    @discardableResult
+    func insertSynced(
+        contentHash: String,
+        kind: ClipboardItemKind,
+        text: String?,
+        imageData: Data?,
+        createdAt: Date,
+        isPinned: Bool,
+        sourceAppName: String?,
+        insights: ImageInsights
+    ) -> ClipboardItem? {
+        guard (try? existingItem(withHash: contentHash)) == nil else { return nil }
+
+        var imageFilename: String?
+        var width: Int?
+        var height: Int?
+        if kind == .image {
+            guard let imageData, let saved = try? imageStore.save(pngData: imageData) else { return nil }
+            imageFilename = saved.filename
+            width = saved.width
+            height = saved.height
+        }
+
+        let item = ClipboardItem(
+            kind: kind,
+            text: text,
+            imageFilename: imageFilename,
+            imageWidth: width,
+            imageHeight: height,
+            contentHash: contentHash,
+            sourceAppName: sourceAppName,
+            createdAt: createdAt,
+            isPinned: isPinned
+        )
+        item.isRemote = true
+        item.recognizedText = insights.recognizedText
+        item.qrPayload = insights.qrPayload
+        item.imageLabels = insights.labels.isEmpty ? nil : insights.labels.joined(separator: " ")
+        item.visionIndexed = true
+        if isPinned {
+            item.pinShortcutID = UUID().uuidString
+        }
+        context.insert(item)
+        trim()
+        try? context.save()
+        if isPinned {
+            pinsChanged?()
+        }
+        historyChanged?()
         return item
     }
 
@@ -86,6 +148,7 @@ final class HistoryStore {
         item.imageLabels = insights.labels.isEmpty ? nil : insights.labels.joined(separator: " ")
         item.visionIndexed = true
         try? context.save()
+        historyChanged?()
     }
 
     // One image at a time. Vision's first request in a process spends ~30s
@@ -176,6 +239,7 @@ final class HistoryStore {
         item.pinShortcutID = item.isPinned ? UUID().uuidString : nil
         try? context.save()
         pinsChanged?()
+        historyChanged?()
     }
 
     func delete(_ item: ClipboardItem) {
@@ -188,6 +252,7 @@ final class HistoryStore {
         if wasPinned {
             pinsChanged?()
         }
+        historyChanged?()
     }
 
     // Everything needed to put a row back. The SwiftData object is gone once
@@ -255,6 +320,7 @@ final class HistoryStore {
         if wasPinned {
             pinsChanged?()
         }
+        historyChanged?()
     }
 
     // Returns the restored row so the panel can highlight it again.
@@ -301,6 +367,7 @@ final class HistoryStore {
         if item.isPinned {
             pinsChanged?()
         }
+        historyChanged?()
         return item
     }
 

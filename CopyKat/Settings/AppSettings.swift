@@ -100,6 +100,33 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "vimNavigation") }
     }
 
+    // iCloud sync. Off until the user turns it on, and even then each kind of
+    // content has its own gate; images are the expensive one.
+    static var cloudSyncEnabled: Bool {
+        get { defaults.bool(forKey: "cloudSyncEnabled") }
+        set { defaults.set(newValue, forKey: "cloudSyncEnabled") }
+    }
+
+    static var cloudSyncText: Bool {
+        get { defaults.object(forKey: "cloudSyncText") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "cloudSyncText") }
+    }
+
+    static var cloudSyncFiles: Bool {
+        get { defaults.object(forKey: "cloudSyncFiles") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "cloudSyncFiles") }
+    }
+
+    static var cloudSyncImages: Bool {
+        get { defaults.bool(forKey: "cloudSyncImages") }
+        set { defaults.set(newValue, forKey: "cloudSyncImages") }
+    }
+
+    static var cloudSyncScope: String {
+        get { defaults.string(forKey: "cloudSyncScope") ?? "everything" }
+        set { defaults.set(newValue, forKey: "cloudSyncScope") }
+    }
+
     // On by default: it runs entirely on device, and a blind spot in search is
     // the kind of absence nobody thinks to blame on a setting.
     static var indexImageContent: Bool {

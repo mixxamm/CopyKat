@@ -14,6 +14,7 @@ extension KeyboardShortcuts.Name {
 final class AppState {
     let historyStore: HistoryStore
     let imageStore: ImageStore
+    private(set) var cloudSync: CloudSyncController?
     let pasteService: PasteService
     let panelViewModel: PanelViewModel
     private(set) var panelController: PanelController?
@@ -94,6 +95,12 @@ final class AppState {
         // Assigned before any closure captures `self` (even weakly), since Swift
         // requires all non-optional stored properties to be initialized first.
         panelViewModel = PanelViewModel(store: historyStore)
+
+        cloudSync = CloudSyncController(store: historyStore, imageStore: imageStore, stateDirectory: appSupport)
+        historyStore.historyChanged = { [weak self] in self?.cloudSync?.scheduleReconcile() }
+        if !Self.isRunningTests, !Self.isDemo {
+            cloudSync?.start()
+        }
 
         let monitor = ClipboardMonitor { [weak self] candidate in
             guard let self else { return }
@@ -262,6 +269,16 @@ final class AppState {
             // granted; a silent copy-only fallback looks like a paste bug. Only
             // an explicit "Just Copy" silences it.
             explainAccessibility()
+        }
+    }
+
+    // The settings window calls this after any sync toggle moves.
+    func cloudSyncSettingsChanged() {
+        if AppSettings.cloudSyncEnabled {
+            cloudSync?.start()
+            cloudSync?.scheduleReconcile()
+        } else {
+            cloudSync?.stop()
         }
     }
 

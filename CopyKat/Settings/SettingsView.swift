@@ -149,6 +149,47 @@ private struct GeneralSettingsView: View {
                     }
             }
 
+            Section("Sync") {
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Sync with iCloud", isOn: Binding(
+                        get: { AppSettings.cloudSyncEnabled },
+                        set: { AppSettings.cloudSyncEnabled = $0; appState.cloudSyncSettingsChanged() }
+                    ))
+                    Text("Carries your history to your other devices through your own iCloud. Nothing ever touches our servers, and nothing syncs until you turn this on.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                Group {
+                    Toggle("Text", isOn: Binding(
+                        get: { AppSettings.cloudSyncText },
+                        set: { AppSettings.cloudSyncText = $0; appState.cloudSyncSettingsChanged() }
+                    ))
+                    Toggle("Files", isOn: Binding(
+                        get: { AppSettings.cloudSyncFiles },
+                        set: { AppSettings.cloudSyncFiles = $0; appState.cloudSyncSettingsChanged() }
+                    ))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Toggle("Images", isOn: Binding(
+                            get: { AppSettings.cloudSyncImages },
+                            set: { AppSettings.cloudSyncImages = $0; appState.cloudSyncSettingsChanged() }
+                        ))
+                        Text("Images are what costs real iCloud space.")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                    Picker("What syncs", selection: Binding(
+                        get: { AppSettings.cloudSyncScope },
+                        set: { AppSettings.cloudSyncScope = $0; appState.cloudSyncSettingsChanged() }
+                    )) {
+                        Text("Everything").tag("everything")
+                        Text("Pinned only").tag("pinned")
+                        Text("Recent and pinned").tag("recent")
+                    }
+                }
+                .disabled(!AppSettings.cloudSyncEnabled)
+            }
+
             Section("Ignored apps") {
                 Text("Clipboard changes from these apps are never recorded. Common password managers, including Apple Passwords, are already excluded by default.")
                     .font(.callout)

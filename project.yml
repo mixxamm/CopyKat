@@ -101,10 +101,17 @@ targets:
       - path: CopyKat/Monitor/ClipboardCandidate.swift
       - path: CopyKat/Paste/SelfWriteTracker.swift
       - path: CopyKat/Settings/AppSettings.swift
+      - path: CopyKat/Sync
       - path: CopyKat/Localizable.xcstrings
       - path: CopyKatiOS
+        excludes:
+          - "*.entitlements"
     dependencies:
       - package: FuzzyMatch
+      - target: CopyKatShare
+        embed: true
+      - target: CopyKatKeyboard
+        embed: true
     settings:
       base:
         SWIFT_VERSION: "5.9"
@@ -117,6 +124,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: CopyKatiOS/CopyKat-iOS.entitlements
         TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     info:
       path: CopyKatiOS/Info.plist
       properties:
@@ -127,6 +135,82 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+
+  # Capture from the share sheet. Unlike the keyboard it may write to the app
+  # group, so it funnels straight into the shared store.
+  CopyKatShare:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CopyKatShare
+      - path: CopyKat/Store
+      - path: CopyKat/Monitor/ClipboardCandidate.swift
+      - path: CopyKat/Paste/SelfWriteTracker.swift
+      - path: CopyKat/Settings/AppSettings.swift
+      - path: CopyKatiOS/KeyboardSnapshot.swift
+    dependencies:
+      - package: FuzzyMatch
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "0.11.0"
+        CURRENT_PROJECT_VERSION: "1"
+        PRODUCT_BUNDLE_IDENTIFIER: com.mixxamm.copykat.share
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 826KF5XR57
+        CODE_SIGN_ENTITLEMENTS: CopyKatShare/CopyKatShare.entitlements
+        SKIP_INSTALL: YES
+    info:
+      path: CopyKatShare/Info.plist
+      properties:
+        CFBundleDisplayName: CopyKat
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 10
+
+  # The picker keyboard. Reads the snapshot, inserts text, never asks for Full
+  # Access; the store and the network stay out of reach on purpose.
+  CopyKatKeyboard:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CopyKatKeyboard
+      - path: CopyKatiOS/KeyboardSnapshot.swift
+      - path: CopyKat/Store/ClipboardItem.swift
+      - path: CopyKat/Localizable.xcstrings
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "0.11.0"
+        CURRENT_PROJECT_VERSION: "1"
+        PRODUCT_BUNDLE_IDENTIFIER: com.mixxamm.copykat.keyboard
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 826KF5XR57
+        CODE_SIGN_ENTITLEMENTS: CopyKatKeyboard/CopyKatKeyboard.entitlements
+        SKIP_INSTALL: YES
+    info:
+      path: CopyKatKeyboard/Info.plist
+      properties:
+        CFBundleDisplayName: CopyKat
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.keyboard-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).KeyboardViewController
+          NSExtensionAttributes:
+            IsASCIICapable: false
+            PrefersRightToLeft: false
+            PrimaryLanguage: mul
+            RequestsOpenAccess: false
 
 schemes:
   CopyKat:

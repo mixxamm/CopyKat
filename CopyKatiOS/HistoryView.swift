@@ -19,6 +19,7 @@ struct HistoryView: View {
                     list
                 }
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("CopyKat")
             .searchable(text: $query, prompt: Text("Search clipboard history"))
             .toolbar {
@@ -45,7 +46,7 @@ struct HistoryView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                PhoneSettingsView()
+                PhoneSettingsView(model: model)
             }
         }
         .onAppear(perform: refresh)
@@ -60,45 +61,49 @@ struct HistoryView: View {
         )
     }
 
+    // Cards, not rows: clipboard items are glanceable blobs, and a grid shows
+    // twice as many of them per screen.
     private var list: some View {
-        List {
-            ForEach(items) { item in
-                Button {
-                    model.copyToClipboard(item)
-                    AppSettings.lastPastedContentHash = item.contentHash
-                    flashCopied(item)
-                } label: {
-                    PhoneItemRow(
-                        item: item,
-                        imageStore: model.imageStore,
-                        showsCopied: copiedID == item.persistentModelID
-                    )
-                }
-                .buttonStyle(.plain)
-                .swipeActions(edge: .leading) {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
+                ForEach(items) { item in
                     Button {
-                        model.historyStore.togglePin(item)
-                        refresh()
+                        model.copyToClipboard(item)
+                        AppSettings.lastPastedContentHash = item.contentHash
+                        flashCopied(item)
                     } label: {
-                        Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash" : "pin")
+                        PhoneItemCard(
+                            item: item,
+                            imageStore: model.imageStore,
+                            showsCopied: copiedID == item.persistentModelID
+                        )
                     }
-                    .tint(.orange)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        model.historyStore.deleteUndoably(item)
-                        refresh()
-                    } label: {
-                        Label("Delete", systemImage: "trash")
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button {
+                            model.historyStore.togglePin(item)
+                            refresh()
+                        } label: {
+                            Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash" : "pin")
+                        }
+                        Button(role: .destructive) {
+                            model.historyStore.deleteUndoably(item)
+                            refresh()
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
                 }
             }
+            .padding(12)
         }
-        .listStyle(.plain)
     }
 
     private func refresh() {
         items = model.historyStore.items(matching: query)
+        if query.isEmpty {
+            model.refreshKeyboardSnapshot()
+        }
     }
 
     // A brief checkmark on the row beats a toast: it stays exactly where the
@@ -136,68 +141,85 @@ struct CapturedPayload: Transferable {
     }
 }
 
-struct PhoneItemRow: View {
+struct PhoneItemCard: View {
     let item: ClipboardItem
     let imageStore: ImageStore
     var showsCopied = false
 
     var body: some View {
-        HStack(spacing: 12) {
-            leading
-            VStack(alignment: .leading, spacing: 2) {
-                content
-                subtitle
-            }
-            Spacer(minLength: 0)
+        VStack(alignment: .leading, spacing: 0) {
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .clipped()
+            footer
+        }
+        .frame(height: 150)
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(alignment: .topTrailing) {
             if showsCopied {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.white, .green)
+                    .font(.title3)
+                    .padding(6)
                     .transition(.scale.combined(with: .opacity))
                     .accessibilityLabel(Text("Copied"))
-            } else if item.isPinned {
-                Image(systemName: "pin.fill")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
             }
         }
-        .padding(.vertical, 2)
         .animation(.snappy(duration: 0.2), value: showsCopied)
-    }
-
-    @ViewBuilder
-    private var leading: some View {
-        if item.kind == .image, let filename = item.imageFilename,
-           let thumb = imageStore.thumbnail(for: filename, maxDimension: 44) {
-            Image(uiImage: thumb)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 44, height: 44)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        } else {
-            Image(systemName: item.kind == .fileURL ? "doc" : (item.isRemote ? "macbook" : "text.alignleft"))
-                .frame(width: 44, height: 44)
-                .foregroundStyle(.secondary)
-                .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 8))
-        }
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder
     private var content: some View {
         switch item.kind {
         case .text:
-            Text(item.text ?? "").lineLimit(2)
+            Text(item.text ?? "")
+                .font(.footnote)
+                .lineLimit(6)
+                .padding(10)
         case .fileURL:
-            Text((item.text as NSString?)?.lastPathComponent ?? "").lineLimit(1)
+            VStack(alignment: .leading, spacing: 6) {
+                Image(systemName: "doc")
+                    .foregroundStyle(.secondary)
+                Text((item.text as NSString?)?.lastPathComponent ?? "")
+                    .font(.footnote)
+                    .lineLimit(3)
+            }
+            .padding(10)
         case .image:
-            Text(item.recognizedText?.split(whereSeparator: \.isNewline).first.map(String.init) ?? String(localized: "Image"))
-                .lineLimit(1)
-                .foregroundStyle(item.recognizedText == nil ? .secondary : .primary)
+            if let filename = item.imageFilename,
+               let thumb = imageStore.thumbnail(for: filename, maxDimension: 240) {
+                Image(uiImage: thumb)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else {
+                Image(systemName: "photo")
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
     }
 
-    private var subtitle: some View {
-        Text(item.createdAt, format: .relative(presentation: .named))
-            .font(.caption)
-            .foregroundStyle(.tertiary)
+    private var footer: some View {
+        HStack(spacing: 5) {
+            if item.isPinned {
+                Image(systemName: "pin.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+            }
+            if item.isRemote {
+                Image(systemName: "macbook")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            Text(item.createdAt, format: .relative(presentation: .named))
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .lineLimit(1)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(.thinMaterial)
     }
 }
