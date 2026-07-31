@@ -129,8 +129,20 @@ Two items are not routine:
   searchable history and share-sheet capture are the answer, and all three should
   ship in v1 rather than being held back.
 
-Open question: whether the European Accessibility Act, in force since June 2025,
-covers a paid consumer app of this kind. To be settled before submitting.
+The European Accessibility Act (Directive 2019/882, in force since 28 June 2025)
+does not appear to reach us, for two independent reasons. Its product list is
+hardware plus operating systems, and standalone applications are not on it; its
+service list is telephony, audiovisual media, transport, consumer banking,
+e-books, e-commerce and 112, none of which we provide. Even on the widest reading
+of "e-commerce services", Article 4(5) exempts microenterprises providing
+services, defined in Article 3(23) as fewer than ten people and turnover or
+balance sheet at or below EUR 2 million. Worth revisiting if the business ever
+outgrows that, and it is a directive, so the Belgian transposition is the text
+that actually binds.
+
+None of which is a reason to skip accessibility. A custom keyboard draws its own
+keys, so VoiceOver gets nothing unless we label them; doing that while building is
+cheap and retrofitting it is not.
 
 ## First version
 
