@@ -172,7 +172,12 @@ final class CloudSyncController {
 
     private func push() async throws {
         let qualifying = SyncPolicy.current().qualifyingItems(in: store.items(matching: ""))
-        let wanted = Dictionary(uniqueKeysWithValues: qualifying.map { ($0.contentHash, $0.isPinned) })
+        // Tolerant of duplicate hashes: trapping on somebody's corrupt store
+        // turns a data hiccup into a crash loop. A pin anywhere wins.
+        let wanted = Dictionary(
+            qualifying.filter { !$0.contentHash.isEmpty }.map { ($0.contentHash, $0.isPinned) },
+            uniquingKeysWith: { $0 || $1 }
+        )
 
         var toSave: [CKRecord] = []
         for (hash, pinned) in wanted where synced[hash] != pinned {
@@ -221,7 +226,20 @@ final class CloudSyncController {
             var applied = 0
             for modification in changes.modificationResultsByID.values {
                 if case .success(let change) = modification {
-                    SyncRecordMapper.apply(change.record, to: store, imageStore: imageStore)
+                    // Only records that look like ours get near the store; the
+                    // first sync pass once minted 165 empty ghosts out of
+                    // records that did not survive this checkpoint.
+                    let record = change.record
+                    guard record.recordType == SyncRecordMapper.recordType,
+                          !record.recordID.recordName.isEmpty,
+                          let kindRaw = record["kind"] as? String,
+                          let kind = ClipboardItemKind(rawValue: kindRaw),
+                          kind != .text || ((record["text"] as? String)?.isEmpty == false)
+                    else {
+                        trace("pull: skipped \(record.recordType) \(record.recordID.recordName.prefix(24)) fields=\(record.allKeys().joined(separator: ","))")
+                        continue
+                    }
+                    SyncRecordMapper.apply(record, to: store, imageStore: imageStore)
                     // Records written by another device are, by definition,
                     // already in the cloud; count them so this device does not
                     // try to push them straight back.

@@ -45,6 +45,7 @@ final class PhoneAppModel {
 
         // Images the share extension captured skipped OCR (its memory ceiling
         // is tight); pick them up here, exactly like the Mac does at launch.
+        historyStore.pruneCorruptItems()
         historyStore.backfillVisionIndex()
 
         cloudSync = CloudSyncController(store: historyStore, imageStore: imageStore, stateDirectory: dataDirectory)

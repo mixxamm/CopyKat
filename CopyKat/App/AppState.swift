@@ -90,6 +90,7 @@ final class AppState {
         historyStore.maxItems = AppSettings.historyLimit
         historyStore.migrateLegacyContentHashes()
         historyStore.backfillPinShortcutIDs()
+        historyStore.pruneCorruptItems()
         historyStore.pruneOrphans()
         historyStore.backfillVisionIndex()
 

@@ -98,6 +98,11 @@ final class HistoryStore {
         sourceAppName: String?,
         insights: ImageInsights
     ) -> ClipboardItem? {
+        // A row without identity can never dedupe and poisons every sync diff.
+        guard !contentHash.isEmpty else { return nil }
+        if kind == .text || kind == .fileURL {
+            guard let text, !text.isEmpty else { return nil }
+        }
         guard (try? existingItem(withHash: contentHash)) == nil else { return nil }
 
         var imageFilename: String?
@@ -467,6 +472,29 @@ final class HistoryStore {
             }
         }
         try? context.save()
+    }
+
+    // Rows without a content hash cannot be deduplicated, searched or synced;
+    // they are wreckage, and duplicate hashes make sync diffs ambiguous. Both
+    // get cleaned at launch, keeping the newest of any duplicate pair.
+    func pruneCorruptItems() {
+        var seen = Set<String>()
+        var removed = 0
+        for item in allItemsNewestFirst() {
+            if item.contentHash.isEmpty {
+                context.delete(item)
+                removed += 1
+            } else if seen.contains(item.contentHash) {
+                context.delete(item)
+                removed += 1
+            } else {
+                seen.insert(item.contentHash)
+            }
+        }
+        if removed > 0 {
+            try? context.save()
+            logger.notice("pruned \(removed) corrupt or duplicate items")
+        }
     }
 
     func pruneOrphans() {
