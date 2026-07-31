@@ -96,6 +96,16 @@ private struct GeneralSettingsView: View {
             }
 
             Section("History") {
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Search inside images", isOn: Binding(
+                        get: { AppSettings.indexImageContent },
+                        set: { AppSettings.indexImageContent = $0 }
+                    ))
+                    Text("Reads text, QR codes and subjects out of copied images, entirely on this Mac, so search can find them. ⌥↩ pastes the recognized text.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
                 Toggle("Keep everything", isOn: $unlimitedHistory)
                     .onChange(of: unlimitedHistory) { _, value in
                         AppSettings.unlimitedHistory = value

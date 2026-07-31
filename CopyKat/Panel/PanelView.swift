@@ -26,6 +26,7 @@ struct PanelView: View {
     @Bindable var model: PanelViewModel
     let imageStore: ImageStore
     let onCommit: (ClipboardItem) -> Void
+    let onCommitAsText: (ClipboardItem) -> Void
     let onDismiss: () -> Void
     let onRecordShortcut: (ClipboardItem) -> Void
     let onResize: (CGSize) -> Void
@@ -87,9 +88,15 @@ struct PanelView: View {
             model.moveSelection(-1)
             return .handled
         }
-        .onKeyPress(.return) {
+        .onKeyPress(.return, phases: .down) { press in
             guard let item = model.selectedItem else { return .ignored }
-            onCommit(item)
+            // ⌥-Enter pastes the text Vision read out of an image; a plain
+            // Enter, or ⌥-Enter on anything without such text, pastes the item.
+            if press.modifiers.contains(.option), item.pastableInsightText != nil {
+                onCommitAsText(item)
+            } else {
+                onCommit(item)
+            }
             return .handled
         }
         .onKeyPress(.escape) { onDismiss(); return .handled }
@@ -154,6 +161,9 @@ struct PanelView: View {
                         .contextMenu {
                             Button(item.isPinned ? String(localized: "Unpin") : String(localized: "Pin")) {
                                 model.togglePin(item)
+                            }
+                            if item.pastableInsightText != nil {
+                                Button("Paste as Text") { onCommitAsText(item) }
                             }
                             if item.isPinned {
                                 Button("Record Shortcut…") { onRecordShortcut(item) }

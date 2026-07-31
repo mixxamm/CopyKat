@@ -89,6 +89,7 @@ final class AppState {
         historyStore.migrateLegacyContentHashes()
         historyStore.backfillPinShortcutIDs()
         historyStore.pruneOrphans()
+        historyStore.backfillVisionIndex()
 
         // Assigned before any closure captures `self` (even weakly), since Swift
         // requires all non-optional stored properties to be initialized first.
@@ -114,6 +115,7 @@ final class AppState {
             viewModel: panelViewModel,
             imageStore: imageStore,
             onCommit: { [weak self] item in self?.commit(item) },
+            onCommitAsText: { [weak self] item in self?.commitAsText(item) },
             onRecordShortcut: { [weak self] _ in
                 guard let self else { return }
                 self.settingsWindowController.show(appState: self, tab: .pins)
@@ -170,6 +172,26 @@ final class AppState {
         }
     }
 
+    private static func demoScreenshot() -> Data? {
+        let size = NSSize(width: 640, height: 360)
+        let image = NSImage(size: size)
+        image.lockFocus()
+        NSColor.white.setFill()
+        NSRect(origin: .zero, size: size).fill()
+        ("Order #58291 confirmed\nPickup code: KAT-7794" as NSString).draw(
+            in: NSRect(x: 40, y: 120, width: 560, height: 160),
+            withAttributes: [
+                .font: NSFont.systemFont(ofSize: 34, weight: .semibold),
+                .foregroundColor: NSColor.black,
+            ]
+        )
+        image.unlockFocus()
+        guard let tiff = image.tiffRepresentation,
+              let rep = NSBitmapImageRep(data: tiff)
+        else { return nil }
+        return rep.representation(using: .png, properties: [:])
+    }
+
     private func seedDemoHistory() {
         // Oldest first: consecutive items from one app end up grouped under a
         // single header in the panel, which is what the screenshots should show.
@@ -189,6 +211,15 @@ final class AppState {
                 content: .text(text), sourceAppBundleID: bundleID, sourceAppName: name
             ))
         }
+        // A screenshot-like image with readable text, so the demo shows Vision
+        // at work: the indexer runs on it for real, no fake insights.
+        if let screenshot = Self.demoScreenshot() {
+            try? historyStore.add(ClipboardCandidate(
+                content: .image(screenshot),
+                sourceAppBundleID: "com.apple.Safari", sourceAppName: "Safari"
+            ))
+        }
+
         // One item that arrived through Universal Clipboard, so the screenshots
         // show what a copy from another device looks like.
         var remote = ClipboardCandidate(
@@ -205,10 +236,22 @@ final class AppState {
         paste(item)
     }
 
+    // ⌥-Enter on an image: paste what Vision read out of it, not the pixels.
+    private func commitAsText(_ item: ClipboardItem) {
+        guard let text = item.recognizedText ?? item.qrPayload else { return }
+        panelController?.hide()
+        guard pasteService.writeText(text) else { return }
+        AppSettings.lastPastedContentHash = item.contentHash
+        injectPasteKeystroke()
+    }
+
     private func paste(_ item: ClipboardItem) {
         guard pasteService.write(item) else { return }
         AppSettings.lastPastedContentHash = item.contentHash
+        injectPasteKeystroke()
+    }
 
+    private func injectPasteKeystroke() {
         if pasteService.isAccessibilityTrusted {
             // Give the key window a beat to restore focus before the keystroke arrives.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

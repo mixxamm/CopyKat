@@ -37,9 +37,46 @@ struct PreviewPane: View {
             // Where the item came from lives here rather than on every row: one
             // quiet line instead of a label repeated down the whole list.
             if let item {
+                insights(for: item)
                 Divider()
                 source(for: item)
             }
+        }
+    }
+
+    // One quiet row of what Vision saw in an image: the QR link, else the
+    // classification labels, else the first line it read, plus the ⌥↩ hint
+    // whenever there is text to paste. A plain unremarkable image shows nothing.
+    private func insightsLine(for item: ClipboardItem) -> (icon: String, text: String)? {
+        if let qr = item.qrPayload { return ("qrcode", qr) }
+        if let labels = item.imageLabels { return ("tag", labels) }
+        if let line = item.recognizedText?.split(separator: "\n").first {
+            return ("text.viewfinder", String(line))
+        }
+        return nil
+    }
+
+    @ViewBuilder
+    private func insights(for item: ClipboardItem) -> some View {
+        if let line = insightsLine(for: item) {
+            Divider()
+            HStack(spacing: 7) {
+                Image(systemName: line.icon)
+                    .foregroundStyle(.secondary)
+                Text(line.text)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+                if item.pastableInsightText != nil {
+                    Text("⌥↩ pastes text")
+                        .foregroundStyle(.tertiary)
+                        .fixedSize()
+                }
+            }
+            .font(.caption)
+            .padding(.horizontal, 14)
+            .frame(height: 26)
         }
     }
 

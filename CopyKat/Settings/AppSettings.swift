@@ -100,6 +100,13 @@ enum AppSettings {
         set { defaults.set(newValue, forKey: "vimNavigation") }
     }
 
+    // On by default: it runs entirely on device, and a blind spot in search is
+    // the kind of absence nobody thinks to blame on a setting.
+    static var indexImageContent: Bool {
+        get { defaults.object(forKey: "indexImageContent") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "indexImageContent") }
+    }
+
     static var fastPasteEnabled: Bool {
         get { defaults.bool(forKey: "fastPasteEnabled") }
         set { defaults.set(newValue, forKey: "fastPasteEnabled") }

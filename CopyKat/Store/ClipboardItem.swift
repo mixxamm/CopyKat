@@ -23,6 +23,19 @@ final class ClipboardItem {
     var isRemote: Bool = false
     var fileBookmark: Data?
 
+    // Filled in by the Vision indexer for images, so search can see into them.
+    // Defaults keep the migration additive and the model CloudKit-ready.
+    var recognizedText: String? = nil
+    var qrPayload: String? = nil
+    // Space-joined English classification identifiers ("document receipt cat").
+    var imageLabels: String? = nil
+    var visionIndexed: Bool = false
+
+    // What ⌥-Enter pastes: the text in the image, or failing that the QR link.
+    var pastableInsightText: String? {
+        recognizedText ?? qrPayload
+    }
+
     init(
         kind: ClipboardItemKind,
         text: String? = nil,

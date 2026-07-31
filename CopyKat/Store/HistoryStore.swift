@@ -12,6 +12,7 @@ final class HistoryStore {
 
     // nil keeps everything; the user can turn the cap off in settings.
     var maxItems: Int? = 200
+    private let imageIndexer = ImageIndexer()
     var pinsChanged: (() -> Void)?
     var selfWriteTracker: SelfWriteTracker?
     // Fires for copies the user actually made, so callers can drop state that
@@ -24,7 +25,7 @@ final class HistoryStore {
     }
 
     @discardableResult
-    func add(_ candidate: ClipboardCandidate) throws -> ClipboardItem {
+    func add(_ candidate: ClipboardCandidate) throws -> ClipboardItem? {
         let item: ClipboardItem
         switch candidate.content {
         case .text(let text):
@@ -58,6 +59,13 @@ final class HistoryStore {
             return existing
         }
 
+        // Content we just wrote ourselves that is not in the history: pasting
+        // an image as its recognized text. Recording that as a copy would grow
+        // the history as a side effect of pasting, so it is dropped entirely.
+        if isOurOwnPaste {
+            return nil
+        }
+
         item.sourceAppBundleID = candidate.sourceAppBundleID
         item.sourceAppName = candidate.sourceAppName
         item.isRemote = candidate.isRemote
@@ -65,7 +73,50 @@ final class HistoryStore {
         context.insert(item)
         trim()
         try context.save()
+        indexInBackground(item)
         return item
+    }
+
+    // MARK: - Vision indexing
+
+    // What Vision found becomes part of the item, so search can see into images.
+    func applyInsights(_ insights: ImageInsights, to item: ClipboardItem) {
+        item.recognizedText = insights.recognizedText
+        item.qrPayload = insights.qrPayload
+        item.imageLabels = insights.labels.isEmpty ? nil : insights.labels.joined(separator: " ")
+        item.visionIndexed = true
+        try? context.save()
+    }
+
+    private func indexInBackground(_ item: ClipboardItem) {
+        guard AppSettings.indexImageContent, item.kind == .image, !item.visionIndexed,
+              let filename = item.imageFilename
+        else { return }
+        let url = imageStore.imageURL(for: filename)
+        let indexer = imageIndexer
+        let id = item.persistentModelID
+        Task { [weak self] in
+            guard let data = try? Data(contentsOf: url) else { return }
+            // Off the main actor: accurate OCR takes real time per image.
+            let insights = await Task.detached(priority: .utility) {
+                indexer.insights(for: data)
+            }.value
+            guard let self, let live = self.item(withID: id) else { return }
+            self.applyInsights(insights, to: live)
+        }
+    }
+
+    // Histories that predate the indexer have images Vision never saw. Serial
+    // on purpose: this is cleanup, not something worth fans spinning up for.
+    func backfillVisionIndex() {
+        guard AppSettings.indexImageContent else { return }
+        for item in allItemsNewestFirst() where item.kind == .image && !item.visionIndexed {
+            indexInBackground(item)
+        }
+    }
+
+    private func item(withID id: PersistentIdentifier) -> ClipboardItem? {
+        allItemsNewestFirst().first { $0.persistentModelID == id }
     }
 
     func items(matching query: String) -> [ClipboardItem] {
@@ -75,9 +126,13 @@ final class HistoryStore {
             filtered = all
         } else {
             // Fuzzy match on content and source app; best score first, and
-            // recency breaks ties because `all` is already newest first.
+            // recency breaks ties because `all` is already newest first. Images
+            // join in through what Vision read out of them.
             let scored = all.compactMap { item -> (ClipboardItem, Double)? in
-                let haystacks = [item.text, item.sourceAppName].compactMap { $0 }
+                let haystacks = [
+                    item.text, item.sourceAppName,
+                    item.recognizedText, item.qrPayload, item.imageLabels,
+                ].compactMap { $0 }
                 let best = haystacks.compactMap { matcher.score(query, in: $0) }.max()
                 guard let best, best > 0 else { return nil }
                 return (item, best)
@@ -122,6 +177,10 @@ final class HistoryStore {
         var pinShortcutID: String?
         var isRemote: Bool
         var fileBookmark: Data?
+        var recognizedText: String?
+        var qrPayload: String?
+        var imageLabels: String?
+        var visionIndexed: Bool
         var deletedAt: Date
     }
 
@@ -153,6 +212,10 @@ final class HistoryStore {
                 pinShortcutID: item.pinShortcutID,
                 isRemote: item.isRemote,
                 fileBookmark: item.fileBookmark,
+                recognizedText: item.recognizedText,
+                qrPayload: item.qrPayload,
+                imageLabels: item.imageLabels,
+                visionIndexed: item.visionIndexed,
                 deletedAt: date
             )
         )
@@ -200,6 +263,10 @@ final class HistoryStore {
         item.pinShortcutID = deleted.pinShortcutID
         item.isRemote = deleted.isRemote
         item.fileBookmark = deleted.fileBookmark
+        item.recognizedText = deleted.recognizedText
+        item.qrPayload = deleted.qrPayload
+        item.imageLabels = deleted.imageLabels
+        item.visionIndexed = deleted.visionIndexed
         context.insert(item)
         try? context.save()
         if item.isPinned {

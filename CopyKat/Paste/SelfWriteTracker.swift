@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 // Pasting puts the item back on the pasteboard. Without this, the monitor
@@ -21,5 +22,12 @@ final class SelfWriteTracker {
             return false
         }
         return true
+    }
+
+    // Must produce the same digest the store uses for its content hashes, or a
+    // recorded write never matches the capture and the suppression silently
+    // stops working. A test pins the two together.
+    static func sha256Hex(_ string: String) -> String {
+        SHA256.hash(data: Data(string.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 }

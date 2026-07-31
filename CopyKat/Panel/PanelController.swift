@@ -16,6 +16,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         viewModel: PanelViewModel,
         imageStore: ImageStore,
         onCommit: @escaping (ClipboardItem) -> Void,
+        onCommitAsText: @escaping (ClipboardItem) -> Void,
         onRecordShortcut: @escaping (ClipboardItem) -> Void
     ) {
         self.viewModel = viewModel
@@ -27,6 +28,7 @@ final class PanelController: NSObject, NSWindowDelegate {
             model: viewModel,
             imageStore: imageStore,
             onCommit: onCommit,
+            onCommitAsText: onCommitAsText,
             onDismiss: { [weak self] in self?.hide() },
             onRecordShortcut: { [weak self] item in
                 self?.hide()

@@ -293,7 +293,7 @@ final class HistoryStoreTests: XCTestCase {
     }
 
     func testMigrationRewritesLegacyTextHashesSoDedupeWorksAgain() throws {
-        let item = try store.add(textCandidate("hello"))
+        let item = try XCTUnwrap(store.add(textCandidate("hello")))
         item.contentHash = "text:hello"
 
         store.migrateLegacyContentHashes()
@@ -306,7 +306,7 @@ final class HistoryStoreTests: XCTestCase {
     }
 
     func testMigrationCollapsesLegacyDuplicates() throws {
-        let legacy = try store.add(textCandidate("dup"))
+        let legacy = try XCTUnwrap(store.add(textCandidate("dup")))
         legacy.contentHash = "text:dup"
         legacy.isPinned = true
         try store.add(textCandidate("dup"))

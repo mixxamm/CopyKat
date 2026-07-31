@@ -44,6 +44,17 @@ final class PasteService {
         return written
     }
 
+    // Pasting the text Vision read out of an image. The text goes through the
+    // self-write tracker under its own hash, so it neither reorders the history
+    // nor shows up in it as a fresh copy.
+    @discardableResult
+    func writeText(_ text: String, to pasteboard: NSPasteboard = .general) -> Bool {
+        pasteboard.clearContents()
+        let written = pasteboard.setString(text, forType: .string)
+        selfWriteTracker.record(hash: "text:\(SelfWriteTracker.sha256Hex(text))")
+        return written
+    }
+
     private func resolvedFileURL(for item: ClipboardItem) -> URL? {
         guard let bookmark = item.fileBookmark else { return nil }
         var isStale = false
