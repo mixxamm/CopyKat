@@ -47,6 +47,9 @@ targetTemplates:
 targets:
   CopyKat:
     templates: [App]
+    settings:
+      base:
+        CODE_SIGN_ENTITLEMENTS: CopyKat/CopyKat-Dev.entitlements
     dependencies:
       - package: Sparkle
     info:
@@ -186,6 +189,7 @@ targets:
       - path: CopyKatKeyboard
       - path: CopyKatiOS/KeyboardSnapshot.swift
       - path: CopyKatiOS/Brand.swift
+      - path: CopyKatiOS/BrandAssets.xcassets
       - path: CopyKat/Store/ClipboardItem.swift
       - path: CopyKat/Store/ImageStore.swift
       - path: CopyKat/Localizable.xcstrings

@@ -191,6 +191,9 @@ struct PhoneItemCard: View {
             in: RoundedRectangle(cornerRadius: 14)
         )
         .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+        // The card's rounding must also clip its content: a full-bleed image
+        // would otherwise poke square corners out of a rounded card.
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if showsCopied {
                 Image(systemName: "checkmark.circle.fill")

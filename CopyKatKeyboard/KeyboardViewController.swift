@@ -107,22 +107,37 @@ private struct KeyboardView: View {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 4) {
+                    // The same card grid the app uses, shrunk to keyboard
+                    // height: more of the history in view, and the two
+                    // surfaces read as one product.
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 108), spacing: 6)], spacing: 6) {
                         ForEach(visible) { entry in
-                            row(for: entry)
-                        }
-                        if hiddenImageCount > 0 {
-                            Text("To paste images, allow Full Access: Settings › Apps › CopyKat › Keyboards.")
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 6)
+                            cell(for: entry)
                         }
                     }
                     .padding(8)
+                    if hiddenImageCount > 0 {
+                        Text("To paste images, allow Full Access: Settings › Apps › CopyKat › Keyboards.")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 12)
+                            .padding(.bottom, 4)
+                    }
                 }
             }
             bottomBar
+        }
+        // The app's warm wash, same direction as there: falling in from the
+        // top. From the bottom it collided with the grey of the system
+        // keyboard chrome underneath.
+        .background(alignment: .top) {
+            LinearGradient(
+                colors: [Color.brand.opacity(0.16), .clear],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 110)
         }
         .background(Color(.systemGroupedBackground).opacity(0.01))
     }
@@ -142,70 +157,68 @@ private struct KeyboardView: View {
     }
 
     @ViewBuilder
-    private func row(for entry: KeyboardSnapshot.Entry) -> some View {
+    private func cell(for entry: KeyboardSnapshot.Entry) -> some View {
         if let filename = entry.imageFilename {
-            imageRow(for: entry, filename: filename)
+            imageCell(for: entry, filename: filename)
         } else {
-            textRow(for: entry)
+            textCell(for: entry)
         }
     }
 
-    private func textRow(for entry: KeyboardSnapshot.Entry) -> some View {
+    private func textCell(for entry: KeyboardSnapshot.Entry) -> some View {
         Button {
             onInsert(entry.text)
         } label: {
-            HStack(spacing: 8) {
-                pin(entry)
-                Text(entry.text)
-                    .lineLimit(2)
-                    .font(.subheadline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+            Text(entry.text)
+                .font(.caption)
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(7)
+                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(alignment: .topTrailing) { pin(entry) }
         }
+        .frame(height: 62)
         .buttonStyle(.plain)
         .accessibilityLabel(Text(entry.text))
         .accessibilityHint(Text("Inserts this text"))
     }
 
     // Tapping an image cannot insert it; it lands on the clipboard, and the
-    // row says so while the checkmark shows.
-    private func imageRow(for entry: KeyboardSnapshot.Entry, filename: String) -> some View {
+    // bottom bar explains the long-press while the checkmark shows.
+    private func imageCell(for entry: KeyboardSnapshot.Entry, filename: String) -> some View {
         Button {
             if onCopyImage(filename) {
                 copiedHash = entry.contentHash
                 Task {
-                    try? await Task.sleep(for: .seconds(2))
+                    try? await Task.sleep(for: .seconds(3))
                     if copiedHash == entry.contentHash { copiedHash = nil }
                 }
             }
         } label: {
-            HStack(spacing: 8) {
-                pin(entry)
+            ZStack {
                 if let thumb = thumbnail(filename) {
                     Image(uiImage: thumb)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 44, height: 32)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                }
-                if copiedHash == entry.contentHash {
-                    Text("On the clipboard. Press and hold a text field, then Paste.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                 } else {
-                    Text(entry.text.isEmpty ? String(localized: "Image") : entry.text)
-                        .lineLimit(1)
-                        .font(.subheadline)
-                        .foregroundStyle(entry.text.isEmpty ? .secondary : .primary)
+                    Image(systemName: "photo")
+                        .foregroundStyle(.secondary)
                 }
-                Spacer(minLength: 0)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+            .frame(maxWidth: .infinity)
+            .frame(height: 62)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay(alignment: .topTrailing) { pin(entry) }
+            .overlay {
+                if copiedHash == entry.contentHash {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.black.opacity(0.35))
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.white, Color.brand)
+                }
+            }
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(entry.text.isEmpty ? String(localized: "Image") : entry.text))
@@ -218,6 +231,7 @@ private struct KeyboardView: View {
             Image(systemName: "pin.fill")
                 .font(.caption2)
                 .foregroundStyle(.orange)
+                .padding(4)
                 .accessibilityHidden(true)
         }
     }
@@ -229,11 +243,6 @@ private struct KeyboardView: View {
                     .frame(width: 44, height: 36)
             }
             Spacer()
-            Image(systemName: "cat.fill")
-                .font(.caption)
-                .foregroundStyle(Color.brand)
-                .accessibilityLabel(Text(verbatim: "CopyKat"))
-            Spacer()
             Button(action: onDelete) {
                 Image(systemName: "delete.left")
                     .frame(width: 44, height: 36)
@@ -243,6 +252,24 @@ private struct KeyboardView: View {
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 4)
+        .overlay {
+            if copiedHash != nil {
+                Text("On the clipboard. Press and hold a text field, then Paste.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .padding(.horizontal, 56)
+            } else {
+                Image("BrandCat")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 16)
+                    .foregroundStyle(Color.brand)
+                    .accessibilityLabel(Text(verbatim: "CopyKat"))
+            }
+        }
     }
 }
 
