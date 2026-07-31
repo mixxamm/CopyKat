@@ -26,7 +26,10 @@ final class ImageStore {
 
     init(directory: URL) throws {
         self.directory = directory
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        // Tolerate a read-only situation: the keyboard extension opens this
+        // directory without write access to the app group, purely to render
+        // thumbnails of what the app already saved.
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 
     func save(pngData: Data) throws -> SavedImage {

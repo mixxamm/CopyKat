@@ -17,7 +17,7 @@ final class ShareViewController: UIViewController {
             .compactMap { $0 as? NSExtensionItem }
             .flatMap { $0.attachments ?? [] }
 
-        var contents: [ClipboardCandidate.Content] = []
+        var contents: [(ClipboardCandidate.Content, String?)] = []
         for provider in providers {
             if let content = await load(from: provider) {
                 contents.append(content)
@@ -31,31 +31,33 @@ final class ShareViewController: UIViewController {
     }
 
     // Order matters: a shared image often also carries a URL to itself, and
-    // the image is what the user meant.
-    private func load(from provider: NSItemProvider) async -> ClipboardCandidate.Content? {
+    // the image is what the user meant. iOS deliberately hides the sharing
+    // app's identity from extensions, so the closest honest source label is
+    // the website's host when a link is shared, and nothing otherwise.
+    private func load(from provider: NSItemProvider) async -> (ClipboardCandidate.Content, String?)? {
         if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
             if let data = try? await provider.loadDataRepresentation(for: .png) {
-                return .image(data)
+                return (.image(data), nil)
             }
             if let data = try? await provider.loadDataRepresentation(for: .image),
                let image = UIImage(data: data), let png = image.pngData() {
-                return .image(png)
+                return (.image(png), nil)
             }
             return nil
         }
         if provider.hasItemConformingToTypeIdentifier(UTType.url.identifier),
            let url = try? await provider.loadItem(forTypeIdentifier: UTType.url.identifier) as? URL {
-            return .text(url.absoluteString)
+            return (.text(url.absoluteString), url.host)
         }
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier),
            let text = try? await provider.loadItem(forTypeIdentifier: UTType.plainText.identifier) as? String {
-            return .text(text)
+            return (.text(text), nil)
         }
         return nil
     }
 
     @MainActor
-    private func save(_ contents: [ClipboardCandidate.Content]) {
+    private func save(_ contents: [(ClipboardCandidate.Content, String?)]) {
         guard let root = AppGroup.container else { return }
         let dataDirectory = root.appendingPathComponent("CopyKat", isDirectory: true)
         try? FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true)
@@ -70,8 +72,8 @@ final class ShareViewController: UIViewController {
         // No OCR in the extension: its memory ceiling is tight, and the app
         // backfills unindexed images the next time it runs.
         store.visionIndexingEnabled = false
-        for content in contents {
-            try? store.add(ClipboardCandidate(content: content, sourceAppBundleID: nil, sourceAppName: nil))
+        for (content, source) in contents {
+            try? store.add(ClipboardCandidate(content: content, sourceAppBundleID: nil, sourceAppName: source))
         }
         KeyboardSnapshot.write(items: store.items(matching: ""), to: root)
     }

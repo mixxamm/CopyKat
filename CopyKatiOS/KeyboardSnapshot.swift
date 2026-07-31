@@ -10,6 +10,10 @@ struct KeyboardSnapshot: Codable, Equatable {
         let contentHash: String
         let text: String
         let isPinned: Bool
+        // Set for image items: the filename inside the shared Images folder.
+        // The keyboard renders the thumbnail itself; pasting the image needs
+        // Full Access, so without it these entries stay hidden.
+        var imageFilename: String? = nil
     }
 
     var entries: [Entry] = []
@@ -22,13 +26,23 @@ struct KeyboardSnapshot: Codable, Equatable {
     }
 
     static func write(items: [ClipboardItem], to container: URL) {
-        // Text only, by design: the document proxy a keyboard types through
-        // carries nothing else.
+        // Text inserts through the document proxy; images can only travel via
+        // the pasteboard, which the keyboard offers when Full Access is on.
         let entries = items.lazy
-            .filter { $0.kind == .text || $0.kind == .fileURL }
             .compactMap { item -> Entry? in
-                guard let text = item.text, !text.isEmpty else { return nil }
-                return Entry(contentHash: item.contentHash, text: text, isPinned: item.isPinned)
+                switch item.kind {
+                case .text, .fileURL:
+                    guard let text = item.text, !text.isEmpty else { return nil }
+                    return Entry(contentHash: item.contentHash, text: text, isPinned: item.isPinned)
+                case .image:
+                    guard let filename = item.imageFilename else { return nil }
+                    return Entry(
+                        contentHash: item.contentHash,
+                        text: item.recognizedText?.split(whereSeparator: \.isNewline).first.map(String.init) ?? "",
+                        isPinned: item.isPinned,
+                        imageFilename: filename
+                    )
+                }
             }
             .prefix(maxEntries)
         let snapshot = KeyboardSnapshot(entries: Array(entries))

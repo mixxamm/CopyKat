@@ -2,22 +2,37 @@ import SwiftUI
 import UIKit
 
 // The keyboard is a picker, not a typing surface: the history as a list, tap
-// to insert, globe to get Apple's keyboard back. It runs without Full Access,
-// which is why it reads the snapshot the app maintains and nothing else.
+// to insert, globe to get Apple's keyboard back. It runs without Full Access;
+// text inserts through the document proxy. Images can only travel via the
+// pasteboard, so they appear once the user grants Full Access and tapping one
+// copies it ready to paste.
 final class KeyboardViewController: UIInputViewController {
     private var snapshot = KeyboardSnapshot()
+    private var imageStore: ImageStore?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         if let container = AppGroup.container {
             snapshot = KeyboardSnapshot.read(from: container)
+            imageStore = try? ImageStore(
+                directory: container
+                    .appendingPathComponent("CopyKat", isDirectory: true)
+                    .appendingPathComponent("Images")
+            )
         }
 
         let root = KeyboardView(
             entries: sortedEntries,
+            imagesAllowed: hasFullAccess,
             needsGlobe: needsInputModeSwitchKey,
+            thumbnail: { [weak self] filename in
+                self?.imageStore?.thumbnail(for: filename, maxDimension: 72)
+            },
             onInsert: { [weak self] text in
                 self?.textDocumentProxy.insertText(text)
+            },
+            onCopyImage: { [weak self] filename in
+                self?.copyImageToPasteboard(named: filename) ?? false
             },
             onDelete: { [weak self] in
                 self?.textDocumentProxy.deleteBackward()
@@ -44,6 +59,15 @@ final class KeyboardViewController: UIInputViewController {
         snapshot.entries.filter(\.isPinned) + snapshot.entries.filter { !$0.isPinned }
     }
 
+    private func copyImageToPasteboard(named filename: String) -> Bool {
+        guard hasFullAccess, let imageStore,
+              let data = try? Data(contentsOf: imageStore.imageURL(for: filename)),
+              let image = UIImage(data: data)
+        else { return false }
+        UIPasteboard.general.image = image
+        return true
+    }
+
     // Apple requires a reachable way to switch keyboards; the system-provided
     // handler needs a UIKit control, so SwiftUI wraps this button.
     private func makeGlobeButton() -> UIButton {
@@ -57,20 +81,42 @@ final class KeyboardViewController: UIInputViewController {
 
 private struct KeyboardView: View {
     let entries: [KeyboardSnapshot.Entry]
+    let imagesAllowed: Bool
     let needsGlobe: Bool
+    let thumbnail: (String) -> PlatformImage?
     let onInsert: (String) -> Void
+    let onCopyImage: (String) -> Bool
     let onDelete: () -> Void
     let globe: () -> UIButton?
 
+    @State private var copiedHash: String?
+
+    // Without Full Access the pasteboard is out of reach, so image entries
+    // stay hidden rather than shown broken.
+    private var visible: [KeyboardSnapshot.Entry] {
+        imagesAllowed ? entries : entries.filter { $0.imageFilename == nil }
+    }
+
+    private var hiddenImageCount: Int {
+        imagesAllowed ? 0 : entries.filter { $0.imageFilename != nil }.count
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            if entries.isEmpty {
+            if visible.isEmpty {
                 emptyState
             } else {
                 ScrollView {
                     LazyVStack(spacing: 4) {
-                        ForEach(entries) { entry in
+                        ForEach(visible) { entry in
                             row(for: entry)
+                        }
+                        if hiddenImageCount > 0 {
+                            Text("Allow Full Access to paste images from the keyboard.")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                                .multilineTextAlignment(.center)
+                                .padding(.top, 6)
                         }
                     }
                     .padding(8)
@@ -95,17 +141,21 @@ private struct KeyboardView: View {
         .frame(maxWidth: .infinity)
     }
 
+    @ViewBuilder
     private func row(for entry: KeyboardSnapshot.Entry) -> some View {
+        if let filename = entry.imageFilename {
+            imageRow(for: entry, filename: filename)
+        } else {
+            textRow(for: entry)
+        }
+    }
+
+    private func textRow(for entry: KeyboardSnapshot.Entry) -> some View {
         Button {
             onInsert(entry.text)
         } label: {
             HStack(spacing: 8) {
-                if entry.isPinned {
-                    Image(systemName: "pin.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
-                        .accessibilityHidden(true)
-                }
+                pin(entry)
                 Text(entry.text)
                     .lineLimit(2)
                     .font(.subheadline)
@@ -118,6 +168,58 @@ private struct KeyboardView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(entry.text))
         .accessibilityHint(Text("Inserts this text"))
+    }
+
+    // Tapping an image cannot insert it; it lands on the clipboard, and the
+    // row says so while the checkmark shows.
+    private func imageRow(for entry: KeyboardSnapshot.Entry, filename: String) -> some View {
+        Button {
+            if onCopyImage(filename) {
+                copiedHash = entry.contentHash
+                Task {
+                    try? await Task.sleep(for: .seconds(2))
+                    if copiedHash == entry.contentHash { copiedHash = nil }
+                }
+            }
+        } label: {
+            HStack(spacing: 8) {
+                pin(entry)
+                if let thumb = thumbnail(filename) {
+                    Image(uiImage: thumb)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 44, height: 32)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+                if copiedHash == entry.contentHash {
+                    Text("On the clipboard. Press and hold a text field, then Paste.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text(entry.text.isEmpty ? String(localized: "Image") : entry.text)
+                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(entry.text.isEmpty ? .secondary : .primary)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(entry.text.isEmpty ? String(localized: "Image") : entry.text))
+        .accessibilityHint(Text("Copies this image to the clipboard"))
+    }
+
+    @ViewBuilder
+    private func pin(_ entry: KeyboardSnapshot.Entry) -> some View {
+        if entry.isPinned {
+            Image(systemName: "pin.fill")
+                .font(.caption2)
+                .foregroundStyle(.orange)
+                .accessibilityHidden(true)
+        }
     }
 
     private var bottomBar: some View {

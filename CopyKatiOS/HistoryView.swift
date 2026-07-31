@@ -41,8 +41,6 @@ struct HistoryView: View {
                             refresh()
                         }
                     }
-                    .labelStyle(.titleAndIcon)
-                    .buttonBorderShape(.capsule)
                 }
             }
             .sheet(isPresented: $showingSettings) {
