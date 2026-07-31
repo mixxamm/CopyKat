@@ -3,9 +3,11 @@ import Foundation
 import Observation
 import os
 
-// Sync through the user's own iCloud, built on CKSyncEngine. This is not
-// SwiftData's automatic mirroring on purpose: mirroring is all-or-nothing,
-// and the whole point here is that the user chooses what leaves the machine.
+// Sync through the user's own iCloud, on plain CloudKit operations. This began
+// life on CKSyncEngine, but on current OS builds the engine's batches come
+// back as HTTP 500 while direct operations sail through, so the controller
+// drives the database itself: a diff against what was last sent, modify
+// operations for the difference, and zone change tokens for the way back.
 //
 // The cloud is a transport, not the authority: records removed from iCloud
 // (because a toggle changed or an item rolled out of scope) are never turned
@@ -14,21 +16,23 @@ import os
 @Observable
 final class CloudSyncController {
     static let containerIdentifier = "iCloud.com.mixxamm.copykat"
+    private static let batchSize = 40
 
     private let store: HistoryStore
     private let imageStore: ImageStore
-    private let stateURL: URL
     private let logger = Logger(subsystem: "com.mixxamm.copykat", category: "CloudSync")
 
-    private var engine: CKSyncEngine?
-    // CKSyncEngine only keeps a weak reference to its delegate; someone has to
-    // own it, or the engine schedules work and then has nobody to ask for it.
-    private var delegateHolder: Delegate?
+    private var running = false
     private var reconcileScheduled = false
+    private var syncing = false
+    private var zoneReady = false
+    private var periodicTask: Task<Void, Never>?
+
     // What the cloud has, by content hash, with the pin state that was sent.
     // Reconciling against this turns "the whole store" into a small diff.
     private var synced: [String: Bool] = [:]
     private let syncedURL: URL
+    private let tokenURL: URL
 
     private(set) var lastError: String?
 
@@ -37,7 +41,16 @@ final class CloudSyncController {
 
     // os_log proved unreadable on beta systems, so the engine keeps its own
     // small trace next to its state files. Trimmed on every start.
-    private var traceURL: URL { syncedURL.deletingLastPathComponent().appendingPathComponent("cloudsync-trace.log") }
+    private let traceURL: URL
+
+    init(store: HistoryStore, imageStore: ImageStore, stateDirectory: URL) {
+        self.store = store
+        self.imageStore = imageStore
+        self.syncedURL = stateDirectory.appendingPathComponent("cloudsync-sent.json")
+        self.tokenURL = stateDirectory.appendingPathComponent("cloudsync-token.data")
+        self.traceURL = stateDirectory.appendingPathComponent("cloudsync-trace.log")
+        self.synced = (try? JSONDecoder().decode([String: Bool].self, from: Data(contentsOf: syncedURL))) ?? [:]
+    }
 
     func trace(_ message: String) {
         let line = "\(Date().formatted(date: .omitted, time: .standard)) \(message)\n"
@@ -48,14 +61,6 @@ final class CloudSyncController {
         } else {
             try? line.data(using: .utf8)!.write(to: traceURL)
         }
-    }
-
-    init(store: HistoryStore, imageStore: ImageStore, stateDirectory: URL) {
-        self.store = store
-        self.imageStore = imageStore
-        self.stateURL = stateDirectory.appendingPathComponent("cloudsync-state.data")
-        self.syncedURL = stateDirectory.appendingPathComponent("cloudsync-sent.json")
-        self.synced = (try? JSONDecoder().decode([String: Bool].self, from: Data(contentsOf: syncedURL))) ?? [:]
     }
 
     // CKContainer raises an uncatchable exception in a process signed without
@@ -71,25 +76,20 @@ final class CloudSyncController {
         #endif
     }
 
+    private var database: CKDatabase {
+        CKContainer(identifier: Self.containerIdentifier).privateCloudDatabase
+    }
+
     func start() {
-        guard SyncPolicy.current().enabled, engine == nil else { return }
+        guard SyncPolicy.current().enabled, !running else { return }
         guard Self.entitlementPresent else {
             lastError = String(localized: "This build was signed without iCloud capability.")
             logger.error("sync: missing iCloud entitlement, not starting")
             return
         }
-        let delegate = Delegate(controller: self)
-        delegateHolder = delegate
-        var configuration = CKSyncEngine.Configuration(
-            database: CKContainer(identifier: Self.containerIdentifier).privateCloudDatabase,
-            stateSerialization: loadState(),
-            delegate: delegate
-        )
-        configuration.automaticallySync = true
-        engine = CKSyncEngine(configuration)
+        running = true
         try? FileManager.default.removeItem(at: traceURL)
-        trace("engine started")
-        scheduleReconcile()
+        trace("sync started")
 
         // Surface the one failure people actually hit: no iCloud account.
         Task { [weak self] in
@@ -106,81 +106,143 @@ final class CloudSyncController {
                 }
             }
         }
+
+        // Fetch shortly after start, then keep a slow heartbeat: pushes need
+        // infrastructure this build does not carry, and a five minute poll is
+        // plenty for a clipboard that syncs opportunistically.
+        periodicTask = Task { [weak self] in
+            await self?.sync()
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(300))
+                await self?.sync()
+            }
+        }
+        scheduleReconcile()
     }
 
     func stop() {
-        engine = nil
-        delegateHolder = nil
+        running = false
+        periodicTask?.cancel()
+        periodicTask = nil
     }
 
     // Pull-to-refresh: fetch whatever the other devices sent, right now.
     func fetchNow() async {
-        if engine == nil { start() }
-        try? await engine?.fetchChanges()
-        try? await engine?.sendChanges()
+        if !running { start() }
+        await sync()
     }
 
     // Called whenever the history or the policy moves. Debounced: a paste can
     // touch the store several times in one beat.
     func scheduleReconcile() {
         guard SyncPolicy.current().enabled else { return }
-        if engine == nil { start() }
+        if !running { start() }
         guard !reconcileScheduled else { return }
         reconcileScheduled = true
         Task { [weak self] in
             try? await Task.sleep(for: .seconds(2))
             self?.reconcileScheduled = false
-            self?.reconcile()
+            await self?.sync()
         }
     }
 
-    private func reconcile() {
-        guard let engine else { return }
+    // One full pass: push the local difference, then pull the remote one.
+    private func sync() async {
+        guard running, !syncing else { return }
+        syncing = true
+        defer { syncing = false }
+        do {
+            try await ensureZone()
+            try await push()
+            try await pull()
+            lastError = nil
+        } catch {
+            let flat = "\(error)".replacingOccurrences(of: "\n", with: " ")
+            trace("sync FAILED: \(flat.prefix(400))")
+            lastError = error.localizedDescription
+        }
+    }
+
+    private func ensureZone() async throws {
+        guard !zoneReady else { return }
+        _ = try await database.save(CKRecordZone(zoneID: SyncRecordMapper.zoneID))
+        zoneReady = true
+        trace("zone ready")
+    }
+
+    private func push() async throws {
         let qualifying = SyncPolicy.current().qualifyingItems(in: store.items(matching: ""))
         let wanted = Dictionary(uniqueKeysWithValues: qualifying.map { ($0.contentHash, $0.isPinned) })
 
-        var changes: [CKSyncEngine.PendingRecordZoneChange] = []
+        var toSave: [CKRecord] = []
         for (hash, pinned) in wanted where synced[hash] != pinned {
-            changes.append(.saveRecord(SyncRecordMapper.recordID(for: hash)))
+            guard let item = store.item(withContentHash: hash) else { continue }
+            var imageURL: URL?
+            if item.kind == .image, let filename = item.imageFilename {
+                imageURL = imageStore.imageURL(for: filename)
+            }
+            toSave.append(SyncRecordMapper.record(for: item, imageFileURL: imageURL))
         }
-        for hash in synced.keys where wanted[hash] == nil {
-            changes.append(.deleteRecord(SyncRecordMapper.recordID(for: hash)))
-        }
-        guard !changes.isEmpty else { trace("reconcile: nothing to do"); return }
-        trace("reconcile: scheduling \(changes.count) changes")
-        logger.notice("sync: scheduling \(changes.count) changes")
-        engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: SyncRecordMapper.zoneID))])
-        engine.state.add(pendingRecordZoneChanges: changes)
-        // Automatic scheduling proved too lazy here, so we force the send after every reconcile.
-        Task { [weak self] in
-            do {
-                try await engine.sendChanges()
-                await MainActor.run { self?.trace("sendChanges completed") }
-            } catch {
-                let ns = error as NSError
-                let deep = (ns.userInfo[NSUnderlyingErrorKey] as? NSError)?.userInfo ?? [:]
-                let flat = "\(ns.domain) \(ns.code) info=\(ns.userInfo) deep=\(deep)"
-                    .replacingOccurrences(of: "\n", with: " ")
-                await MainActor.run {
-                    self?.trace("sendChanges FAILED: \(flat)")
-                    self?.lastError = error.localizedDescription
+        let toDelete = synced.keys.filter { wanted[$0] == nil }.map { SyncRecordMapper.recordID(for: $0) }
+        guard !toSave.isEmpty || !toDelete.isEmpty else { return }
+        trace("push: \(toSave.count) saves, \(toDelete.count) deletes")
+
+        for chunk in stride(from: 0, to: max(toSave.count, 1), by: Self.batchSize) {
+            let slice = Array(toSave[chunk..<min(chunk + Self.batchSize, toSave.count)])
+            let deletions = chunk == 0 ? toDelete : []
+            guard !slice.isEmpty || !deletions.isEmpty else { continue }
+            let result = try await database.modifyRecords(
+                saving: slice,
+                deleting: deletions,
+                savePolicy: .changedKeys,
+                atomically: false
+            )
+            for (id, outcome) in result.saveResults {
+                switch outcome {
+                case .success(let record):
+                    synced[id.recordName] = (record["isPinned"] as? Int ?? 0) == 1
+                case .failure(let error):
+                    trace("save failed \(id.recordName.prefix(12)): \(error.localizedDescription)")
                 }
             }
+            for (id, outcome) in result.deleteResults {
+                if case .success = outcome {
+                    synced.removeValue(forKey: id.recordName)
+                }
+            }
+            persistSynced()
+        }
+        trace("push done, \(synced.count) in cloud")
+    }
+
+    private func pull() async throws {
+        do {
+            let changes = try await database.recordZoneChanges(inZoneWith: SyncRecordMapper.zoneID, since: loadToken())
+            var applied = 0
+            for modification in changes.modificationResultsByID.values {
+                if case .success(let change) = modification {
+                    SyncRecordMapper.apply(change.record, to: store, imageStore: imageStore)
+                    // Records written by another device are, by definition,
+                    // already in the cloud; count them so this device does not
+                    // try to push them straight back.
+                    let pinned = (change.record["isPinned"] as? Int ?? 0) == 1
+                    synced[change.record.recordID.recordName] = pinned
+                    applied += 1
+                }
+            }
+            // Deletions stay cloud-side by design; see the header.
+            persistSynced()
+            saveToken(changes.changeToken)
+            if applied > 0 {
+                trace("pull: applied \(applied) records")
+            }
+        } catch let error as CKError where error.code == .zoneNotFound || error.code == .userDeletedZone {
+            zoneReady = false
+            saveToken(nil)
         }
     }
 
-    // MARK: - Engine plumbing
-
-    private func loadState() -> CKSyncEngine.State.Serialization? {
-        guard let data = try? Data(contentsOf: stateURL) else { return nil }
-        return try? JSONDecoder().decode(CKSyncEngine.State.Serialization.self, from: data)
-    }
-
-    private func saveState(_ serialization: CKSyncEngine.State.Serialization) {
-        if let data = try? JSONEncoder().encode(serialization) {
-            try? data.write(to: stateURL, options: .atomic)
-        }
-    }
+    // MARK: - State on disk
 
     private func persistSynced() {
         if let data = try? JSONEncoder().encode(synced) {
@@ -188,68 +250,18 @@ final class CloudSyncController {
         }
     }
 
-    private func record(for recordID: CKRecord.ID) -> CKRecord? {
-        guard let item = store.item(withContentHash: recordID.recordName) else { return nil }
-        var imageURL: URL?
-        if item.kind == .image, let filename = item.imageFilename {
-            imageURL = imageStore.imageURL(for: filename)
-        }
-        return SyncRecordMapper.record(for: item, imageFileURL: imageURL)
+    private func loadToken() -> CKServerChangeToken? {
+        guard let data = try? Data(contentsOf: tokenURL) else { return nil }
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClass: CKServerChangeToken.self, from: data)
     }
 
-    private final class Delegate: CKSyncEngineDelegate {
-        // The controller owns the delegate's lifetime through the engine.
-        private weak var controller: CloudSyncController?
-
-        init(controller: CloudSyncController) {
-            self.controller = controller
+    private func saveToken(_ token: CKServerChangeToken?) {
+        guard let token,
+              let data = try? NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
+        else {
+            try? FileManager.default.removeItem(at: tokenURL)
+            return
         }
-
-        func handleEvent(_ event: CKSyncEngine.Event, syncEngine: CKSyncEngine) async {
-            await MainActor.run {
-                guard let controller else { return }
-                controller.trace("event: \(event)")
-                switch event {
-                case .stateUpdate(let update):
-                    controller.saveState(update.stateSerialization)
-                case .fetchedRecordZoneChanges(let changes):
-                    for modification in changes.modifications {
-                        SyncRecordMapper.apply(modification.record, to: controller.store, imageStore: controller.imageStore)
-                    }
-                    // Deletions stay cloud-side by design; see the header.
-                case .sentRecordZoneChanges(let sent):
-                    for saved in sent.savedRecords {
-                        let pinned = (saved["isPinned"] as? Int ?? 0) == 1
-                        controller.synced[saved.recordID.recordName] = pinned
-                    }
-                    for deleted in sent.deletedRecordIDs {
-                        controller.synced.removeValue(forKey: deleted.recordName)
-                    }
-                    for failure in sent.failedRecordSaves {
-                        controller.lastError = failure.error.localizedDescription
-                        controller.logger.error("sync: save failed \(failure.error.localizedDescription, privacy: .public)")
-                    }
-                    controller.persistSynced()
-                case .accountChange:
-                    controller.synced = [:]
-                    controller.persistSynced()
-                    controller.scheduleReconcile()
-                default:
-                    break
-                }
-            }
-        }
-
-        func nextRecordZoneChangeBatch(
-            _ context: CKSyncEngine.SendChangesContext,
-            syncEngine: CKSyncEngine
-        ) async -> CKSyncEngine.RecordZoneChangeBatch? {
-            let pending = syncEngine.state.pendingRecordZoneChanges
-            await MainActor.run { self.controller?.trace("batch requested, \(pending.count) pending") }
-            guard !pending.isEmpty else { return nil }
-            return await CKSyncEngine.RecordZoneChangeBatch(pendingChanges: pending) { recordID in
-                await MainActor.run { self.controller?.record(for: recordID) }
-            }
-        }
+        try? data.write(to: tokenURL, options: .atomic)
     }
 }
