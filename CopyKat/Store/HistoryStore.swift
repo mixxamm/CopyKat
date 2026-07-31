@@ -88,26 +88,55 @@ final class HistoryStore {
         try? context.save()
     }
 
+    // One image at a time. Vision's first request in a process spends ~30s
+    // loading its models, and a launch-time backfill that fires everything at
+    // once starves the cooperative thread pool: nothing ever finishes, new
+    // captures queue behind the pile-up, and search never learns a thing.
+    private var indexQueue: [PersistentIdentifier] = []
+    private var indexRunning = false
+    // Off in unit tests, where background OCR racing the assertions would make
+    // results depend on timing.
+    var visionIndexingEnabled = true
+
     private func indexInBackground(_ item: ClipboardItem) {
-        guard AppSettings.indexImageContent, item.kind == .image, !item.visionIndexed,
-              let filename = item.imageFilename
+        guard visionIndexingEnabled, AppSettings.indexImageContent,
+              item.kind == .image, !item.visionIndexed, item.imageFilename != nil
         else { return }
-        let url = imageStore.imageURL(for: filename)
-        let indexer = imageIndexer
         let id = item.persistentModelID
+        guard !indexQueue.contains(id) else { return }
+        indexQueue.append(id)
+        logger.notice("vision: queued, depth \(self.indexQueue.count)")
+        drainIndexQueue()
+    }
+
+    private func drainIndexQueue() {
+        guard !indexRunning, !indexQueue.isEmpty else { return }
+        indexRunning = true
+        let id = indexQueue.removeFirst()
+        let indexer = imageIndexer
         Task { [weak self] in
-            guard let data = try? Data(contentsOf: url) else { return }
+            defer {
+                self?.indexRunning = false
+                self?.drainIndexQueue()
+            }
+            guard let self, let item = self.item(withID: id), !item.visionIndexed,
+                  let filename = item.imageFilename
+            else { return }
+            guard let data = try? Data(contentsOf: self.imageStore.imageURL(for: filename)) else {
+                self.logger.error("vision: unreadable \(filename, privacy: .public)")
+                return
+            }
             // Off the main actor: accurate OCR takes real time per image.
             let insights = await Task.detached(priority: .utility) {
                 indexer.insights(for: data)
             }.value
-            guard let self, let live = self.item(withID: id) else { return }
+            guard let live = self.item(withID: id) else { return }
             self.applyInsights(insights, to: live)
+            self.logger.notice("vision: indexed chars=\(insights.recognizedText?.count ?? 0) labels=\(insights.labels.count), \(self.indexQueue.count) left")
         }
     }
 
-    // Histories that predate the indexer have images Vision never saw. Serial
-    // on purpose: this is cleanup, not something worth fans spinning up for.
+    // Histories that predate the indexer have images Vision never saw.
     func backfillVisionIndex() {
         guard AppSettings.indexImageContent else { return }
         for item in allItemsNewestFirst() where item.kind == .image && !item.visionIndexed {

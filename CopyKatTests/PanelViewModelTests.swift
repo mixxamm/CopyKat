@@ -15,6 +15,7 @@ final class PanelViewModelTests: XCTestCase {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: ClipboardItem.self, configurations: config)
         store = HistoryStore(container: container, imageStore: imageStore)
+        store.visionIndexingEnabled = false
         model = PanelViewModel(store: store)
     }
 

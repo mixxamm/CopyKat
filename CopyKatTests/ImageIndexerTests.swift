@@ -18,6 +18,7 @@ final class ImageIndexerTests: XCTestCase {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: ClipboardItem.self, configurations: config)
         store = HistoryStore(container: container, imageStore: imageStore)
+        store.visionIndexingEnabled = false
     }
 
     override func tearDownWithError() throws {
