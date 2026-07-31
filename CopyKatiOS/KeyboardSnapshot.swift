@@ -14,6 +14,9 @@ struct KeyboardSnapshot: Codable, Equatable {
         // The keyboard renders the thumbnail itself; pasting the image needs
         // Full Access, so without it these entries stay hidden.
         var imageFilename: String? = nil
+        // Portrait images get a taller cell in the keyboard. Optional so
+        // snapshots written before this field existed still decode.
+        var isPortrait: Bool? = nil
     }
 
     var entries: [Entry] = []
@@ -36,11 +39,18 @@ struct KeyboardSnapshot: Codable, Equatable {
                     return Entry(contentHash: item.contentHash, text: text, isPinned: item.isPinned)
                 case .image:
                     guard let filename = item.imageFilename else { return nil }
+                    // Orientation only when both dimensions are known; the
+                    // keyboard falls back to the compact cell otherwise.
+                    var isPortrait: Bool? = nil
+                    if let width = item.imageWidth, let height = item.imageHeight {
+                        isPortrait = height > width
+                    }
                     return Entry(
                         contentHash: item.contentHash,
                         text: item.recognizedText?.split(whereSeparator: \.isNewline).first.map(String.init) ?? "",
                         isPinned: item.isPinned,
-                        imageFilename: filename
+                        imageFilename: filename,
+                        isPortrait: isPortrait
                     )
                 }
             }

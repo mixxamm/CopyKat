@@ -189,7 +189,7 @@ struct PhoneItemCard: View {
                 .clipped()
             footer
         }
-        .frame(height: 150)
+        .frame(height: cardHeight)
         .background(
             item.isPinned ? Color.brand.opacity(0.10) : Color(.secondarySystemGroupedBackground),
             in: RoundedRectangle(cornerRadius: 14)
@@ -210,6 +210,17 @@ struct PhoneItemCard: View {
         }
         .animation(.snappy(duration: 0.2), value: showsCopied)
         .accessibilityElement(children: .combine)
+    }
+
+    // Portrait screenshots squashed into a landscape card show a sliver of
+    // nothing useful, so tall images get a taller card while text and files
+    // keep the compact height.
+    private var cardHeight: CGFloat {
+        guard item.kind == .image,
+              let width = item.imageWidth,
+              let height = item.imageHeight,
+              height > width else { return 150 }
+        return 230
     }
 
     // Short snippets get display type, paragraphs get reading type: a card

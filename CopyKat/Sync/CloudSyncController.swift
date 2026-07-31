@@ -21,6 +21,9 @@ final class CloudSyncController {
     private let logger = Logger(subsystem: "com.mixxamm.copykat", category: "CloudSync")
 
     private var engine: CKSyncEngine?
+    // CKSyncEngine only keeps a weak reference to its delegate; someone has to
+    // own it, or the engine schedules work and then has nobody to ask for it.
+    private var delegateHolder: Delegate?
     private var reconcileScheduled = false
     // What the cloud has, by content hash, with the pin state that was sent.
     // Reconciling against this turns "the whole store" into a small diff.
@@ -31,6 +34,21 @@ final class CloudSyncController {
 
     // What the settings screens show: how much of the history is in iCloud.
     var syncedCount: Int { synced.count }
+
+    // os_log proved unreadable on beta systems, so the engine keeps its own
+    // small trace next to its state files. Trimmed on every start.
+    private var traceURL: URL { syncedURL.deletingLastPathComponent().appendingPathComponent("cloudsync-trace.log") }
+
+    func trace(_ message: String) {
+        let line = "\(Date().formatted(date: .omitted, time: .standard)) \(message)\n"
+        if let handle = try? FileHandle(forWritingTo: traceURL) {
+            handle.seekToEndOfFile()
+            handle.write(line.data(using: .utf8)!)
+            try? handle.close()
+        } else {
+            try? line.data(using: .utf8)!.write(to: traceURL)
+        }
+    }
 
     init(store: HistoryStore, imageStore: ImageStore, stateDirectory: URL) {
         self.store = store
@@ -60,13 +78,17 @@ final class CloudSyncController {
             logger.error("sync: missing iCloud entitlement, not starting")
             return
         }
+        let delegate = Delegate(controller: self)
+        delegateHolder = delegate
         var configuration = CKSyncEngine.Configuration(
             database: CKContainer(identifier: Self.containerIdentifier).privateCloudDatabase,
             stateSerialization: loadState(),
-            delegate: Delegate(controller: self)
+            delegate: delegate
         )
         configuration.automaticallySync = true
         engine = CKSyncEngine(configuration)
+        try? FileManager.default.removeItem(at: traceURL)
+        trace("engine started")
         scheduleReconcile()
 
         // Surface the one failure people actually hit: no iCloud account.
@@ -88,6 +110,7 @@ final class CloudSyncController {
 
     func stop() {
         engine = nil
+        delegateHolder = nil
     }
 
     // Pull-to-refresh: fetch whatever the other devices sent, right now.
@@ -123,10 +146,16 @@ final class CloudSyncController {
         for hash in synced.keys where wanted[hash] == nil {
             changes.append(.deleteRecord(SyncRecordMapper.recordID(for: hash)))
         }
-        guard !changes.isEmpty else { return }
+        guard !changes.isEmpty else { trace("reconcile: nothing to do"); return }
+        trace("reconcile: scheduling \(changes.count) changes")
         logger.notice("sync: scheduling \(changes.count) changes")
         engine.state.add(pendingDatabaseChanges: [.saveZone(CKRecordZone(zoneID: SyncRecordMapper.zoneID))])
         engine.state.add(pendingRecordZoneChanges: changes)
+        // Automatic scheduling proved too lazy here, so we force the send after every reconcile.
+        Task { [weak self] in
+            try? await engine.sendChanges()
+            await MainActor.run { self?.trace("sendChanges completed") }
+        }
     }
 
     // MARK: - Engine plumbing
@@ -168,6 +197,7 @@ final class CloudSyncController {
         func handleEvent(_ event: CKSyncEngine.Event, syncEngine: CKSyncEngine) async {
             await MainActor.run {
                 guard let controller else { return }
+                controller.trace("event: \(event)")
                 switch event {
                 case .stateUpdate(let update):
                     controller.saveState(update.stateSerialization)
@@ -204,6 +234,7 @@ final class CloudSyncController {
             syncEngine: CKSyncEngine
         ) async -> CKSyncEngine.RecordZoneChangeBatch? {
             let pending = syncEngine.state.pendingRecordZoneChanges
+            await MainActor.run { self.controller?.trace("batch requested, \(pending.count) pending") }
             guard !pending.isEmpty else { return nil }
             return await CKSyncEngine.RecordZoneChangeBatch(pendingChanges: pending) { recordID in
                 await MainActor.run { self.controller?.record(for: recordID) }

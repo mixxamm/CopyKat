@@ -128,16 +128,6 @@ private struct KeyboardView: View {
             }
             bottomBar
         }
-        // The app's warm wash, spanning the whole keyboard: a partial band
-        // reads as a stain against the system chrome above and below, so the
-        // gradient runs edge to edge and simply thins out on the way down.
-        .background {
-            LinearGradient(
-                colors: [Color.brand.opacity(0.16), Color.brand.opacity(0.03)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        }
         .background(Color(.systemGroupedBackground).opacity(0.01))
     }
 
@@ -206,7 +196,8 @@ private struct KeyboardView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 62)
+            // Portrait shots get more height so they read as more than a sliver.
+            .frame(height: entry.isPortrait == true ? 110 : 62)
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay(alignment: .topTrailing) { pin(entry) }
             .overlay {
