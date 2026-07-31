@@ -112,7 +112,7 @@ private struct KeyboardView: View {
                             row(for: entry)
                         }
                         if hiddenImageCount > 0 {
-                            Text("Allow Full Access to paste images from the keyboard.")
+                            Text("To paste images, allow Full Access: Settings › Apps › CopyKat › Keyboards.")
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
                                 .multilineTextAlignment(.center)

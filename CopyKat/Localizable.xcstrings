@@ -12321,118 +12321,6 @@
         }
       }
     },
-    "Allow Full Access to paste images from the keyboard." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اسمح بالوصول الكامل للصق الصور من لوحة المفاتيح."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erlaube Vollzugriff, um Bilder aus der Tastatur einzusetzen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permite el acceso total para pegar imágenes desde el teclado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autorisez l'accès complet pour coller des images depuis le clavier."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कीबोर्ड से छवियाँ चिपकाने के लिए पूर्ण पहुँच की अनुमति दें।"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Consenti l'accesso completo per incollare immagini dalla tastiera."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "キーボードから画像をペーストするにはフルアクセスを許可してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "키보드에서 이미지를 붙여넣으려면 전체 접근을 허용하세요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sta volledige toegang toe om afbeeldingen vanuit het toetsenbord te plakken."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zezwól na pełny dostęp, aby wklejać obrazy z klawiatury."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permita o acesso total para colar imagens a partir do teclado."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Permite accesul complet ca să lipești imagini de la tastatură."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разрешите полный доступ, чтобы вставлять изображения с клавиатуры."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tillåt fullständig åtkomst för att klistra in bilder från tangentbordet."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klavyeden görsel yapıştırmak için Tam Erişim'e izin verin."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дозвольте повний доступ, щоб вставляти зображення з клавіатури."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允许完全访问即可从键盘粘贴图片。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "允許完整取用即可從鍵盤貼上圖片。"
-          }
-        }
-      }
-    },
     "On the clipboard. Press and hold a text field, then Paste." : {
       "localizations" : {
         "ar" : {
@@ -12653,6 +12541,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將此圖片複製到剪貼簿"
+          }
+        }
+      }
+    },
+    "To paste images, allow Full Access: Settings › Apps › CopyKat › Keyboards." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للصق الصور، اسمح بالوصول الكامل: الإعدادات › التطبيقات › CopyKat › لوحات المفاتيح."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Bilder einzusetzen, erlaube Vollzugriff: Einstellungen › Apps › CopyKat › Tastaturen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para pegar imágenes, permite el acceso total: Ajustes › Apps › CopyKat › Teclados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour coller des images, autorisez l'accès complet : Réglages › Apps › CopyKat › Claviers."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "छवियाँ चिपकाने के लिए पूर्ण पहुँच की अनुमति दें: सेटिंग्स › ऐप्स › CopyKat › कीबोर्ड।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per incollare immagini, consenti l'accesso completo: Impostazioni › App › CopyKat › Tastiere."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像をペーストするにはフルアクセスを許可：設定 › アプリ › CopyKat › キーボード。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지를 붙여넣으려면 전체 접근을 허용하세요: 설정 › 앱 › CopyKat › 키보드."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Om afbeeldingen te plakken, sta volledige toegang toe: Instellingen › Apps › CopyKat › Toetsenborden."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aby wklejać obrazy, zezwól na pełny dostęp: Ustawienia › Aplikacje › CopyKat › Klawiatury."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para colar imagens, permita o acesso total: Definições › Apps › CopyKat › Teclados."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ca să lipești imagini, permite accesul complet: Configurări › Aplicații › CopyKat › Tastaturi."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы вставлять изображения, разрешите полный доступ: Настройки › Приложения › CopyKat › Клавиатуры."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För att klistra in bilder, tillåt fullständig åtkomst: Inställningar › Appar › CopyKat › Tangentbord."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görsel yapıştırmak için Tam Erişim'e izin verin: Ayarlar › Uygulamalar › CopyKat › Klavyeler."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоб вставляти зображення, дозвольте повний доступ: Параметри › Застосунки › CopyKat › Клавіатури."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要粘贴图片，请允许完全访问：设置 › 应用 › CopyKat › 键盘。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要貼上圖片，請允許完整取用：設定 › App › CopyKat › 鍵盤。"
           }
         }
       }
