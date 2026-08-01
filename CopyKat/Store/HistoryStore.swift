@@ -17,6 +17,9 @@ final class HistoryStore {
     // Anything that moved the history: adds, deletes, pins, undo, insights.
     // The sync engine listens here.
     var historyChanged: (() -> Void)?
+    // Where the sync layer's trace lives; os_log is unreadable on the OS
+    // builds this store actually runs on.
+    var diagnostics: ((String) -> Void)?
     var selfWriteTracker: SelfWriteTracker?
     // Fires for copies the user actually made, so callers can drop state that
     // only made sense for the previous clipboard content.
@@ -80,6 +83,8 @@ final class HistoryStore {
         historyChanged?()
         return item
     }
+
+    var totalCount: Int { allItemsNewestFirst().count }
 
     func item(withContentHash hash: String) -> ClipboardItem? {
         try? existingItem(withHash: hash)
@@ -153,6 +158,7 @@ final class HistoryStore {
         // dropped the row's identity and the sync layer must know.
         if (try? existingItem(withHash: contentHash)) == nil {
             logger.error("insertSynced persisted a ghost for hash \(contentHash.prefix(16), privacy: .public)")
+            diagnostics?("GHOST after insertSynced for \(contentHash.prefix(16))")
         }
         if isPinned {
             pinsChanged?()
@@ -511,6 +517,7 @@ final class HistoryStore {
         if removed > 0 {
             try? context.save()
             logger.notice("pruned \(removed) corrupt or duplicate items")
+            diagnostics?("pruned \(removed) corrupt or duplicate items")
         }
     }
 

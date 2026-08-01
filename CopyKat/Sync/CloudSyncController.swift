@@ -45,6 +45,7 @@ final class CloudSyncController {
 
     init(store: HistoryStore, imageStore: ImageStore, stateDirectory: URL) {
         self.store = store
+        defer { store.diagnostics = { [weak self] in self?.trace($0) } }
         self.imageStore = imageStore
         self.syncedURL = stateDirectory.appendingPathComponent("cloudsync-sent.json")
         self.tokenURL = stateDirectory.appendingPathComponent("cloudsync-token.data")
@@ -163,8 +164,17 @@ final class CloudSyncController {
         defer { syncing = false }
         do {
             try await ensureZone()
+            let beforePush = store.totalCount
             try await push()
+            let afterPush = store.totalCount
             try await pull()
+            let afterPull = store.totalCount
+            // Rows minted out of thin air during a phase name their culprit.
+            if afterPush != beforePush || afterPull != afterPush {
+                trace("counts: \(beforePush) -> push \(afterPush) -> pull \(afterPull)")
+            }
+            // Whatever minted ghosts this pass, they die this pass too.
+            store.pruneCorruptItems()
             lastError = nil
         } catch {
             let flat = "\(error)".replacingOccurrences(of: "\n", with: " ")
