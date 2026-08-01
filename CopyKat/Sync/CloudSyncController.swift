@@ -232,40 +232,35 @@ final class CloudSyncController {
 
     private func pull() async throws {
         do {
-            // CloudKit pages its change feed; without draining every page the
-            // newest records, images most of all, simply never arrive.
-            var moreComing = true
+            // The operation API, not the async convenience wrapper: the
+            // wrapper sat on this OS for a quarter of an hour without moving
+            // a byte, while the operation streams records and pages honestly.
+            var more = true
             var applied = 0
-            while moreComing {
-            let changes = try await database.recordZoneChanges(inZoneWith: SyncRecordMapper.zoneID, since: loadToken())
-            for modification in changes.modificationResultsByID.values {
-                if case .success(let change) = modification {
-                    // Only records that look like ours get near the store; the
-                    // first sync pass once minted 165 empty ghosts out of
-                    // records that did not survive this checkpoint.
-                    let record = change.record
+            while more {
+                let page = try await fetchPage(since: loadToken())
+                for record in page.records {
                     guard record.recordType == SyncRecordMapper.recordType,
                           !record.recordID.recordName.isEmpty,
                           let kindRaw = record["kind"] as? String,
                           let kind = ClipboardItemKind(rawValue: kindRaw),
                           kind != .text || ((record["text"] as? String)?.isEmpty == false)
                     else {
-                        trace("pull: skipped \(record.recordType) \(record.recordID.recordName.prefix(24)) fields=\(record.allKeys().joined(separator: ","))")
+                        trace("pull: skipped \(record.recordType) \(record.recordID.recordName.prefix(24))")
                         continue
                     }
                     SyncRecordMapper.apply(record, to: store, imageStore: imageStore)
                     // Records written by another device are, by definition,
                     // already in the cloud; count them so this device does not
                     // try to push them straight back.
-                    let pinned = (change.record["isPinned"] as? Int ?? 0) == 1
-                    synced[change.record.recordID.recordName] = pinned
+                    synced[record.recordID.recordName] = (record["isPinned"] as? Int ?? 0) == 1
                     applied += 1
                 }
-            }
-            // Deletions stay cloud-side by design; see the header.
-            persistSynced()
-            saveToken(changes.changeToken)
-            moreComing = changes.moreComing
+                // Deletions stay cloud-side by design; see the header.
+                persistSynced()
+                saveToken(page.token)
+                more = page.moreComing
+                trace("pull page: \(page.records.count) records, more=\(more)")
             }
             if applied > 0 {
                 trace("pull: applied \(applied) records")
@@ -273,6 +268,54 @@ final class CloudSyncController {
         } catch let error as CKError where error.code == .zoneNotFound || error.code == .userDeletedZone {
             zoneReady = false
             saveToken(nil)
+        }
+    }
+
+    private struct ChangePage {
+        var records: [CKRecord] = []
+        var token: CKServerChangeToken?
+        var moreComing = false
+    }
+
+    private func fetchPage(since token: CKServerChangeToken?) async throws -> ChangePage {
+        let database = self.database
+        return try await withCheckedThrowingContinuation { continuation in
+            // The operation's blocks land on arbitrary queues; the box keeps
+            // the accumulating page out of actor-isolation trouble.
+            final class Box: @unchecked Sendable {
+                var page = ChangePage()
+                let lock = NSLock()
+            }
+            let box = Box()
+            let configuration = CKFetchRecordZoneChangesOperation.ZoneConfiguration()
+            configuration.previousServerChangeToken = token
+            let operation = CKFetchRecordZoneChangesOperation(
+                recordZoneIDs: [SyncRecordMapper.zoneID],
+                configurationsByRecordZoneID: [SyncRecordMapper.zoneID: configuration]
+            )
+            operation.recordWasChangedBlock = { _, result in
+                if case .success(let record) = result {
+                    box.lock.lock(); box.page.records.append(record); box.lock.unlock()
+                }
+            }
+            operation.recordZoneFetchResultBlock = { _, result in
+                if case .success(let done) = result {
+                    box.lock.lock()
+                    box.page.token = done.serverChangeToken
+                    box.page.moreComing = done.moreComing
+                    box.lock.unlock()
+                }
+            }
+            operation.fetchRecordZoneChangesResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: box.page)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            operation.qualityOfService = .userInitiated
+            database.add(operation)
         }
     }
 
