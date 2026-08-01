@@ -180,7 +180,21 @@ final class CloudSyncController {
         trace("zone ready")
     }
 
+    // Our record of what the cloud holds is a cache, and a cache that lies
+    // makes the diff skip every upload. Ask the server about one known record
+    // before trusting the whole map; if it is gone, so is the rest.
+    private func verifySyncedMap() async {
+        guard let sample = synced.keys.first else { return }
+        let id = SyncRecordMapper.recordID(for: sample)
+        guard let result = try? await database.records(for: [id]) else { return }
+        if case .success = result[id] { return }
+        trace("synced map was stale, \(synced.count) entries dropped")
+        synced = [:]
+        persistSynced()
+    }
+
     private func push() async throws {
+        await verifySyncedMap()
         let qualifying = SyncPolicy.current().qualifyingItems(in: store.items(matching: ""))
         // Tolerant of duplicate hashes: trapping on somebody's corrupt store
         // turns a data hiccup into a crash loop. A pin anywhere wins.
@@ -201,14 +215,17 @@ final class CloudSyncController {
         let toDelete = synced.keys.filter { wanted[$0] == nil }.map { SyncRecordMapper.recordID(for: $0) }
         guard !toSave.isEmpty || !toDelete.isEmpty else { return }
         trace("push: \(toSave.count) saves, \(toDelete.count) deletes")
+        // A wholesale delete is never right: it means the local map desynced,
+        // not that the user threw their history away.
+        let deletions = toDelete.count >= max(synced.count, 1) ? [] : toDelete
 
         for chunk in stride(from: 0, to: max(toSave.count, 1), by: Self.batchSize) {
             let slice = Array(toSave[chunk..<min(chunk + Self.batchSize, toSave.count)])
-            let deletions = chunk == 0 ? toDelete : []
-            guard !slice.isEmpty || !deletions.isEmpty else { continue }
+            let batchDeletions = chunk == 0 ? deletions : []
+            guard !slice.isEmpty || !batchDeletions.isEmpty else { continue }
             let result = try await database.modifyRecords(
                 saving: slice,
-                deleting: deletions,
+                deleting: batchDeletions,
                 savePolicy: .changedKeys,
                 atomically: false
             )
