@@ -94,7 +94,7 @@ final class CloudSyncController {
         // One-time full refetch: tokens minted during the ghost-record era
         // claim records were seen that never actually survived locally. The
         // content-hash dedupe makes re-applying everything harmless.
-        let markerURL = tokenURL.deletingLastPathComponent().appendingPathComponent("cloudsync-refetch-1")
+        let markerURL = tokenURL.deletingLastPathComponent().appendingPathComponent("cloudsync-refetch-2")
         if !FileManager.default.fileExists(atPath: markerURL.path) {
             saveToken(nil)
             try? Data().write(to: markerURL)
@@ -232,8 +232,12 @@ final class CloudSyncController {
 
     private func pull() async throws {
         do {
-            let changes = try await database.recordZoneChanges(inZoneWith: SyncRecordMapper.zoneID, since: loadToken())
+            // CloudKit pages its change feed; without draining every page the
+            // newest records, images most of all, simply never arrive.
+            var moreComing = true
             var applied = 0
+            while moreComing {
+            let changes = try await database.recordZoneChanges(inZoneWith: SyncRecordMapper.zoneID, since: loadToken())
             for modification in changes.modificationResultsByID.values {
                 if case .success(let change) = modification {
                     // Only records that look like ours get near the store; the
@@ -261,6 +265,8 @@ final class CloudSyncController {
             // Deletions stay cloud-side by design; see the header.
             persistSynced()
             saveToken(changes.changeToken)
+            moreComing = changes.moreComing
+            }
             if applied > 0 {
                 trace("pull: applied \(applied) records")
             }
